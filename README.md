@@ -14,7 +14,13 @@ A pet project that displays MFA TOTP codes. The goal is to allow me to get TOTPs
 - unlock it
 - find the TOTP for the service I need
 
-My plan is to place this MFA device under my monitor, and just look at it when I need to get a new TOTP, instead of doing the aforementioned process. It is going to generate TOTPs for the services I use the most, and have shorter non configurable session times.
+Therefore, my plan is to place this MFA device under my monitor, and just look at it when I need to get a new TOTP, instead of doing the aforementioned process. It is going to generate TOTPs for the services I use the most, and have shorter non configurable session times.
+
+Other reasons:
+
+- when using my personal phone to get mfa totp codes, I can get distracted by notifications and a lot of other things.
+- not safe to store secrets on a device that you use when going out. If the device is lost, and there is no security layer to protect unintended access to the virtual MFA App, there is a high chance someone can impersonate your identity.
+- secrets are decoupled from the device, and this allows me to easily switch to another one when necessary. I just need to move add my SD card on another device which has the same code.
 
 
 https://github.com/AllanOricil/esp32-mfa-totp-viewer/assets/55927613/6d3c2588-c95f-4876-9742-f12d8c79e105
