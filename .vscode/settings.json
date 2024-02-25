@@ -1,0 +1,29 @@
+{
+	"C_Cpp.errorSquiggles": "disabled",
+	"files.associations": {
+		"*.page-template": "vue",
+		"*.layout-template": "vue",
+		"*.vue": "vue",
+		"algorithm": "cpp",
+		"sd.h": "c",
+		"string": "c",
+		"mfa.hpp": "c",
+		"array": "c",
+		"*.tcc": "c",
+		"memory": "c",
+		"istream": "c",
+		"functional": "c",
+		"tuple": "c",
+		"utility": "c",
+		"arduino.h": "c",
+		"deque": "cpp",
+		"list": "cpp",
+		"unordered_map": "cpp",
+		"unordered_set": "cpp",
+		"vector": "cpp",
+		"string_view": "cpp",
+		"initializer_list": "cpp",
+		"valarray": "cpp",
+		"ui_helpers.h": "c"
+	}
+}
