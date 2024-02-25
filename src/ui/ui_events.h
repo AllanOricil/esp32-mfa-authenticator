@@ -10,8 +10,9 @@
 extern "C" {
 #endif
 
-void on_screen_loaded(lv_event_t * e);
-void on_aws_refresh(lv_event_t * e);
+void on_totp_screen_load_starts(lv_event_t * e);
+void on_value_changed(lv_event_t * e);
+void on_time_change(lv_event_t * e);
 
 #ifdef __cplusplus
 } /*extern "C"*/

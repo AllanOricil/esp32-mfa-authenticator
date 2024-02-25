@@ -24,6 +24,9 @@
 		"string_view": "cpp",
 		"initializer_list": "cpp",
 		"valarray": "cpp",
-		"ui_helpers.h": "c"
+		"ui_helpers.h": "c",
+		"cstddef": "c",
+		"new": "cpp",
+		"thread": "cpp"
 	}
 }

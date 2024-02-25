@@ -14,15 +14,16 @@ extern "C" {
 
 #include "ui_helpers.h"
 #include "ui_events.h"
-// SCREEN: ui_Screen1
-void ui_Screen1_screen_init(void);
-void ui_event_Screen1( lv_event_t * e);
-extern lv_obj_t *ui_Screen1;
-void ui_event_Label1( lv_event_t * e);
-extern lv_obj_t *ui_Label1;
+// SCREEN: ui_TotpScreen
+void ui_TotpScreen_screen_init(void);
+void ui_event_TotpScreen( lv_event_t * e);
+extern lv_obj_t *ui_TotpScreen;
+void ui_event_Label2( lv_event_t * e);
+extern lv_obj_t *ui_Label2;
+extern lv_obj_t *ui_Bar2;
 extern lv_obj_t *ui____initial_actions0;
-
-
+void ui_event_Bar2( lv_event_t * e);
+extern lv_obj_t *ui_Bar2;
 
 
 void ui_init(void);

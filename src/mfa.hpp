@@ -1,7 +1,6 @@
 #pragma once
-#include <SPI.h>
-#include <SD.h>
-#include <Base32.h>
 #include <TOTP.h>
+#include "totp-map.h"
+#include <TimeLib.h>
 
 void generate_many_totp();

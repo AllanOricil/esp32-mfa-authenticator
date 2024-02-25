@@ -1,80 +1,89 @@
 #include <stdio.h>
 #include <string.h>
 
-#define MAX_SIZE 10 // Maximum number of elements in the map
+#define MAX_SIZE 10 // Due to mem limits there has to exist a max number of services we can generate TOTPs for
+
+typedef unsigned char byte; // define byte if it's not yet defined
+
+typedef struct {
+    int length;
+    byte* value;
+} DecodedBase32Secret;
 
 int size = 0; // Current number of elements in the map 
 char keys[MAX_SIZE][10]; // Array to store the keys 
-char secrets[MAX_SIZE][65]; // Array to store the secrets
-char totps[MAX_SIZE][7]; // Array to store the totps
+DecodedBase32Secret decodedBase32Secrets[MAX_SIZE]; // Array to store decoded base32 secrets
+char totps[MAX_SIZE][7]; // Array to store current totp for each service
 
-// Function to get the index of a key in the keys array 
-int get_index(char key[]) 
-{
+int get_index(char key[]){
     for (int i = 0; i < size; i++) {
         if (strcmp(keys[i], key) == 0) {
             return i;
         }
     }
-    return -1; // Key not found
+    return -1;
 }
   
 
-void upsert_secret(char key[], char secret[])
-{
+void upsert_decoded_base32_secret(char key[], DecodedBase32Secret decodedBase32Secret){
     int index = get_index(key);
-    if (index == -1) { // Key not found
+    if (index == -1) {
         strcpy(keys[size], key);
-        strcpy(secrets[size], secret);
+        decodedBase32Secrets[size] = decodedBase32Secret;
         size++;
-    } 
-    else { // Key found
-        strcpy(secrets[index], secret);
+    } else {
+        decodedBase32Secrets[index] = decodedBase32Secret;
     }
 }
 
 
-void upsert_totp(char key[], char totp[])
-{
+void upsert_totp(char key[], char totp[]){
     int index = get_index(key);
-    if (index == -1) { // Key not found
+    if (index == -1) {
         strcpy(keys[size], key);
         strcpy(totps[size], totp);
         size++;
-    } 
-    else { // Key found
+    } else {
         strcpy(totps[index], totp);
     }
 }
 
-// Function to get the secret of a key in the map 
-char* get_secret(char key[]) 
-{
+DecodedBase32Secret get_decoded_base_32_secret(char key[]) {
     int index = get_index(key);
-    if (index == -1) { // Key not found
-        return NULL;
-    } 
-    else { // Key found
-        return secrets[index];
+    if (index == -1) {
+        DecodedBase32Secret emptyDecodedBase32Secret;
+        emptyDecodedBase32Secret.length = -1;
+        emptyDecodedBase32Secret.value = NULL;
+        return emptyDecodedBase32Secret;
+    } else {
+        return decodedBase32Secrets[index];
     } 
 }
 
-// Function to get the TOTP of a key in the map 
-char* get_totp(char key[]) 
-{
+char* get_totp(char key[]) {
     int index = get_index(key);
-    if (index == -1) { // Key not found
+    if (index == -1) {
         return NULL;
-    } 
-    else { // Key found
+    } else {
         return totps[index];
     } 
 }
 
-//Function to print the map
-void print_totps() 
-{
+char* get_totp_by_index(int index) { 
+    if (index >= 0 && index < size) {
+        return totps[index]; 
+    } 
+    return NULL;
+}
+
+void print(){
     for(int i = 0; i < size; i++) {
-        printf("%s: %s, %s\n", keys[i], secrets[i], totps[i]);
+        printf("%s: %d, %s, %s", keys[i], decodedBase32Secrets[i].length, decodedBase32Secrets[i].value, totps[i]);
+    }
+}
+
+void print_totps(){
+    for(int i = 0; i < size; i++) {
+        printf("%s: %d", keys[i], totps[i]);
     }
 }
