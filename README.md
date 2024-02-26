@@ -45,3 +45,18 @@ aws,DSAJDHHAHASAUDOASNOTREALOADAKLDASAJFPOAIDONTEVENTRYOASFAIPO
 ````
 
 > **WARNING**: at the moment, the UI can only show the TOTP for the first entry in the secrets file.
+
+
+## Roadmap
+
+- enable the UI to display multiple TOTP codes at once.
+
+	**why?**
+
+	**R:** People often use multiple services that require MFA TOTP codes with high frequency because of their short living sessions.
+
+- enable ESP32 to receive secrets via the local network.
+
+	**why?** 
+
+	**R:** In order to avoid having to umplug the SD card and pluging it on my computer every time I have to register a new MFA secret.
