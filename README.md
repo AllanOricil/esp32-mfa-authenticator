@@ -21,6 +21,7 @@ Other reasons:
 - when using my personal phone to get mfa totp codes, I can get distracted by notifications and a lot of other things.
 - not safe to store secrets on a device that you use when going out. If the device is lost, and there is no security layer to protect unintended access to the virtual MFA App, there is a high chance someone can impersonate your identity.
 - secrets are decoupled from the device, and this allows me to easily switch to another one when necessary. I just need to move add my SD card on another device which has the same code.
+- I wanted to learn how MFA works.
 
 
 https://github.com/AllanOricil/esp32-mfa-totp-viewer/assets/55927613/6d3c2588-c95f-4876-9742-f12d8c79e105
