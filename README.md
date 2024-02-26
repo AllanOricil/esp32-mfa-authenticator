@@ -29,6 +29,18 @@ https://github.com/AllanOricil/esp32-mfa-totp-viewer/assets/55927613/6d3c2588-c9
 https://github.com/AllanOricil/esp32-mfa-totp-viewer/assets/55927613/c5d344d6-c120-42e2-b779-4a32a116a47c
 
 
+## Requirements
+
+- ESP32-2432S028
+- 2.4Ghz WiFi signal with internet connection
+
+> **WARNING**: before building this code, create a `configuration.h` file in the `src` folder with the following variables.
+````c
+#define WIFI_SSID "WIFI_SSID"
+#define WIFI_PASSWORD "WIFI_PASSWORD"
+````
+> **WARNING**: change `WIFI_SSID` and `WIFI_PASSWORD` with one which you esp32 can reach out.
+
 
 ## Secrets
 
@@ -44,7 +56,7 @@ for example
 aws,DSAJDHHAHASAUDOASNOTREALOADAKLDASAJFPOAIDONTEVENTRYOASFAIPO
 ````
 
-> **WARNING**: at the moment, the UI can only show the TOTP for the first entry in the secrets file.
+
 
 
 ## How to verify if it is working
