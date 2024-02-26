@@ -75,6 +75,12 @@ aws,DSAJDHHAHASAUDOASNOTREALOADAKLDASAJFPOAIDONTEVENTRYOASFAIPO
 
 	**R:** People often use multiple services that require MFA TOTP codes with high frequency because of their short living sessions.
 
+- encrypt keys and ask for password during resets to decrypt them
+
+	**why?** 
+
+	**R:** it is not secure to have secrets stored without protection
+
 - enable ESP32 to receive secrets via the local network.
 
 	**why?** 
