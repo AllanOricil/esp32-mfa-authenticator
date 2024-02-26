@@ -22,8 +22,6 @@ const int   daylightOffset_sec = 3600; // Replace with your daylight saving offs
 const char* ssid = WIFI_SSID;
 const char* pwd = WIFI_PASSWORD;
 
-int setup_complete = 0; 
-
 void init_wifi(){
   Serial.printf("Connecting to %s", ssid);
   WiFi.begin(ssid, pwd);
@@ -132,20 +130,18 @@ void print_current_time() {
 void setup() {
   Serial.begin(115200);
 
-  // UI
-  smartdisplay_init();
-  auto disp = lv_disp_get_default();
-  lv_disp_set_rotation(disp, LV_DISP_ROT_90);
-  ui_init();
-  
   // SETUP
   init_wifi();
   sync_time();
   print_current_time();
   init_secrets();
   generate_many_totp();
-  
-  setup_complete = 1;
+
+  // UI
+  smartdisplay_init();
+  auto disp = lv_disp_get_default();
+  lv_disp_set_rotation(disp, LV_DISP_ROT_90);
+  ui_init();
 }
 
 void loop() {
