@@ -47,6 +47,12 @@ aws,DSAJDHHAHASAUDOASNOTREALOADAKLDASAJFPOAIDONTEVENTRYOASFAIPO
 > **WARNING**: at the moment, the UI can only show the TOTP for the first entry in the secrets file.
 
 
+## How to verify if it is working
+
+1. Go to https://totp.danhersam.com/
+2. Add your encoded base 32 secret in it, and then compare the TOTP codes it generates with the one you are seeing on the ESP32's screen.
+
+
 ## Roadmap
 
 - enable the UI to display multiple TOTP codes at once.
