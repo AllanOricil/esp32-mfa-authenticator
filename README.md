@@ -31,10 +31,18 @@ https://github.com/AllanOricil/esp32-mfa-totp-viewer/assets/55927613/6d3c2588-c9
 https://github.com/AllanOricil/esp32-mfa-totp-viewer/assets/55927613/c5d344d6-c120-42e2-b779-4a32a116a47c
 
 
+## Tools
+
+- PlatformIO IDE extension for VSCode.
+- Drivers for ESP32 for your OS. For my board and macos, I had to install this [driver](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers) from Silicon Labs.
+- In order to work with `ESP32-2432S028` in PlatformIO, you must install these [boards](https://github.com/rzeldent/esp32-smartdisplay).
+
 ## Requirements
 
-- ESP32-2432S028
-- 2.4Ghz WiFi signal with internet connection
+- `ESP32-2432S028`
+- 2.4Ghz WiFi signal with internet connection, in order to sync with NTP
+
+## Pre-build Steps
 
 > **WARNING**: before building this code, create a `configuration.h` file in the `src` folder with the following variables.
 ````c
