@@ -5,12 +5,12 @@
 
 #include "../ui.h"
 #include "totp-map.h"
+#include "constants.h"
 
-extern char keys[MAX_SIZE][21];
-extern char totps[MAX_SIZE][7];
+extern char keys[MAX_NUMBER_OF_SERVICES][MAX_SERVICE_NAME_LENGTH];
+extern char totps[MAX_NUMBER_OF_SERVICES][MAX_TOTP_LENGTH];
 
 #define LV_LABEL_SCROLL_SPEED (15)
-
 
 lv_obj_t* create_totp_component(
 	lv_obj_t* parent,
@@ -70,12 +70,13 @@ void ui_totp_screen_screen_init(void){
 	lv_obj_set_style_bg_opa(ui_totp_screen, 255, LV_PART_MAIN| LV_STATE_DEFAULT);
     lv_obj_set_style_pad_all(ui_totp_screen, 5, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-	// Set up flex container properties for the screen
+	// NOTE: set up flex container properties for the screen
     lv_obj_set_flex_flow(ui_totp_screen, LV_FLEX_FLOW_ROW_WRAP);
     lv_obj_set_flex_align(ui_totp_screen, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_START);
     lv_obj_set_layout(ui_totp_screen, LV_LAYOUT_FLEX);
 
-	for(int i = 0; i < MAX_SIZE; i++){
+    // NOTE: create 1 component for each TOTP
+	for(int i = 0; i < MAX_NUMBER_OF_SERVICES; i++){
         if (totps[i][0] != '\0') {
             create_totp_component(ui_totp_screen, keys[i], totps[i], 30, 30);
         }
