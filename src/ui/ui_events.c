@@ -22,10 +22,12 @@ int calculate_new_bar_value(){
 }
 
 void on_totp_component_label_value_changed(lv_event_t *e) {
-    LV_LOG_INFO("on_totp_component_label_value_changed");
+    LV_LOG_TRACE("on_totp_component_label_value_changed");
     lv_obj_t *label = lv_event_get_target(e);
     TotpValueChangeEvent * data = (TotpValueChangeEvent *)lv_event_get_param(e);
     char *totp = get_totp_by_index(data->index);
+
+    LV_LOG_TRACE("totp: %s index: %d", totp, data->index);
     // NOTE: a copy of the value stored at *totp (ref) is created so that it can be dealocated or changed without compromising what is currently being displayed
     char *temp = strdup(totp);
     if(temp){
@@ -35,7 +37,7 @@ void on_totp_component_label_value_changed(lv_event_t *e) {
 }
 
 void on_totp_component_bar_value_changed(lv_event_t *e){
-    LV_LOG_INFO("on_totp_component_bar_value_changed");
+    LV_LOG_TRACE("on_totp_component_bar_value_changed");
     lv_obj_t *bar = lv_event_get_target(e);
     int val = calculate_new_bar_value();
     lv_bar_set_value(bar, val, LV_ANIM_OFF);

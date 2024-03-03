@@ -10,6 +10,7 @@
 extern ESP32Time rtc;
 extern char keys[MAX_NUMBER_OF_SERVICES][MAX_SERVICE_NAME_LENGTH];
 extern DecodedBase32Secret decodedBase32Secrets[MAX_NUMBER_OF_SERVICES];
+extern int size;
 
 long get_steps() {
   rtc.getTime();
@@ -20,15 +21,18 @@ long get_steps() {
 }
 
 char* generate_totp(const DecodedBase32Secret decodedBase32Secret, long steps) {
-  TOTP totp = TOTP((uint8_t*)decodedBase32Secret.value, decodedBase32Secret.length);
-  char* newTotp = totp.getCodeFromSteps(steps); 
-  return newTotp;
+  char* result = static_cast<char*>(malloc(MAX_TOTP_LENGTH+1));
+  if (result == nullptr) return nullptr;
+  TOTP totp = TOTP(static_cast<uint8_t*>(decodedBase32Secret.value), decodedBase32Secret.length);
+  snprintf(result, MAX_TOTP_LENGTH+1, totp.getCodeFromSteps(steps));
+  return result;
 }
 
-void generate_totps(){
+void generate_totps() {
   long steps = get_steps();
   for(int i = 0; i < size; i++) {
-    char *totp = generate_totp(decodedBase32Secrets[i], steps);
-    upsert_totp(keys[i], totp);
+    char* newTotp = generate_totp(decodedBase32Secrets[i], steps);
+    snprintf(totps[i], MAX_TOTP_LENGTH+1, newTotp);
+    free(newTotp);
   }
 }

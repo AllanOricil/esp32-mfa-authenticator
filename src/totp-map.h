@@ -42,9 +42,6 @@ char *get_totp(char key[]);
 // Function to get the totp using the array index
 char* get_totp_by_index(int index);
 
-// Function to print all totps with their respective service name
-void print_totps(); 
-
 // Function to print the map
 void print(); 
 

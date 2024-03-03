@@ -80,9 +80,3 @@ void print(){
         printf("%s: %d, %s, %s\n", keys[i], decodedBase32Secrets[i].length, decodedBase32Secrets[i].value, totps[i]);
     }
 }
-
-void print_totps(){
-    for(int i = 0; i < size; i++) {
-        printf("%s: %d\n", keys[i], totps[i]);
-    }
-}
