@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#define MAX_SIZE 20 // max number of services supported
+#define MAX_SIZE 10 // max number of services supported
 
 typedef unsigned char byte; // define byte if it's not yet defined
 

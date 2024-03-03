@@ -1,6 +1,9 @@
+// Library Includes
 #include <TOTP.h>
-#include "totp-map.h"
 #include <TimeLib.h>
+
+// Local Includes
+#include "totp-map.h"
 
 long get_steps() {
   time_t t = time(nullptr);
@@ -19,7 +22,7 @@ char* generate_totp(const DecodedBase32Secret decodedBase32Secret) {
   return newTotp;
 }
 
-void generate_many_totp(){
+void generate_totps(){
   for(int i = 0; i < size; i++) {
     Serial.printf("generating totp for %s\n", keys[i]);
     char *totp = generate_totp(decodedBase32Secrets[i]);

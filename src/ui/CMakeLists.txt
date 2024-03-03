@@ -1,4 +1,4 @@
-SET(SOURCES screens/ui_TotpScreen.c
+SET(SOURCES screens/ui_totp_screen.c
     ui.c
     components/ui_comp_hook.c
     ui_helpers.c

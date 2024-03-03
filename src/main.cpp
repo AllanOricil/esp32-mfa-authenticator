@@ -1,19 +1,25 @@
+// System Includes
 #include <Arduino.h>
 #include <SD.h>
+#include <WiFi.h>
+#include <time.h>
+#include <lvgl.h>
+
+// Library Includes
 #include <esp32_smartdisplay.h>
 #include <ui/ui.h>
 #include <mfa.hpp>
+
+// Local Includes
 #include "totp-map.h"
-#include <WiFi.h>
-#include <time.h>
 #include "configuration.h"
 #include "Base32.h"
+#include "ESP32Time.h"
 
 #define TF_CS 5
+#define TOTP_PERIOD 30000
 
-unsigned long lastPrintTime = 0;
-unsigned long lastUpdate = 0;
-const unsigned long TOTP_PERIOD = 30000;
+ESP32Time rtc;
 
 const char* ntpServer = "pool.ntp.org";
 const long  gmtOffset_sec = 0;  // Replace with your actual timezone offset (in seconds)
@@ -34,10 +40,15 @@ void init_wifi(){
 
 void sync_time(){
   configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+  struct tm timeinfo;
   while (time(nullptr) < 24*3600) {
     Serial.println("Waiting for time to be set...");
-    delay(1000);
+    delay(500);
   }
+  if (getLocalTime(&timeinfo)){
+    rtc.setTimeStruct(timeinfo); 
+  }
+  Serial.println(rtc.getDateTime());  
 }
 
 DecodedBase32Secret decode_encoded_base32_secret(const char *secret) {
@@ -116,49 +127,34 @@ void init_secrets(){
   file.close();
 }
 
-void print_current_time() {
-  struct tm timeinfo;
-    
-  if(!getLocalTime(&timeinfo)){
-    Serial.println("Failed to obtain time");
-    return;
-  }
-    
-  Serial.printf("Current time: %04d-%02d-%02d %02d:%02d:%02d\n", (timeinfo.tm_year + 1900), (timeinfo.tm_mon + 1), timeinfo.tm_mday, timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
-}
-
 void setup() {
   Serial.begin(115200);
 
   // SETUP
   init_wifi();
   sync_time();
-  print_current_time();
   init_secrets();
-  generate_many_totp();
+
+  // GENERATE FIRST TOTPS BASED ON THE CURRENT TIME
+  generate_totps();
 
   // UI
   smartdisplay_init();
   auto disp = lv_disp_get_default();
   lv_disp_set_rotation(disp, LV_DISP_ROT_90);
+  smartdisplay_lcd_set_backlight(1);
   ui_init();
 }
 
 void loop() {
-  struct tm timeinfo;
-  getLocalTime(&timeinfo);
-  unsigned long now = ((timeinfo.tm_min * 60) + timeinfo.tm_sec) * 1000; // Convert current time to milliseconds
-  static unsigned long nextTrigger = 0; // Next trigger timestamp
-
-  // Check if we can trigger now or set new trigger 
+  unsigned long now = ((rtc.getMinute() * 60) + rtc.getSecond()) * 1000;
+  static unsigned long nextTrigger = 0;
   if (now >= nextTrigger) {
-    Serial.println("generating totp from file");
-    generate_many_totp();
-
-    // Calculate next TOTP generation moment
+    Serial.printf("generating totps %s", rtc.getDateTime().c_str());
+    generate_totps();
     nextTrigger = ((now / TOTP_PERIOD) + 1) * TOTP_PERIOD;
   }
-
+  
   lv_timer_handler();
 }
 
