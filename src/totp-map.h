@@ -1,19 +1,19 @@
 #pragma once
 #include <string.h>
 #include <stdio.h>
+#include "constants.h"
 
-#define MAX_SIZE 10 // max number of services supported
-
-typedef unsigned char byte; // define byte if it's not yet defined
+// NOTE: define byte if it's not yet defined
+typedef unsigned char byte; 
 
 typedef struct {
     int length;
     byte* value;
 } DecodedBase32Secret;
 
-extern char keys[MAX_SIZE][21];
-extern DecodedBase32Secret decodedBase32Secrets[MAX_SIZE]; // Array to store the secrets
-extern char totps[MAX_SIZE][7]; // Array to store the totps
+extern char keys[MAX_NUMBER_OF_SERVICES][MAX_SERVICE_NAME_LENGTH];
+extern DecodedBase32Secret decodedBase32Secrets[MAX_NUMBER_OF_SERVICES];
+extern char totps[MAX_NUMBER_OF_SERVICES][MAX_TOTP_LENGTH];
 
 // Current number of elements in the map
 extern int size;

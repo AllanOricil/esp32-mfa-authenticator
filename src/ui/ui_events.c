@@ -7,6 +7,7 @@
 #include "totp-map.h"
 #include "esp_log.h"
 #include <time.h>
+#include "constants.h"
 
 extern int setup_complete;
 extern uint32_t LV_EVENT_SETUP_COMPLETE;
@@ -16,7 +17,7 @@ int calculate_new_bar_value(){
     time_t now;
     time(&now); 
     timeinfo = localtime(&now); 
-    int val = 30 - timeinfo->tm_sec % 30; 
+    int val = TOTP_PERIOD - timeinfo->tm_sec % TOTP_PERIOD; 
     return val;
 }
 
@@ -25,9 +26,11 @@ void on_totp_component_label_value_changed(lv_event_t *e) {
     lv_obj_t *label = lv_event_get_target(e);
     TotpValueChangeEvent * data = (TotpValueChangeEvent *)lv_event_get_param(e);
     char *totp = get_totp_by_index(data->index);
-    if(totp){
-        // NOTE: we copy the value to the label instead of using its reference because the mem address where the totp pointer points to could be dealocated
-        lv_label_set_text(label, strdup(totp));
+    // NOTE: a copy of the value stored at *totp (ref) is created so that it can be dealocated or changed without compromising what is currently being displayed
+    char *temp = strdup(totp);
+    if(temp){
+        lv_label_set_text(label, temp);
+        free(temp);
     }
 }
 

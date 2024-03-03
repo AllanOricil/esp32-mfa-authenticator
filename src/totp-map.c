@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-
-// NOTE: Due to mem limits there has to exist a max number of services we can generate TOTPs for
-#define MAX_SIZE 10 
+#include "constants.h"
 
 // NOTE: define byte if it's not yet defined
 typedef unsigned char byte; 
@@ -14,9 +12,9 @@ typedef struct {
 
 // NOTE: initialize all stores with null
 int size = 0;
-char keys[MAX_SIZE][21] = {{'\0'}};
-DecodedBase32Secret decodedBase32Secrets[MAX_SIZE] = {0};
-char totps[MAX_SIZE][7] = {{'\0'}};
+char keys[MAX_NUMBER_OF_SERVICES][MAX_SERVICE_NAME_LENGTH] = {{'\0'}};
+DecodedBase32Secret decodedBase32Secrets[MAX_NUMBER_OF_SERVICES] = {0};
+char totps[MAX_NUMBER_OF_SERVICES][MAX_TOTP_LENGTH] = {{'\0'}};
 
 int get_index(char key[]){
     for (int i = 0; i < size; i++) {

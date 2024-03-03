@@ -15,15 +15,9 @@
 #include "configuration.h"
 #include "Base32.h"
 #include "ESP32Time.h"
-
-#define TF_CS 5
-#define TOTP_PERIOD 30000
+#include "constants.h"
 
 ESP32Time rtc;
-
-const char* ntpServer = "pool.ntp.org";
-const long  gmtOffset_sec = 0;  // Replace with your actual timezone offset (in seconds)
-const int   daylightOffset_sec = 3600; // Replace with your daylight saving offset (in seconds)
 
 const char* ssid = WIFI_SSID;
 const char* pwd = WIFI_PASSWORD;
@@ -40,7 +34,7 @@ void init_wifi(){
 
 void sync_time(){
   // NOTE: retrieve time from the NTP server and setting the system time with it
-  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+  configTime(GMT_OFFSET_SEC, DAYLIGHT_OFFSET_SEC, NTP_SERVER_URL);
 
   // NOTE: wait until time is retrieved
   struct tm timeinfo;
@@ -133,6 +127,7 @@ void setup() {
   // SETUP
   init_wifi();
   sync_time();
+  WiFi.disconnect(true);
   init_secrets();
 
   // GENERATE FIRST TOTPS BASED ON THE CURRENT TIME
@@ -148,13 +143,14 @@ void setup() {
 
 void loop() {
   // NOTE: ensures totps are generated exactly every 30 seconds. For example: 00:00:00, 00:00:30, 00:01:00, 00:01:30...
-  unsigned long now = ((rtc.getMinute() * 60) + rtc.getSecond()) * 1000;
+  unsigned long now = ((rtc.getMinute() * 60) + rtc.getSecond());
   static unsigned long nextTrigger = 0;
-  if (now >= nextTrigger) {
+  if (now % TOTP_PERIOD == 0 && now != nextTrigger) {
     generate_totps();
     refresh_totp_labels();
-    nextTrigger = ((now / TOTP_PERIOD) + 1) * TOTP_PERIOD;
+    nextTrigger = now;
   }
+
 
   // NOTE: ensures the counter is updated on every second, instead of after 1 second
   static unsigned long previousSecond = 0;
