@@ -9,6 +9,7 @@
 
 extern char keys[MAX_NUMBER_OF_SERVICES][MAX_SERVICE_NAME_LENGTH];
 extern char totps[MAX_NUMBER_OF_SERVICES][MAX_TOTP_LENGTH];
+extern int size;
 
 #define LV_LABEL_SCROLL_SPEED (15)
 
@@ -76,10 +77,8 @@ void ui_totp_screen_screen_init(void){
     lv_obj_set_layout(ui_totp_screen, LV_LAYOUT_FLEX);
 
     // NOTE: create 1 component for each TOTP
-	for(int i = 0; i < MAX_NUMBER_OF_SERVICES; i++){
-        if (totps[i][0] != '\0') {
-            create_totp_component(ui_totp_screen, keys[i], totps[i], 30, 30);
-        }
+	for(int i = 0; i < size; i++){
+        create_totp_component(ui_totp_screen, keys[i], totps[i], 30, 30);
     }
 }
 
