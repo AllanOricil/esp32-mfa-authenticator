@@ -15,17 +15,11 @@ extern "C" {
 #include "ui_helpers.h"
 #include "ui_events.h"
 // SCREEN: ui_TotpScreen
-void ui_TotpScreen_screen_init(void);
-void ui_event_TotpScreen( lv_event_t * e);
-extern lv_obj_t *ui_TotpScreen;
-void ui_event_Label2( lv_event_t * e);
-extern lv_obj_t *ui_Label2;
-extern lv_obj_t *ui_Bar2;
+extern lv_obj_t *ui_totp_screen;
 extern lv_obj_t *ui____initial_actions0;
-void ui_event_Bar2( lv_event_t * e);
-extern lv_obj_t *ui_Bar2;
-
-
+void ui_event_totp_screen(lv_event_t * e);
+void ui_event_totp_component_label(lv_event_t * e);
+void ui_event_totp_component_bar(lv_event_t * e);
 void ui_init(void);
 
 #ifdef __cplusplus

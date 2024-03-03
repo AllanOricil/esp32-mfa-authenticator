@@ -3,4 +3,4 @@
 #include "totp-map.h"
 #include <TimeLib.h>
 
-void generate_many_totp();
+void generate_totps();

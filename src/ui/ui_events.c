@@ -11,92 +11,70 @@
 extern int setup_complete;
 extern uint32_t LV_EVENT_SETUP_COMPLETE;
 
-
 typedef struct {
     int index;
-} TotpValueChangedEventData;
+} TotpValueChangeEvent;
 
 
-// TOTP SCREEN EVENTS
-
-void notify_totp_labels_to_refresh(lv_timer_t *timer) {
-    LV_LOG_USER("timer_callback called.");  //this line is added to log message
+void notify_element_to_refresh(lv_timer_t *timer, int element_index) {
+    LV_LOG_INFO("notify_element_to_refresh");
     lv_obj_t *screen = (lv_obj_t*)timer->user_data;
-    lv_obj_t *child;
+    lv_obj_t *container;
+    lv_obj_t *element;
     int index = 0;
-    // Get the first child of the screen
-    child = lv_obj_get_child(screen, NULL);
 
-    while (child) {
-        LV_LOG_USER("INSIDE WHILE");
-        if (lv_obj_check_type(child, &lv_label_class)) {
-             LV_LOG_USER("FOUND A CHILD LABEL");
-            TotpValueChangedEventData data;
-            data.index = index;
-            if(data.index != NULL) {
-                LV_LOG_USER("DATA.INDEX HAS VALUE");
-                LV_LOG_USER(data.index);
-            }
-            LV_LOG_USER("REACHED THIS POINT");
-            lv_event_send(child, LV_EVENT_VALUE_CHANGED, &data);
-            LV_LOG_USER("STANDARD EVENT DISPATCHED");
-        }
-         LV_LOG_USER("OUTSIDE WHILE");
-        child = lv_obj_get_child(screen, child);
+    container = lv_obj_get_child(screen, index);
+
+    while (container) {
+        element = lv_obj_get_child(container, element_index);
+        TotpValueChangeEvent event;
+        event.index = index;
+        lv_event_send(element, LV_EVENT_VALUE_CHANGED, &event);
         index++;
+        container = lv_obj_get_child(screen, index);
     }
 }
 
 
-void update_bar(lv_timer_t *timer) {
-    time_t now;
-    struct tm * timeinfo;
-    time(&now);
-    timeinfo = localtime(&now);
-    
-    // Get your bar object from user data
-    lv_obj_t * bar = (lv_obj_t*)timer->user_data;
-    
-    // Adjust the value regarding current seconds
-    int val = 30 - timeinfo->tm_sec % 30;
-
-    lv_bar_set_value(bar, val, LV_ANIM_OFF);
+void notify_totp_labels_to_refresh(lv_timer_t *timer) {
+    LV_LOG_INFO("notify_totp_labels_to_refresh");
+    notify_element_to_refresh(timer, 1);
 }
 
+void notify_totp_counters_to_refresh(lv_timer_t *timer) {
+    LV_LOG_INFO("notify_totp_counters_to_refresh");
+    notify_element_to_refresh(timer, 2);
+}
 
-void on_totp_screen_load_starts(lv_event_t * e){
-    LV_LOG_USER("on_totp_screen_load_starts");
-    lv_timer_create(notify_totp_labels_to_refresh, 1000, lv_event_get_target(e));
-
-
-    // Initialize the bar at the start
+int calculate_new_bar_value(){
     time_t now; 
     struct tm * timeinfo; 
     time(&now); 
     timeinfo = localtime(&now); 
     int val = 30 - timeinfo->tm_sec % 30; 
-    lv_bar_set_value(ui_Bar2, val, LV_ANIM_OFF); 
-
-    // Create a timer to update the bar every second
-    lv_timer_create(update_bar, 1000, ui_Bar2);
+    return val;
 }
 
-void on_value_changed(lv_event_t * e) {
-    LV_LOG_USER("on_value_changed");
-    lv_obj_t * label = lv_event_get_target(e);
-    TotpValueChangedEventData * data = (TotpValueChangedEventData *)lv_event_get_param(e);
-    char * totp = get_totp_by_index(data->index);
-    if (totp){
+void on_totp_screen_load_starts(lv_event_t *e){
+    LV_LOG_INFO("on_totp_screen_load_starts");
+
+    lv_timer_create(notify_totp_labels_to_refresh, 500, lv_event_get_target(e));
+    lv_timer_create(notify_totp_counters_to_refresh, 1000, lv_event_get_target(e));
+}
+
+void on_totp_component_label_value_changed(lv_event_t *e) {
+    LV_LOG_INFO("on_totp_component_label_value_changed");
+    lv_obj_t *label = lv_event_get_target(e);
+    TotpValueChangeEvent * data = (TotpValueChangeEvent *)lv_event_get_param(e);
+    char *totp = get_totp_by_index(data->index);
+    if(totp){
         lv_label_set_text(label, totp);
     }
 }
 
-void on_time_change(lv_event_t * e){
-    LV_LOG_USER("on_time_change");
-    lv_obj_t * bar = lv_event_get_target(e);
-    TotpValueChangedEventData * data = (TotpValueChangedEventData *)lv_event_get_param(e);
-    char * totp = get_totp_by_index(data->index);
-    if (totp){
-        lv_bar_set_value(bar, 30, LV_ANIM_OFF);
-    }
+void on_totp_component_bar_value_changed(lv_event_t *e){
+    LV_LOG_INFO("on_totp_component_bar_value_changed");
+    lv_obj_t *bar = lv_event_get_target(e);
+    int val = calculate_new_bar_value();
+    lv_bar_set_value(bar, val, LV_ANIM_OFF);
 }

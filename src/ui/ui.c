@@ -12,15 +12,13 @@ uint32_t LV_EVENT_SETUP_COMPLETE;
 
 ///////////////////// VARIABLES ////////////////////
 
-// SCREEN: ui_TotpScreen
-void ui_TotpScreen_screen_init(void);
-void ui_event_TotpScreen( lv_event_t * e);
-lv_obj_t *ui_TotpScreen;
-void ui_event_Label2( lv_event_t * e);
-lv_obj_t *ui_Label2;
+// SCREEN: ui_totp_screen
+lv_obj_t *ui_totp_screen;
 lv_obj_t *ui____initial_actions0;
-void ui_event_Bar2( lv_event_t * e);
-lv_obj_t *ui_Bar2;
+void ui_totp_screen_screen_init(void);
+void ui_event_totp_screen(lv_event_t * e);
+void ui_event_totp_component_label(lv_event_t * e);
+void ui_event_totp_component_bar(lv_event_t * e);
 
 ///////////////////// TEST LVGL SETTINGS ////////////////////
 #if LV_COLOR_DEPTH != 16
@@ -33,22 +31,27 @@ lv_obj_t *ui_Bar2;
 ///////////////////// ANIMATIONS ////////////////////
 
 ///////////////////// FUNCTIONS ////////////////////
-void ui_event_TotpScreen( lv_event_t * e) {
-    lv_event_code_t event_code = lv_event_get_code(e);lv_obj_t * target = lv_event_get_target(e);
-    if ( event_code == LV_EVENT_SCREEN_LOAD_START) {
-        on_totp_screen_load_starts( e );
+void ui_event_totp_screen(lv_event_t * e) {
+    lv_event_code_t event_code = lv_event_get_code(e);
+    lv_obj_t * target = lv_event_get_target(e);
+    if (event_code == LV_EVENT_SCREEN_LOAD_START) {
+        on_totp_screen_load_starts(e);
     }
 }
-void ui_event_Label2( lv_event_t * e) {
-    lv_event_code_t event_code = lv_event_get_code(e);lv_obj_t * target = lv_event_get_target(e);
-    if ( event_code == LV_EVENT_VALUE_CHANGED) {
-        on_value_changed( e );
+
+void ui_event_totp_component_label(lv_event_t * e) {
+    lv_event_code_t event_code = lv_event_get_code(e);
+    lv_obj_t * target = lv_event_get_target(e);
+    if (event_code == LV_EVENT_VALUE_CHANGED) {
+        on_totp_component_label_value_changed(e);
     }
 }
-void ui_event_Bar2( lv_event_t * e) {
-    lv_event_code_t event_code = lv_event_get_code(e);lv_obj_t * target = lv_event_get_target(e);
-    if ( event_code == LV_EVENT_VALUE_CHANGED) {
-        on_time_change( e );
+
+void ui_event_totp_component_bar(lv_event_t * e) {
+    lv_event_code_t event_code = lv_event_get_code(e);
+    lv_obj_t * target = lv_event_get_target(e);
+    if (event_code == LV_EVENT_VALUE_CHANGED) {
+        on_totp_component_bar_value_changed(e);
     }
 }
 
@@ -56,11 +59,17 @@ void ui_event_Bar2( lv_event_t * e) {
 ///////////////////// SCREENS ////////////////////
 
 void ui_init( void ){
-    lv_disp_t *dispp = lv_disp_get_default();
-    lv_theme_t *theme = lv_theme_default_init(dispp, lv_palette_main(LV_PALETTE_BLUE), lv_palette_main(LV_PALETTE_RED), true, LV_FONT_DEFAULT);
+    lv_disp_t *disp = lv_disp_get_default();
+    lv_theme_t *theme = lv_theme_default_init(
+        disp, 
+        lv_palette_main(LV_PALETTE_BLUE), 
+        lv_palette_main(LV_PALETTE_RED), 
+        true, 
+        LV_FONT_DEFAULT
+    );
     LV_EVENT_SETUP_COMPLETE = lv_event_register_id();
-    lv_disp_set_theme(dispp, theme);
-    ui_TotpScreen_screen_init();
+    lv_disp_set_theme(disp, theme);
+    ui_totp_screen_screen_init();
     ui____initial_actions0 = lv_obj_create(NULL);
-    lv_disp_load_scr( ui_TotpScreen);
+    lv_disp_load_scr(ui_totp_screen);
 }

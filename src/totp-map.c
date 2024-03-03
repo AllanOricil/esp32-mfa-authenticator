@@ -1,19 +1,22 @@
 #include <stdio.h>
 #include <string.h>
 
-#define MAX_SIZE 10 // Due to mem limits there has to exist a max number of services we can generate TOTPs for
+// NOTE: Due to mem limits there has to exist a max number of services we can generate TOTPs for
+#define MAX_SIZE 10 
 
-typedef unsigned char byte; // define byte if it's not yet defined
+// NOTE: define byte if it's not yet defined
+typedef unsigned char byte; 
 
 typedef struct {
     int length;
     byte* value;
 } DecodedBase32Secret;
 
-int size = 0; // Current number of elements in the map 
-char keys[MAX_SIZE][10]; // Array to store the keys 
-DecodedBase32Secret decodedBase32Secrets[MAX_SIZE]; // Array to store decoded base32 secrets
-char totps[MAX_SIZE][7]; // Array to store current totp for each service
+// NOTE: initialize all stores with null
+int size = 0;
+char keys[MAX_SIZE][21] = {{'\0'}};
+DecodedBase32Secret decodedBase32Secrets[MAX_SIZE] = {0};
+char totps[MAX_SIZE][7] = {{'\0'}};
 
 int get_index(char key[]){
     for (int i = 0; i < size; i++) {
@@ -23,7 +26,6 @@ int get_index(char key[]){
     }
     return -1;
 }
-  
 
 void upsert_decoded_base32_secret(char key[], DecodedBase32Secret decodedBase32Secret){
     int index = get_index(key);
@@ -35,7 +37,6 @@ void upsert_decoded_base32_secret(char key[], DecodedBase32Secret decodedBase32S
         decodedBase32Secrets[index] = decodedBase32Secret;
     }
 }
-
 
 void upsert_totp(char key[], char totp[]){
     int index = get_index(key);
