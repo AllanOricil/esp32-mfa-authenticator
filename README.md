@@ -1,6 +1,6 @@
 # ESP32 MFA TOTP Generator
 
-<img src="https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/5c545e94-9180-409d-9a7f-115982a0db48" width="500" height="300">
+<img src="https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/4323be9d-6abe-4873-81f7-417203a3e340" width="500" height="300">
 
 A pet project that displays MFA TOTP codes. The goal is to allow me to get TOTPs for short living sessions without interacting with my phone. At the moment every time I need a new TOTP, I have to:
 
@@ -22,10 +22,10 @@ Other reasons:
 - I wanted to learn how MFA works.
 - I wanted to learn how ESP32 works.
 
-https://github.com/AllanOricil/esp32-mfa-totp-viewer/assets/55927613/c5d344d6-c120-42e2-b779-4a32a116a47c
+https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/166f6ea7-1046-4117-ae22-67991c8e6d8c
 
 
-https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/f66121c8-e4f7-42ef-8708-03f6eb5fed22
+https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/6e240518-a35b-4bf0-8a41-ece0dad9efb9
 
 
 ## Tools
