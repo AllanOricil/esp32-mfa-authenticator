@@ -16,7 +16,6 @@ uint32_t LV_EVENT_SETUP_COMPLETE;
 lv_obj_t *ui_totp_screen;
 lv_obj_t *ui____initial_actions0;
 void ui_totp_screen_screen_init(void);
-void ui_event_totp_screen(lv_event_t * e);
 void ui_event_totp_component_label(lv_event_t * e);
 void ui_event_totp_component_bar(lv_event_t * e);
 
@@ -31,14 +30,6 @@ void ui_event_totp_component_bar(lv_event_t * e);
 ///////////////////// ANIMATIONS ////////////////////
 
 ///////////////////// FUNCTIONS ////////////////////
-void ui_event_totp_screen(lv_event_t * e) {
-    lv_event_code_t event_code = lv_event_get_code(e);
-    lv_obj_t * target = lv_event_get_target(e);
-    if (event_code == LV_EVENT_SCREEN_LOAD_START) {
-        on_totp_screen_load_starts(e);
-    }
-}
-
 void ui_event_totp_component_label(lv_event_t * e) {
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t * target = lv_event_get_target(e);
@@ -72,4 +63,39 @@ void ui_init( void ){
     ui_totp_screen_screen_init();
     ui____initial_actions0 = lv_obj_create(NULL);
     lv_disp_load_scr(ui_totp_screen);
+}
+
+
+void refresh_totp_labels() {
+    LV_LOG_INFO("refresh_totp_labels");
+    lv_obj_t *container;
+    lv_obj_t *label;
+    int index = 0;
+
+    container = lv_obj_get_child(ui_totp_screen, index);
+    while (container) {
+        label = lv_obj_get_child(container, 1);
+        TotpValueChangeEvent event;
+        event.index = index;
+        lv_event_send(label, LV_EVENT_VALUE_CHANGED, &event);
+        index++;
+        container = lv_obj_get_child(ui_totp_screen, index);
+    }
+}
+
+void refresh_counter_bars(){
+    LV_LOG_INFO("refresh_counter_bars");
+    lv_obj_t *container;
+    lv_obj_t *bar;
+    int index = 0;
+
+    container = lv_obj_get_child(ui_totp_screen, index);
+    while (container) {
+        bar = lv_obj_get_child(container, 2);
+        TotpValueChangeEvent event;
+        event.index = index;
+        lv_event_send(bar, LV_EVENT_VALUE_CHANGED, &event);
+        index++;
+        container = lv_obj_get_child(ui_totp_screen, index);
+    }
 }

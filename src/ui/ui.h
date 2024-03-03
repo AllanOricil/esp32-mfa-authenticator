@@ -17,10 +17,11 @@ extern "C" {
 // SCREEN: ui_TotpScreen
 extern lv_obj_t *ui_totp_screen;
 extern lv_obj_t *ui____initial_actions0;
-void ui_event_totp_screen(lv_event_t * e);
 void ui_event_totp_component_label(lv_event_t * e);
 void ui_event_totp_component_bar(lv_event_t * e);
 void ui_init(void);
+void refresh_totp_labels();
+void refresh_counter_bars();
 
 #ifdef __cplusplus
 } /*extern "C"*/

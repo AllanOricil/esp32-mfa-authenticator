@@ -10,7 +10,10 @@
 extern "C" {
 #endif
 
-void on_totp_screen_load_starts(lv_event_t * e);
+typedef struct {
+    int index;
+} TotpValueChangeEvent;
+
 void on_totp_component_label_value_changed(lv_event_t * e);
 void on_totp_component_bar_value_changed(lv_event_t * e);
 

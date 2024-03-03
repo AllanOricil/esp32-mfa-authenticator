@@ -80,8 +80,6 @@ void ui_totp_screen_screen_init(void){
             create_totp_component(ui_totp_screen, keys[i], totps[i], 30, 30);
         }
     }
-
-	lv_obj_add_event_cb(ui_totp_screen, ui_event_totp_screen, LV_EVENT_ALL, NULL);
 }
 
 

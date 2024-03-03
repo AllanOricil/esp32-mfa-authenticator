@@ -39,19 +39,26 @@ void init_wifi(){
 }
 
 void sync_time(){
+  // NOTE: retrieve time from the NTP server and setting the system time with it
   configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+
+  // NOTE: wait until time is retrieved
   struct tm timeinfo;
-  while (time(nullptr) < 24*3600) {
+  time_t now;
+
+  while ((now = time(nullptr)) < 24*3600) {
     Serial.println("Waiting for time to be set...");
     delay(500);
   }
-  if (getLocalTime(&timeinfo)){
-    rtc.setTimeStruct(timeinfo); 
-  }
+
+  gmtime_r(&now, &timeinfo); // initialize timeinfo
+
+  // NOTE: set RTC time with the time from the NTP server
+  rtc.setTimeStruct(timeinfo); 
   Serial.println(rtc.getDateTime());  
 }
 
-DecodedBase32Secret decode_encoded_base32_secret(const char *secret) {
+DecodedBase32Secret decode_encoded_base32_secret(char *secret) {
   Serial.printf("decoding %s\n", secret);
 
   byte* tempDecoded = NULL;
@@ -66,15 +73,12 @@ DecodedBase32Secret decode_encoded_base32_secret(const char *secret) {
   
   int keyLength = base32.fromBase32(secretBytes, secretLength, (byte*&)tempDecoded);
 
-  Serial.println("--------- start decoded base 32 ---------");
+  Serial.println("decoded base 32 secret");
   for (int i = 0; i < keyLength; i++) {
       Serial.print(tempDecoded[i], HEX);
       Serial.print(" ");
   }
-  Serial.println();
-  Serial.println("--------- end decoded base 32 ---------");
-
-  Serial.printf("key length: %d\n", keyLength);
+  Serial.printf("decoded base 32 secret length: %d\n", keyLength);
 
   DecodedBase32Secret decodedBase32Secret;
   decodedBase32Secret.length = keyLength;
@@ -86,14 +90,14 @@ DecodedBase32Secret decode_encoded_base32_secret(const char *secret) {
 }
 
 void init_secrets(){
-  Serial.println("decoding secrets");
+  Serial.println("fetching /secrets.txt");
 
   if(!SD.begin(TF_CS)){
-    Serial.println("card mount failed");
+    Serial.println("sd card mount failed");
     return;
   }
   if (!SD.exists("/secrets.txt")) {
-    Serial.println("the file does not exist");
+    Serial.println("secrets.txt file does not exist");
     return;
   } 
 
@@ -103,25 +107,21 @@ void init_secrets(){
     return;
   }
 
+  Serial.println("decoding secrets");
   while (file.available()) {
-    Serial.println("reading line");
     String line = file.readStringUntil('\n');
-    Serial.println("line read");
+    Serial.printf("processing line: %s\n", line.c_str());
     int delimiterIndex = line.indexOf(',');
-    
     if (delimiterIndex != -1) {
-      Serial.println("retrieving service and secret information");
-      String service = line.substring(0, delimiterIndex);
-      String encodedBase32Secret = line.substring(delimiterIndex + 1);
+      // NOTE: converts const char* to char* because of upsert_decoded_base32_secret
+      char* service = strdup(line.substring(0, delimiterIndex).c_str());
+      char* encodedBase32Secret = strdup(line.substring(delimiterIndex + 1).c_str());
       Serial.printf("service: %s\n", service);
       Serial.printf("encoded base 32 secret: %s\n", encodedBase32Secret);
-      char* serviceString = strdup(service.c_str());
-      char* encodedBase32SecretString = strdup(encodedBase32Secret.c_str());
-      upsert_decoded_base32_secret(serviceString, decode_encoded_base32_secret(encodedBase32SecretString));
-      Serial.println("service and secret information stored");
+      upsert_decoded_base32_secret(service, decode_encoded_base32_secret(encodedBase32Secret));
+      Serial.println("service and secret information stored\n");
     }
   }
-
   Serial.println("all secrets were decoded");
 
   file.close();
@@ -147,14 +147,23 @@ void setup() {
 }
 
 void loop() {
+  // NOTE: ensures totps are generated exactly every 30 seconds. For example: 00:00:00, 00:00:30, 00:01:00, 00:01:30...
   unsigned long now = ((rtc.getMinute() * 60) + rtc.getSecond()) * 1000;
   static unsigned long nextTrigger = 0;
   if (now >= nextTrigger) {
-    Serial.printf("generating totps %s", rtc.getDateTime().c_str());
     generate_totps();
+    refresh_totp_labels();
     nextTrigger = ((now / TOTP_PERIOD) + 1) * TOTP_PERIOD;
   }
-  
+
+  // NOTE: ensures the counter is updated on every second, instead of after 1 second
+  static unsigned long previousSecond = 0;
+  unsigned long currentSecond = rtc.getSecond();
+  if (currentSecond != previousSecond) {
+      refresh_counter_bars();
+      previousSecond = currentSecond;
+  }
+
   lv_timer_handler();
 }
 
