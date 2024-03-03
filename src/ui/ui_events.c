@@ -11,55 +11,13 @@
 extern int setup_complete;
 extern uint32_t LV_EVENT_SETUP_COMPLETE;
 
-typedef struct {
-    int index;
-} TotpValueChangeEvent;
-
-
-void notify_element_to_refresh(lv_timer_t *timer, int element_index) {
-    LV_LOG_INFO("notify_element_to_refresh");
-    lv_obj_t *screen = (lv_obj_t*)timer->user_data;
-    lv_obj_t *container;
-    lv_obj_t *element;
-    int index = 0;
-
-    container = lv_obj_get_child(screen, index);
-
-    while (container) {
-        element = lv_obj_get_child(container, element_index);
-        TotpValueChangeEvent event;
-        event.index = index;
-        lv_event_send(element, LV_EVENT_VALUE_CHANGED, &event);
-        index++;
-        container = lv_obj_get_child(screen, index);
-    }
-}
-
-
-void notify_totp_labels_to_refresh(lv_timer_t *timer) {
-    LV_LOG_INFO("notify_totp_labels_to_refresh");
-    notify_element_to_refresh(timer, 1);
-}
-
-void notify_totp_counters_to_refresh(lv_timer_t *timer) {
-    LV_LOG_INFO("notify_totp_counters_to_refresh");
-    notify_element_to_refresh(timer, 2);
-}
-
 int calculate_new_bar_value(){
-    time_t now; 
-    struct tm * timeinfo; 
+    struct tm *timeinfo; 
+    time_t now;
     time(&now); 
     timeinfo = localtime(&now); 
     int val = 30 - timeinfo->tm_sec % 30; 
     return val;
-}
-
-void on_totp_screen_load_starts(lv_event_t *e){
-    LV_LOG_INFO("on_totp_screen_load_starts");
-
-    lv_timer_create(notify_totp_labels_to_refresh, 500, lv_event_get_target(e));
-    lv_timer_create(notify_totp_counters_to_refresh, 1000, lv_event_get_target(e));
 }
 
 void on_totp_component_label_value_changed(lv_event_t *e) {
@@ -68,7 +26,8 @@ void on_totp_component_label_value_changed(lv_event_t *e) {
     TotpValueChangeEvent * data = (TotpValueChangeEvent *)lv_event_get_param(e);
     char *totp = get_totp_by_index(data->index);
     if(totp){
-        lv_label_set_text(label, totp);
+        // NOTE: we copy the value to the label instead of using its reference because the mem address where the totp pointer points to could be dealocated
+        lv_label_set_text(label, strdup(totp));
     }
 }
 
