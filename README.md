@@ -16,9 +16,9 @@ Therefore, my plan is to place this MFA device under my monitor, and just look a
 
 Other reasons:
 
-- when using my personal phone to get mfa totp codes, I can get distracted by notifications and a lot of other things.
+- when using my personal phone to get mfa totp codes, I get distracted by notifications and a lot of other things.
 - not safe to store secrets on a device that you use when going out. If the device is lost, and there is no security layer to protect unintended access to the virtual MFA App, there is a high chance someone can impersonate your identity.
-- secrets are decoupled from the device, and this allows me to easily switch to another one when necessary. I just need to move add my SD card on another device which has the same code.
+- secrets are decoupled from the device, and this allows me to easily switch to another one when necessary. I just need to insert the SD card containing my services onto another device flashed with the same code.
 - I wanted to learn how MFA works.
 - I wanted to learn how ESP32 works.
 
@@ -31,8 +31,9 @@ https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/6e240518
 ## Tools
 
 - PlatformIO IDE extension for VSCode.
-- Drivers for ESP32 for your OS. For my board and macos, I had to install this [driver](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers) from Silicon Labs.
-- In order to work with `ESP32-2432S028` in PlatformIO, you must install these [boards](https://github.com/rzeldent/esp32-smartdisplay).
+- Drivers for ESP32 for your OS. 
+> **INFO**: for my board and macos, I had to install this [driver](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers) from Silicon Labs.
+- In order to configure `ESP32-2432S028` in PlatformIO, follow the instructions found in this [repository](https://github.com/rzeldent/esp32-smartdisplay).
 
 ## Requirements
 
@@ -77,16 +78,16 @@ aws-3,DSAJDHHAHASAUDOASNOTREALOADAKLDASAJFPOAIDONTEVENTRYOASFAIPO
 
 	**why?**
 
-	**R:** People often use multiple services that require MFA TOTP codes with high frequency because of their short living sessions.
+	**R:** people often use multiple services that require MFA TOTP codes with high frequency because of their short living sessions.
 
-- encrypt keys and ask for password during resets to decrypt them
-
-	**why?** 
-
-	**R:** it is not secure to have secrets stored without protection
-
-- enable ESP32 to receive secrets via the local network.
+- read encrypted keys from the sd card, and ask for password/pin/fingerprint during resets in order to decipher them
 
 	**why?** 
 
-	**R:** In order to avoid having to umplug the SD card and pluging it on my computer every time I have to register a new MFA secret.
+	**R:** it is not secure to have unencrypted secrets stored without protection
+
+- enable ESP32 to receive secrets via the local network, or a secure channel.
+
+	**why?** 
+
+	**R:** ease the process of adding new services. With this feature I won't need to insert the SD card on my computer. if there is no SD card on the board, the channel to register new services is going to be closed.
