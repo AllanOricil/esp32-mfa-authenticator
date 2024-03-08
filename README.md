@@ -66,6 +66,8 @@ aws-2,DSAJDHHAHASAUDOASNOTREALOADAKLDASAJFPOAIDONTEVENTRYOASFAIPO
 aws-3,DSAJDHHAHASAUDOASNOTREALOADAKLDASAJFPOAIDONTEVENTRYOASFAIPO
 ````
 
+> **WARNING**: secrets must be unencrypted and based 32 encoded. In the future, Users will have the option to encrypt their secrets, and ask for fingerpint/pin/password before retrieving the current TOTP. The plan is to make this feature configurable per service.
+
 ## How to verify if it is working
 
 1. Go to https://totp.danhersam.com/
