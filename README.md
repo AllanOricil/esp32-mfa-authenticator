@@ -47,7 +47,7 @@ https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/6e240518
 #define WIFI_SSID "WIFI_SSID"
 #define WIFI_PASSWORD "WIFI_PASSWORD"
 ````
-> **WARNING**: change `WIFI_SSID` and `WIFI_PASSWORD` with one which you esp32 can reach out.
+> **WARNING**: remember to use a network which has access to the internet, and is isolated from your main network.
 
 
 ## Secrets
@@ -74,7 +74,7 @@ aws-3,DSAJDHHAHASAUDOASNOTREALOADAKLDASAJFPOAIDONTEVENTRYOASFAIPO
 
 ## Roadmap
 
-- ✅ enable the UI to display multiple TOTP codes at once. 
+-  enable the UI to display multiple TOTP codes at once. ✅
 
 	**why?**
 
