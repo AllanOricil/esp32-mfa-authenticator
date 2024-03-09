@@ -34,15 +34,23 @@ https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/6e240518
 
 ## Tools
 
-- PlatformIO IDE extension for VSCode.
+- [PlatformIO IDE extension](https://platformio.org/install/ide?install=vscode)for VSCode.
 - Drivers for ESP32 and your OS. 
 > **INFO**: for this board `ESP32-2432S028`, and because I use macos, I had to install this [driver](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers) from Silicon Labs.
 - In order to configure `ESP32-2432S028` in PlatformIO, follow the instructions found in this [repository](https://github.com/rzeldent/esp32-smartdisplay).
 
 ## Requirements
 
-- `ESP32-2432S028`
+- python >= v3.9
+- node >= v18.18
+- platform.io ide extension >= v3.3.3
+
+> **INFO**: Node.js is required because it runs several development tools used in this project. Among these tools are those that enforce the "conventional commits" standard. This standard is a lightweight convention on top of commit messages, offering an easy set of rules for creating an explicit commit history. This readable history is invaluable in speeding up the versioning and release processes, as well as in communicating intent and functionality to your team members.
+
+## Runtime Requirements
+
 - 2.4Ghz WiFi signal with internet connection, in order to sync with NTP
+- SD card
 
 ## Pre-build Steps
 
@@ -52,6 +60,16 @@ https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/6e240518
 #define WIFI_PASSWORD "WIFI_PASSWORD"
 ````
 > **WARNING**: remember to use a network which has access to the internet, and is isolated from your main network.
+
+## Project Setup
+
+1. Install the PlatformIO IDE extension in VSCode
+2. Copy `esp32-2432S028Rv3.json` from `./boards` to `~/.platformio/platforms/ststm32/boards/`
+3. Open this project in a new vscode workspace and wait for Platform.IO to install everything
+4. Connect your board to your computer. If you installed the proper drivers, the next steps should work just fine.
+5. Click on the Platform.IO button, in VSCode's sidebar
+6. Then click on `esp32-2432S028Rv3 -> General -> Build` and wait until the build is done.
+7. Finally click on `esp32-2432S028Rv3 -> General -> Upload ad Monitor` to flash the code into your board.
 
 ## Secrets
 
