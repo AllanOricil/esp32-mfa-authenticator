@@ -61,13 +61,14 @@ https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/6e240518
 ````
 > **WARNING**: remember to use a network which has access to the internet, and is isolated from your main network.
 
-## Project Setup
 
-1. Install the PlatformIO IDE extension in VSCode
-2. Copy `esp32-2432S028Rv3.json` from `./boards` to `~/.platformio/platforms/ststm32/boards/`
-3. Open this project in a new vscode workspace and wait for Platform.IO to install everything
+## Project Setup
+
+1. Install PlatformIO IDE extension in VSCode.
+2. Copy `esp32-2432S028Rv3.json` from `./boards` to `~/.platformio/platforms/ststm32/boards/`.
+3. Open this project in a new vscode workspace and wait for Platform.IO to install everything.
 4. Connect your board to your computer. If you installed the proper drivers, the next steps should work just fine.
-5. Click on the Platform.IO button, in VSCode's sidebar
+5. Click on the Platform.IO button, in VSCode's sidebar.
 6. Then click on `esp32-2432S028Rv3 -> General -> Build` and wait until the build is done.
 7. Finally click on `esp32-2432S028Rv3 -> General -> Upload ad Monitor` to flash the code into your board.
 
