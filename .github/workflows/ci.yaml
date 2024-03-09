@@ -9,7 +9,21 @@ jobs:
     - name: Check out
       uses: actions/checkout@v4.1.1
 
-    - name: Set up Python
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v2.4.0
+      with:
+        version: 8
+    
+    - name: Setup Node
+      uses: actions/setup-node@v4.0.1
+      with:
+        node-version: 18
+        cache: pnpm
+
+    - name: Install pnpm dependencies
+      run: pnpm install
+
+    - name: Setup Python
       uses: actions/setup-python@v5.0.0
       with:
         python-version: '3.9'
@@ -24,5 +38,15 @@ jobs:
         mkdir -p ~/.platformio/platforms/ststm32/boards/
         cp -R ./boards/* ~/.platformio/platforms/ststm32/boards/
 
+    # TODO: run linter?
+
     - name: Build
       run: pio run
+
+    # TODO: run tests
+
+    - name: Semantic Release
+      if: github.ref == 'refs/heads/main'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: npx semantic-release

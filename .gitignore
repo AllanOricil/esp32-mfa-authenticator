@@ -5,3 +5,4 @@
 .vscode/ipch
 src/configuration.h
 secrets.txt
+node_modules

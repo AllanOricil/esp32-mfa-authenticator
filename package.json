@@ -1,0 +1,10 @@
+{
+  "name": "esp32-mfa-totp-generator",
+  "version": "0.2.3",
+  "description": "ESP32 MFA TOTP Generator",
+  "author": "allanoricil <allanoricilcos@outlook.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "semantic-release": "^23.0.2"
+  }
+}
