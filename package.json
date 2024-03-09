@@ -8,7 +8,7 @@
     "node" : ">=18"
   },
   "devDependencies": {
-    "semantic-release": "^23.0.2",
+    "semantic-release": "^22.0.12",
     "@commitlint/cli": "^19.0.3",
     "@commitlint/config-conventional": "^19.0.3",
     "husky": "^9.0.11"
