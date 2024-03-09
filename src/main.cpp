@@ -12,7 +12,6 @@
 
 // Local Includes
 #include "totp-map.h"
-#include "configuration.h"
 #include "Base32.h"
 #include "ESP32Time.h"
 #include "constants.h"
