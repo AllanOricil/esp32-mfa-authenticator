@@ -19,6 +19,7 @@ Other reasons:
 - when using my personal phone to get mfa totp codes, I get distracted by notifications and a lot of other things.
 - not safe to store secrets on a device that you use when going out. If the device is lost, and there is no security layer to protect unintended access to the virtual MFA App, there is a high chance someone can impersonate your identity.
 - secrets are decoupled from the device, and this allows me to easily switch to another one when necessary. I just need to insert the SD card containing my services onto another device flashed with the same code.
+- not all services that I use support fido keys.
 - I wanted to learn how MFA works.
 - I wanted to learn how ESP32 works.
 
@@ -31,8 +32,8 @@ https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/6e240518
 ## Tools
 
 - PlatformIO IDE extension for VSCode.
-- Drivers for ESP32 for your OS. 
-> **INFO**: for my board and macos, I had to install this [driver](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers) from Silicon Labs.
+- Drivers for ESP32 and your OS. 
+> **INFO**: for this board `ESP32-2432S028`, and because I use macos, I had to install this [driver](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers) from Silicon Labs.
 - In order to configure `ESP32-2432S028` in PlatformIO, follow the instructions found in this [repository](https://github.com/rzeldent/esp32-smartdisplay).
 
 ## Requirements
@@ -42,13 +43,12 @@ https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/6e240518
 
 ## Pre-build Steps
 
-> **WARNING**: before building this code, create a `configuration.h` file in the `src` folder with the following variables.
+> **WARNING**: before building the code, change `WIFI_SSID` and `WIFI_PASSWORD` values in `./src/constants.h` with a network that has access to the internet.
 ````c
 #define WIFI_SSID "WIFI_SSID"
 #define WIFI_PASSWORD "WIFI_PASSWORD"
 ````
 > **WARNING**: remember to use a network which has access to the internet, and is isolated from your main network.
-
 
 ## Secrets
 
