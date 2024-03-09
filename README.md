@@ -1,5 +1,8 @@
 # ESP32 MFA TOTP Generator
 
+![Build with PlatformIO](https://img.shields.io/badge/build%20with-PlatformIO-orange?logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB3aWR0aD0iMjUwMCIgaGVpZ2h0PSIyNTAwIiB2aWV3Qm94PSIwIDAgMjU2IDI1NiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCI+PHBhdGggZD0iTTEyOCAwQzkzLjgxIDAgNjEuNjY2IDEzLjMxNCAzNy40OSAzNy40OSAxMy4zMTQgNjEuNjY2IDAgOTMuODEgMCAxMjhjMCAzNC4xOSAxMy4zMTQgNjYuMzM0IDM3LjQ5IDkwLjUxQzYxLjY2NiAyNDIuNjg2IDkzLjgxIDI1NiAxMjggMjU2YzM0LjE5IDAgNjYuMzM0LTEzLjMxNCA5MC41MS0zNy40OUMyNDIuNjg2IDE5NC4zMzQgMjU2IDE2Mi4xOSAyNTYgMTI4YzAtMzQuMTktMTMuMzE0LTY2LjMzNC0zNy40OS05MC41MUMxOTQuMzM0IDEzLjMxNCAxNjIuMTkgMCAxMjggMCIgZmlsbD0iI0ZGN0YwMCIvPjxwYXRoIGQ9Ik0yNDkuMzg2IDEyOGMwIDY3LjA0LTU0LjM0NyAxMjEuMzg2LTEyMS4zODYgMTIxLjM4NkM2MC45NiAyNDkuMzg2IDYuNjEzIDE5NS4wNCA2LjYxMyAxMjggNi42MTMgNjAuOTYgNjAuOTYgNi42MTQgMTI4IDYuNjE0YzY3LjA0IDAgMTIxLjM4NiA1NC4zNDYgMTIxLjM4NiAxMjEuMzg2IiBmaWxsPSIjRkZGIi8+PHBhdGggZD0iTTE2MC44NjkgNzQuMDYybDUuMTQ1LTE4LjUzN2M1LjI2NC0uNDcgOS4zOTItNC44ODYgOS4zOTItMTAuMjczIDAtNS43LTQuNjItMTAuMzItMTAuMzItMTAuMzJzLTEwLjMyIDQuNjItMTAuMzIgMTAuMzJjMCAzLjc1NSAyLjAxMyA3LjAzIDUuMDEgOC44MzdsLTUuMDUgMTguMTk1Yy0xNC40MzctMy42Ny0yNi42MjUtMy4zOS0yNi42MjUtMy4zOWwtMi4yNTggMS4wMXYxNDAuODcybDIuMjU4Ljc1M2MxMy42MTQgMCA3My4xNzctNDEuMTMzIDczLjMyMy04NS4yNyAwLTMxLjYyNC0yMS4wMjMtNDUuODI1LTQwLjU1NS01Mi4xOTd6TTE0Ni41MyAxNjQuOGMtMTEuNjE3LTE4LjU1Ny02LjcwNi02MS43NTEgMjMuNjQzLTY3LjkyNSA4LjMyLTEuMzMzIDE4LjUwOSA0LjEzNCAyMS41MSAxNi4yNzkgNy41ODIgMjUuNzY2LTM3LjAxNSA2MS44NDUtNDUuMTUzIDUxLjY0NnptMTguMjE2LTM5Ljc1MmE5LjM5OSA5LjM5OSAwIDAgMC05LjM5OSA5LjM5OSA5LjM5OSA5LjM5OSAwIDAgMCA5LjQgOS4zOTkgOS4zOTkgOS4zOTkgMCAwIDAgOS4zOTgtOS40IDkuMzk5IDkuMzk5IDAgMCAwLTkuMzk5LTkuMzk4em0yLjgxIDguNjcyYTIuMzc0IDIuMzc0IDAgMSAxIDAtNC43NDkgMi4zNzQgMi4zNzQgMCAwIDEgMCA0Ljc0OXoiIGZpbGw9IiNFNTcyMDAiLz48cGF0aCBkPSJNMTAxLjM3MSA3Mi43MDlsLTUuMDIzLTE4LjkwMWMyLjg3NC0xLjgzMiA0Ljc4Ni01LjA0IDQuNzg2LTguNzAxIDAtNS43LTQuNjItMTAuMzItMTAuMzItMTAuMzItNS42OTkgMC0xMC4zMTkgNC42Mi0xMC4zMTkgMTAuMzIgMCA1LjY4MiA0LjU5MiAxMC4yODkgMTAuMjY3IDEwLjMxN0w5NS44IDc0LjM3OGMtMTkuNjA5IDYuNTEtNDAuODg1IDIwLjc0Mi00MC44ODUgNTEuODguNDM2IDQ1LjAxIDU5LjU3MiA4NS4yNjcgNzMuMTg2IDg1LjI2N1Y2OC44OTJzLTEyLjI1Mi0uMDYyLTI2LjcyOSAzLjgxN3ptMTAuMzk1IDkyLjA5Yy04LjEzOCAxMC4yLTUyLjczNS0yNS44OC00NS4xNTQtNTEuNjQ1IDMuMDAyLTEyLjE0NSAxMy4xOS0xNy42MTIgMjEuNTExLTE2LjI4IDMwLjM1IDYuMTc1IDM1LjI2IDQ5LjM2OSAyMy42NDMgNjcuOTI2em0tMTguODItMzkuNDZhOS4zOTkgOS4zOTkgMCAwIDAtOS4zOTkgOS4zOTggOS4zOTkgOS4zOTkgMCAwIDAgOS40IDkuNCA5LjM5OSA5LjM5OSAwIDAgMCA5LjM5OC05LjQgOS4zOTkgOS4zOTkgMCAwIDAtOS4zOTktOS4zOTl6bS0yLjgxIDguNjcxYTIuMzc0IDIuMzc0IDAgMSAxIDAtNC43NDggMi4zNzQgMi4zNzQgMCAwIDEgMCA0Ljc0OHoiIGZpbGw9IiNGRjdGMDAiLz48L3N2Zz4=) ![CI](https://github.com/allanoricil/esp32-mfa-totp-generator/workflows/CI/badge.svg?branch=main)
+
+
 <img src="https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/4323be9d-6abe-4873-81f7-417203a3e340" width="500" height="300">
 
 A pet project that displays MFA TOTP codes. The goal is to allow me to get TOTPs for short living sessions without interacting with my phone. At the moment every time I need a new TOTP, I have to:
@@ -19,6 +22,7 @@ Other reasons:
 - when using my personal phone to get mfa totp codes, I get distracted by notifications and a lot of other things.
 - not safe to store secrets on a device that you use when going out. If the device is lost, and there is no security layer to protect unintended access to the virtual MFA App, there is a high chance someone can impersonate your identity.
 - secrets are decoupled from the device, and this allows me to easily switch to another one when necessary. I just need to insert the SD card containing my services onto another device flashed with the same code.
+- not all services that I use support fido keys.
 - I wanted to learn how MFA works.
 - I wanted to learn how ESP32 works.
 
@@ -30,25 +34,42 @@ https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/6e240518
 
 ## Tools
 
-- PlatformIO IDE extension for VSCode.
-- Drivers for ESP32 for your OS. 
-> **INFO**: for my board and macos, I had to install this [driver](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers) from Silicon Labs.
+- [PlatformIO IDE extension](https://platformio.org/install/ide?install=vscode)for VSCode.
+- Drivers for ESP32 and your OS. 
+> **INFO**: for this board `ESP32-2432S028`, and because I use macos, I had to install this [driver](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers) from Silicon Labs.
 - In order to configure `ESP32-2432S028` in PlatformIO, follow the instructions found in this [repository](https://github.com/rzeldent/esp32-smartdisplay).
 
 ## Requirements
 
-- `ESP32-2432S028`
+- python >= v3.9
+- node >= v18.18
+- platform.io ide extension >= v3.3.3
+
+> **INFO**: Node.js is required because it runs several development tools used in this project. Among these tools are those that enforce the "conventional commits" standard. This standard is a lightweight convention on top of commit messages, offering an easy set of rules for creating an explicit commit history. This readable history is invaluable in speeding up the versioning and release processes, as well as in communicating intent and functionality to your team members.
+
+## Runtime Requirements
+
 - 2.4Ghz WiFi signal with internet connection, in order to sync with NTP
+- SD card
 
 ## Pre-build Steps
 
-> **WARNING**: before building this code, create a `configuration.h` file in the `src` folder with the following variables.
+> **WARNING**: before building the code, change `WIFI_SSID` and `WIFI_PASSWORD` values in `./src/constants.h` with a network that has access to the internet.
 ````c
 #define WIFI_SSID "WIFI_SSID"
 #define WIFI_PASSWORD "WIFI_PASSWORD"
 ````
 > **WARNING**: remember to use a network which has access to the internet, and is isolated from your main network.
 
+## Project Setup
+
+1. Install the PlatformIO IDE extension in VSCode
+2. Copy `esp32-2432S028Rv3.json` from `./boards` to `~/.platformio/platforms/ststm32/boards/`
+3. Open this project in a new vscode workspace and wait for Platform.IO to install everything
+4. Connect your board to your computer. If you installed the proper drivers, the next steps should work just fine.
+5. Click on the Platform.IO button, in VSCode's sidebar
+6. Then click on `esp32-2432S028Rv3 -> General -> Build` and wait until the build is done.
+7. Finally click on `esp32-2432S028Rv3 -> General -> Upload ad Monitor` to flash the code into your board.
 
 ## Secrets
 

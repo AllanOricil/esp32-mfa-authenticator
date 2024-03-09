@@ -1,3 +1,8 @@
+// NOTE: network to sync to NTP. Uncomment it to setup the wifi connection
+// TODO: maybe read it from the sd card too?
+#define WIFI_SSID "CHOCOLATE"
+#define WIFI_PASSWORD "CHOCOLATE"
+
 // NOTE: used when reading data from the SD card
 #define TF_CS 5
 

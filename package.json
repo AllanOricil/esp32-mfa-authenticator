@@ -1,0 +1,19 @@
+{
+  "name": "esp32-mfa-totp-generator",
+  "version": "0.2.3",
+  "description": "ESP32 MFA TOTP Generator",
+  "author": "allanoricil <allanoricilcos@outlook.com>",
+  "license": "MIT",
+  "engines": {
+    "node" : ">=18"
+  },
+  "devDependencies": {
+    "semantic-release": "^23.0.2",
+    "@commitlint/cli": "^19.0.3",
+    "@commitlint/config-conventional": "^19.0.3",
+    "husky": "^9.0.11"
+  },
+  "scripts": {
+    "prepare": "husky install"
+  }
+}
