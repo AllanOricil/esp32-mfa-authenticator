@@ -63,7 +63,8 @@ https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/6e240518
 
 ## Pre-build Steps
 
-> **WARNING**: before building the code, change `WIFI_SSID` and `WIFI_PASSWORD` values in `./src/constants.h` with a network that has access to the internet.
+Before building the code, change `WIFI_SSID` and `WIFI_PASSWORD` values in `./src/constants.h` to grant the board access to a network that has access to the internet. This is required because the NTP server is used to set the time in the board.
+
 ````c
 #define WIFI_SSID "WIFI_SSID"
 #define WIFI_PASSWORD "WIFI_PASSWORD"
