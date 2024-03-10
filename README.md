@@ -36,12 +36,9 @@ https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/166f6ea7
 https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/6e240518-a35b-4bf0-8a41-ece0dad9efb9
 
 
-## Tools
+## Board
 
-- [PlatformIO IDE extension](https://platformio.org/install/ide?install=vscode)for VSCode.
-- Drivers for ESP32 and your OS. 
-> **INFO**: for this board `ESP32-2432S028`, and because I use macos, I had to install this [driver](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers) from Silicon Labs.
-- In order to configure `ESP32-2432S028` in PlatformIO, follow the instructions found in this [repository](https://github.com/rzeldent/esp32-smartdisplay).
+- `ESP32-2432S028`
 
 ## Dev Environment Requirements
 
@@ -50,8 +47,14 @@ https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/6e240518
 - pnpm >= v8.15
 - vscode >= v1.87
 - platform.io ide vscode extension >= v3.3
+- [driver to allow your OS to recognize esp32](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers)
+
 
 > **INFO**: Node.js is required because it runs several development tools used in this project. Among these tools are those that enforce the "conventional commits" standard. This standard is a lightweight convention on top of commit messages, offering an easy set of rules for creating an explicit commit history.
+
+
+> **INFO**: if platform.io extension does not recognize your board after clicking on `Upload`, `Upload and Monitor` or `Monitor` buttons, it means the driver was not properly setup. In Macos, after installing the driver from Sillicon Labs, I had to restart the system before mac could identify the board.
+
 
 ## Runtime Requirements
 
