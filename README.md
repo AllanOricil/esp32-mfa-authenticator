@@ -43,6 +43,9 @@ https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/6e240518
 > **INFO**: you can buy this board in Aliexpress for less than 10 USD, excluding taxes and shipping, clicking on any of these affiliate links: [USD](https://s.click.aliexpress.com/e/_mNCBRAA) [BRL](https://s.click.aliexpress.com/e/_mOtZaxM)
 
 
+## Total Project Cost
+
+- `ESP32-2432S028`    9.25 USD
 
 
 ## Dev Environment Requirements
