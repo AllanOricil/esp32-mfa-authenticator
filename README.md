@@ -43,13 +43,15 @@ https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/6e240518
 > **INFO**: for this board `ESP32-2432S028`, and because I use macos, I had to install this [driver](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers) from Silicon Labs.
 - In order to configure `ESP32-2432S028` in PlatformIO, follow the instructions found in this [repository](https://github.com/rzeldent/esp32-smartdisplay).
 
-## Requirements
+## Dev Environment Requirements
 
 - python >= v3.9
 - node >= v18.18
-- platform.io ide extension >= v3.3.3
+- pnpm >= v8.15
+- vscode >= v1.87
+- platform.io ide vscode extension >= v3.3
 
-> **INFO**: Node.js is required because it runs several development tools used in this project. Among these tools are those that enforce the "conventional commits" standard. This standard is a lightweight convention on top of commit messages, offering an easy set of rules for creating an explicit commit history. This readable history is invaluable in speeding up the versioning and release processes, as well as in communicating intent and functionality to your team members.
+> **INFO**: Node.js is required because it runs several development tools used in this project. Among these tools are those that enforce the "conventional commits" standard. This standard is a lightweight convention on top of commit messages, offering an easy set of rules for creating an explicit commit history.
 
 ## Runtime Requirements
 
