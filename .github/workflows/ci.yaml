@@ -40,14 +40,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install platformio
 
-      - name: Copy custom board files
-        run: |
-          mkdir -p ~/.platformio/platforms/ststm32/boards/
-          cp -R ./boards/* ~/.platformio/platforms/ststm32/boards/
-
       # TODO: run linter?
 
       - name: Build
+        env:
+          WIFI_SSID: "CHOCOLATE"
+          WIFI_PASSWORD: "CHOCOLATE"
         run: pio run
 
       # TODO: run tests

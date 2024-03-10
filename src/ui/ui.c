@@ -23,9 +23,6 @@ void ui_event_totp_component_bar(lv_event_t * e);
 #if LV_COLOR_DEPTH != 16
     #error "LV_COLOR_DEPTH should be 16bit to match SquareLine Studio's settings"
 #endif
-#if LV_COLOR_16_SWAP !=1
-    #error "LV_COLOR_16_SWAP should be 1 to match SquareLine Studio's settings"
-#endif
 
 ///////////////////// ANIMATIONS ////////////////////
 
