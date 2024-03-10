@@ -9,17 +9,16 @@
 
 <img src="https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/4323be9d-6abe-4873-81f7-417203a3e340" height="300">
 
-This is a personal project that displays MFA TOTP codes. I created it to help me to get TOTPs without interacting with my phone. At the moment, every time I need a new TOTP, I have to:
+This is a personal project that creates MFA TOTP codes. I created it to help me to get TOTPs without interacting with my phone. Before creating it, every time I needed a new TOTP, I had to:
 
 - find my phone
-- hope it is charged
-- if it is not, then charge it -> also have to wait a few minutes until it is fully operational to continue
-- if it is, unlock it
+- if it is not charged, charge it, and then wait a few minutes until it is fully operational
+- if it is charged, unlock it
 - find a Virtual MFA App
 - unlock it
-- find the TOTP for the service I need
+- find the TOTP for the service I need, which sometimes requires a lot of vertical scrolling.
 
-Therefore, my plan is to place this MFA device under my monitor, and just look at it when I need to get a new TOTP, instead of doing the aforementioned process. It is going to generate TOTPs for the services I use the most, and have shorter non configurable session times.
+Therefore, my plan is to place this MFA device under my monitor, and just look at it when I need to get a new TOTP, instead of doing the aforementioned process. It is going to generate TOTPs for the services I use the most, and have short non configurable session times.
 
 Other motives:
 
