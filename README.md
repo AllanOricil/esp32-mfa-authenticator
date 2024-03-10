@@ -7,7 +7,7 @@
 
 
 
-<img src="https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/4323be9d-6abe-4873-81f7-417203a3e340" width="500" height="300">
+<img src="https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/4323be9d-6abe-4873-81f7-417203a3e340" height="300">
 
 This is personal project that displays MFA TOTP codes. I created it to help me to get TOTPs without interacting with my phone. At the moment, every time I need a new TOTP, I have to:
 
