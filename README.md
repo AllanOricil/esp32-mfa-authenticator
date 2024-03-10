@@ -9,7 +9,7 @@
 
 <img src="https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/4323be9d-6abe-4873-81f7-417203a3e340" width="500" height="300">
 
-A pet project that displays MFA TOTP codes. The goal is to allow me to get TOTPs for short living sessions without interacting with my phone. At the moment every time I need a new TOTP, I have to:
+This is personal project that displays MFA TOTP codes. I created it to help me to get TOTPs without interacting with my phone. At the moment, every time I need a new TOTP, I have to:
 
 - find my phone
 - hope it is charged
@@ -21,12 +21,12 @@ A pet project that displays MFA TOTP codes. The goal is to allow me to get TOTPs
 
 Therefore, my plan is to place this MFA device under my monitor, and just look at it when I need to get a new TOTP, instead of doing the aforementioned process. It is going to generate TOTPs for the services I use the most, and have shorter non configurable session times.
 
-Other reasons:
+Other motives:
 
 - when using my personal phone to get mfa totp codes, I get distracted by notifications and a lot of other things.
 - not safe to store secrets on a device that you use when going out. If the device is lost, and there is no security layer to protect unintended access to the virtual MFA App, there is a high chance someone can impersonate your identity.
 - secrets are decoupled from the device, and this allows me to easily switch to another one when necessary. I just need to insert the SD card containing my services onto another device flashed with the same code.
-- not all services that I use support fido keys.
+- not all services that I use support fido keys or passkeys.
 - I wanted to learn how MFA works.
 - I wanted to learn how ESP32 works.
 
