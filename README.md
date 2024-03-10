@@ -120,8 +120,8 @@ aws-3,DSAJDHHAHASAUDOASNOTREALOADAKLDASAJFPOAIDONTEVENTRYOASFAIPO
 
 	**R:** it is not secure to have unencrypted secrets stored without protection
 
-- enable ESP32 to receive secrets via the local network, or a secure channel.
+- enable ESP32 to receive secrets via a local network, or a secure channel.
 
 	**why?** 
 
-	**R:** ease the process of adding new services. With this feature I won't need to insert the SD card on my computer. if there is no SD card on the board, the channel to register new services is going to be closed.
+	**R:** ease the process of adding new services. With this feature I won't need to insert the SD card on my computer. If there is no SD card on the board, the channel to register new services is going to be closed. I also plan to require fingerprint/pin/password before opening this channel.
