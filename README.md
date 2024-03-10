@@ -47,6 +47,9 @@ https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/6e240518
 
 - `ESP32-2432S028`    9.25 USD
 
+> **INFO**: all prices do not consider expenses with taxes and shipping
+> **INFO**: all prices were taking in February 2024
+
 
 ## Dev Environment Requirements
 
