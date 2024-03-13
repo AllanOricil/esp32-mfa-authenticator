@@ -100,12 +100,11 @@ Before building the code, change `WIFI_SSID` and `WIFI_PASSWORD` values in `./sr
 ## Project Setup
 
 1. Install PlatformIO IDE extension in VSCode.
-2. Copy `esp32-2432S028Rv3.json` from `./boards` to `~/.platformio/platforms/ststm32/boards/`.
-3. Open this project in a new vscode workspace and wait for Platform.IO to install everything.
-4. Connect your board to your computer. If you installed the proper drivers, the next steps should work just fine.
-5. Click on the Platform.IO button, in VSCode's sidebar.
-6. Then click on `esp32-2432S028Rv3 -> General -> Build` and wait until the build is done.
-7. Finally click on `esp32-2432S028Rv3 -> General -> Upload ad Monitor` to flash the code into your board.
+2. Open this project in a new vscode workspace, and wait for Platform.IO to install everything.
+3. Connect your board to your computer. If you installed the proper drivers, the next steps should work just fine.
+4. Click on the Platform.IO button, in VSCode's sidebar.
+5. Then click on `esp32-2432S028Rv3 -> General -> Build` and wait until the build is done.
+6. Finally, click on `esp32-2432S028Rv3 -> General -> Upload ad Monitor` to flash the code into your board.
 
 ## Secrets
 
@@ -123,7 +122,9 @@ aws-2,DSAJDHHAHASAUDOASNOTREALOADAKLDASAJFPOAIDONTEVENTRYOASFAIPO
 aws-3,DSAJDHHAHASAUDOASNOTREALOADAKLDASAJFPOAIDONTEVENTRYOASFAIPO
 ````
 
-> **WARNING**: secrets must be unencrypted and based 32 encoded. In the future, Users will have the option to encrypt their secrets, and ask for fingerpint/pin/password before retrieving the current TOTP. The plan is to make this feature configurable per service.
+> **WARNING**: for now, secrets must be unencrypted and based 32 encoded. In the future, Users will have the option to encrypt their secrets, and ask for fingerpint/pin/password before retrieving the current TOTP. The plan is to make this feature configurable per service. 
+
+> **INFO**: It works with unencrypted data because I'm still researching the best and cheapest way to safely store secrets on this board. If you have a design, open a PR.
 
 ## How to verify if it is working
 
