@@ -40,7 +40,9 @@ https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/6e240518
 
 ## Parts
 
-- `ESP32-2432S028` 
+- `ESP32-2432S028`
+- 3D printed black case
+- Acrillic case
 
 > **INFO**: you can buy this board from Aliexpress clicking on any of these affiliate links: [USD](https://s.click.aliexpress.com/e/_mNCBRAA) [BRL](https://s.click.aliexpress.com/e/_mOtZaxM)
 
