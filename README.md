@@ -5,9 +5,12 @@
 
 <a href="https://www.buymeacoffee.com/allanoricil" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" style="height: 40px !important;width: 217px !important;" ></a>
 
+<img src="https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/bb904daf-c194-4e9f-8948-a0503e94bca1" height="500">
 
+<img src="https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/972f3cb1-520e-418c-84a0-9cfe705bc772" height="500">
 
-<img src="https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/4323be9d-6abe-4873-81f7-417203a3e340" height="300">
+<img src="https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/83f166a5-1589-4b1f-9d93-2cfba86f4985" height="500">
+
 
 This is a personal project that creates MFA TOTP codes. I created it to help me to get TOTPs without interacting with my phone. Before creating it, every time I needed a new TOTP, I had to:
 
@@ -35,20 +38,29 @@ https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/166f6ea7
 https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/6e240518-a35b-4bf0-8a41-ece0dad9efb9
 
 
-## Board
+## Parts
 
 - `ESP32-2432S028` 
 
-> **INFO**: you can buy this board in Aliexpress for less than 10 USD, excluding taxes and shipping, clicking on any of these affiliate links: [USD](https://s.click.aliexpress.com/e/_mNCBRAA) [BRL](https://s.click.aliexpress.com/e/_mOtZaxM)
+> **INFO**: you can buy this board from Aliexpress clicking on any of these affiliate links: [USD](https://s.click.aliexpress.com/e/_mNCBRAA) [BRL](https://s.click.aliexpress.com/e/_mOtZaxM)
 
+> **INFO**: you can buy this acrillic case from Aliexpress clicking on any of these affiliate links: [USD](https://s.click.aliexpress.com/e/_mLYVthc) [BRL](https://s.click.aliexpress.com/e/_m0Tt9wq)
 
-## Total Project Cost
+> **INFO** the 3D model for the black case was taking from this [link](https://makerworld.com/en/models/137424#profileId-149549)
 
-- `ESP32-2432S028`    9.25 USD
+### Total Project Cost
+
+| Part  | Cost |
+| ------------- | ------------- |
+| ESP32-2432S028  | 9.25 USD  |
+| 3D printed black case  | 12.7 USD  |
+| Acrillic case  | 2.5 USD  |	
 
 > **INFO**: all prices do not consider expenses with taxes and shipping.
 
 > **INFO**: all prices were taking in February 2024.
+
+
 
 
 ## Dev Environment Requirements
