@@ -1,12 +1,12 @@
-#ifndef LVGL_DISPLAY_H // Guard for not including more than once in compiler pre-processing stage
+#ifndef LVGL_DISPLAY_H
 #define LVGL_DISPLAY_H
 
 // Includes
 #include <Arduino.h>
 #include <lvgl.h>
 #include <TFT_eSPI.h>
-#include "SPI.h"
-#include "XPT2046_Bitbang.h"
+#include <SPI.h>
+#include <XPT2046_Bitbang.h>
 
 // Definitions
 #define LVGL_TICK_PERIOD_MS 1
