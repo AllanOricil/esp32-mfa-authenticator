@@ -1,6 +1,8 @@
 #include "FS.h"
 #include "SD.h"
 
+bool isWorkingWithSD = false;
+
 void list_dir(fs::FS &fs, const char * dirname, uint8_t levels){
   Serial.printf("Listing directory: %s\n", dirname);
 
@@ -157,4 +159,31 @@ void test_file_io(fs::FS &fs, const char * path){
   end = millis() - start;
   Serial.printf("%u bytes written for %u ms\n", 2048 * 512, end);
   file.close();
+}
+
+void init_sd_card_reader(){
+  if(!SD.begin(TF_CS)){
+    Serial.println("sd card mount failed");
+    return;
+  }
+  uint8_t cardType = SD.cardType();
+  if (cardType == CARD_NONE) {
+    Serial.println("No SD card attached");
+    return;
+  }
+
+  Serial.print("SD Card Type: ");
+  if (cardType == CARD_MMC) {
+      Serial.println("MMC");
+  } else if (cardType == CARD_SD) {
+      Serial.println("SDSC");
+  } else if (cardType == CARD_SDHC) {
+      Serial.println("SDHC");
+  } else {
+      Serial.println("UNKNOWN");
+  }
+
+  Serial.printf("SD Card Size: %lluMB\n", SD.cardSize() / (1024 * 1024));
+  Serial.printf("Total space: %lluMB\n", SD.totalBytes() / (1024 * 1024));
+  Serial.printf("Used space: %lluMB\n", SD.usedBytes() / (1024 * 1024));
 }

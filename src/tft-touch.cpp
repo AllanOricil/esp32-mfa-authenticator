@@ -1,8 +1,8 @@
 #include <Arduino.h>
 #include <lvgl.h>
 #include <TFT_eSPI.h>
-#include "SPI.h"
-#include "XPT2046_Bitbang.h"
+#include <SPI.h>
+#include <XPT2046_Bitbang.h>
 
 #define LVGL_BUFFER_PIXELS (LCD_WIDTH*LCD_HEIGHT/4)
 #define LVGL_BUFFER_MALLOC_FLAGS (MALLOC_CAP_INTERNAL|MALLOC_CAP_8BIT)
