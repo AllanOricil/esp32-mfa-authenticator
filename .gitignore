@@ -4,5 +4,6 @@
 .vscode/launch.json
 .vscode/ipch
 src/configuration.h
-secrets.txt
+secrets.*.txt
+keys.*.txt
 node_modules

@@ -1,0 +1,30 @@
+version: '3'
+services:
+  nodered:
+    container_name: node-red
+    image: nodered/node-red:latest
+    restart: always
+    ports:
+      - 1880:1880
+    volumes:
+      - ~/.node-red:/data
+    networks: 
+      - totp
+
+  mosquitto:
+    container_name: mosquitto
+    image: eclipse-mosquitto:latest
+    restart: always
+    ports:
+      - 1883:1883
+      - 9001:9001
+    volumes: 
+      - ~/.mosquitto/config:/mosquitto/config
+      - ~/.mosquitto/config/conf.d:/mosquitto/config/conf.d
+      - ~/.mosquitto/data:/mosquitto/data
+      - ~/.mosquitto/log:/mosquitto/log
+    networks:
+      - totp
+
+networks:
+  totp:

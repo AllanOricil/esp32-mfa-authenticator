@@ -72,6 +72,7 @@ https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/6e240518
 - pnpm >= v8.15
 - vscode >= v1.87
 - platform.io ide vscode extension >= v3.3
+- docker >= v25.0
 - [driver to allow your OS to recognize esp32](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers)
 
 
@@ -88,14 +89,18 @@ https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/6e240518
 
 ## Pre-build Steps
 
-Before building the code, change `WIFI_SSID` and `WIFI_PASSWORD` values in `./src/constants.h` to grant the board access to a network that has access to the internet. This is required because the NTP server is used to set the time in the board.
+Before building the code, set the following env variables:
 
-````c
-#define WIFI_SSID "WIFI_SSID"
-#define WIFI_PASSWORD "WIFI_PASSWORD"
+````bash
+export WIFI_SSID=CHOCOLATE
+export WIFI_PASSWORD=CHOCOLATE
 ````
+
+This step is required because the board uses the NTP server to set its time.
+
 > **WARNING**: remember to use a network which has access to the internet, and is isolated from your main network.
 
+> **WARNING**: platform.io vscode extension tasks (build, upload, monitor...) are not using env variables. Therefore, you must open platformio.ini and set `-D WIFI_SSID` and `-D WIFI_PASSWORD` with your values.
 
 ## Project Setup
 
@@ -108,7 +113,7 @@ Before building the code, change `WIFI_SSID` and `WIFI_PASSWORD` values in `./sr
 
 ## Secrets
 
-Secrets are stored in a file called `secrets.txt`, located in the root of an SD card. It must follow the format shown below:
+Secrets are stored in a file called `keys.txt`, located in the root of an SD card. It must follow the format shown below:
 
 ````bash
 service_id,encoded_base_32_secret
@@ -120,16 +125,48 @@ Each service must be added on a new line. For example:
 aws-1,DSAJDHHAHASAUDOASNOTREALOADAKLDASAJFPOAIDONTEVENTRYOASFAIPO
 aws-2,DSAJDHHAHASAUDOASNOTREALOADAKLDASAJFPOAIDONTEVENTRYOASFAIPO
 aws-3,DSAJDHHAHASAUDOASNOTREALOADAKLDASAJFPOAIDONTEVENTRYOASFAIPO
+
 ````
 
-> **WARNING**: for now, secrets must be unencrypted and based 32 encoded. In the future, Users will have the option to encrypt their secrets, and ask for fingerpint/pin/password before retrieving the current TOTP. The plan is to make this feature configurable per service. 
+> **WARNING**: for now, secrets must be unencrypted and based 32 encoded. In the future, Users will have the option to encrypt their secrets, and ask for fingerpint/pin/password before retrieving the current TOTP. The plan is to make this feature configurable per service.
 
-> **INFO**: It works with unencrypted data because I'm still researching the best and cheapest way to safely store secrets on this board. If you have a design, open a PR.
+> **WARNING**: file must end with a new line.
 
 ## How to verify if it is working
 
 1. Go to https://totp.danhersam.com/
 2. Paste/type your encoded base 32 secret in the secret field, and then compare the TOTP code shown with the one you are seeing on the ESP32's screen.
+
+
+## Registering Secrets via local network with MQTT
+
+To enable saving secrets to ESP32 via a local network, this project uses [MQTT](https://mqtt.org/) as the messaging protocol, [Node-red](https://nodered.org/) as the postman (per say) and [Eclipse Mosquito](https://mosquitto.org/) as the MQTT broker. Both services are started using a docker compose, in order to ease the setup. So, before continuing, install Docker on your computer following the guide found [here](https://www.docker.com/get-started/).
+
+After that, run the following script to start both node-red and the mqtt broker:
+
+````bash
+./scripts/start-node-red.sh
+````
+
+> **WARNING** Make sure to have the following ports free before running `./scripts/start-node-red.sh`: 1880 (node-red), 1883 (eclipse/mosquitto), 9001 (eclipse/mosquito).
+
+You should see the following containers in the docker app.
+
+<img src="./images/docker-compose-totp-service-running.png" width="800">
+
+and both container must not contain any error messages.
+
+
+<img src="./images/docker-node-red-start.png" width="800">
+
+<img src="./images/docker-mosquitto-start.png" width="800">
+
+
+> **WARNING** remember to assign static ips to the host running the MQTT service, as weel as for the esp32, in your router. This is required to avoid having to update the `MQTT_SERVER` constant with a new ip every time your router decides to change the ip of your host.
+
+> **WARNING** if your host can't receive messages from other devices on the same network, it could be a firewall problem. Configure the firewall in the host to enable it to receive requests from other devices on your local network.
+
+After services have initialized, open node-red at `localhost:1880`, and import `./node-red/insert-secret.json` flow.
 
 
 ## Roadmap
@@ -146,7 +183,7 @@ aws-3,DSAJDHHAHASAUDOASNOTREALOADAKLDASAJFPOAIDONTEVENTRYOASFAIPO
 
 	**R:** it is not secure to have unencrypted secrets stored without protection
 
-- enable ESP32 to receive secrets via a local network, or a secure channel.
+- enable ESP32 to receive secrets via a local network, using a secure channel.
 
 	**why?** 
 

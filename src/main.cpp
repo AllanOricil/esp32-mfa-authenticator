@@ -1,34 +1,172 @@
 // System Includes
 #include <Arduino.h>
+#include <ArduinoJson.h>
+#include <FS.h>
 #include <SD.h>
 #include <WiFi.h>
 #include <time.h>
-#include <lvgl.h>
 
 // Library Includes
-#include <esp32_smartdisplay.h>
 #include <ui/ui.h>
 #include <mfa.hpp>
+#include <PubSubClient.h>
 
 // Local Includes
 #include "totp-map.h"
 #include "Base32.h"
 #include "ESP32Time.h"
 #include "constants.h"
+#include "file.hpp"
+#include "tft-touch.h"
+
+#ifndef WIFI_SSID
+#define WIFI_SSID (char*)"CHOCOLATE"
+#endif
+
+#ifndef WIFI_PASSWORD
+#define WIFI_PASSWORD (char*)"CHOCOLATE"
+#endif
 
 ESP32Time rtc;
 
-const char* ssid = WIFI_SSID;
-const char* pwd = WIFI_PASSWORD;
+WiFiClient espClient;
+PubSubClient client(espClient);
+
+char mqttServer[] = MQTT_SERVER;
+volatile bool processMqttMessage = false;
+bool isWorkingWithSD = false;
+
+struct PayloadData {
+  byte payload[MQTT_MAX_PAYLOAD_SIZE];
+  unsigned int length;
+};
+
+volatile PayloadData globalPayload = {{0}, 0};
+
+
+void init_sd_card_reader(){
+  if(!SD.begin(TF_CS)){
+    Serial.println("sd card mount failed");
+    return;
+  }
+  uint8_t cardType = SD.cardType();
+  if (cardType == CARD_NONE) {
+    Serial.println("No SD card attached");
+    return;
+  }
+
+  Serial.print("SD Card Type: ");
+  if (cardType == CARD_MMC) {
+      Serial.println("MMC");
+  } else if (cardType == CARD_SD) {
+      Serial.println("SDSC");
+  } else if (cardType == CARD_SDHC) {
+      Serial.println("SDHC");
+  } else {
+      Serial.println("UNKNOWN");
+  }
+
+  Serial.printf("SD Card Size: %lluMB\n", SD.cardSize() / (1024 * 1024));
+  Serial.printf("Total space: %lluMB\n", SD.totalBytes() / (1024 * 1024));
+  Serial.printf("Used space: %lluMB\n", SD.usedBytes() / (1024 * 1024));
+}
+
+void add_new_secret(volatile byte* payload, unsigned int length){
+  DynamicJsonDocument doc(1024);
+  char _payload[length+1];
+  memcpy(_payload, const_cast<byte*>(payload), length);
+  _payload[length] = '\0';
+  auto error = deserializeJson(doc, _payload);
+  if (error) {
+        Serial.print(F("deserializeJson() failed with code "));
+        Serial.println(error.c_str());
+        return;
+    }
+
+  if (doc.containsKey("service") && doc.containsKey("key")) {
+    const char *service = doc["service"];
+    const char *key = doc["key"];
+
+    // If you still get empty, print them out to debug
+    Serial.print("Service:");
+    Serial.println(service);
+
+    Serial.print("Key:");
+    Serial.println(key);
+
+    if(!service || strlen(service)>60) {
+      Serial.println("Invalid or missing service");
+      return;
+    }
+    
+    if(!key || (strlen(key) != 16 && strlen(key) != 32 && strlen(key) != 64)) {
+        Serial.println("Invalid or missing key");
+        return;
+    }
+
+    char newSecret[MAX_SERVICE_NAME_LENGTH + MAX_TOTP_LENGTH];
+    sprintf(newSecret, "%s,%s\n", service, key);
+
+    append_file(SD, KEYS_FILE_PATH, newSecret);
+  } else {
+    Serial.println("Keys not found in JSON.");
+  }
+}
+
+void print_mqtt_topic_message(char* topic, byte* payload, unsigned int length) {
+    // Print topic
+    Serial.print("MQTT Message arrived on topic: ");
+    Serial.println(topic);
+    
+    // Print payload
+    Serial.println("With Payload:");
+    char message[length+1];
+    memcpy(message, payload, length);
+    message[length] = '\0'; // Null-terminate the array to create a valid C-string
+
+    Serial.println(message);
+}
+
+void on_mqtt_message_received(char* topic, byte* payload, unsigned int length) {
+  print_mqtt_topic_message(topic, payload, length);
+  if(length <= MQTT_MAX_PAYLOAD_SIZE) {
+    processMqttMessage = true;
+    byte nonVolatilePayload[MQTT_MAX_PAYLOAD_SIZE];
+    memcpy(nonVolatilePayload, payload, length);
+    for(unsigned int i = 0; i < length; i++) {
+        globalPayload.payload[i] = nonVolatilePayload[i];
+    }
+    globalPayload.length = length;
+  }
+}
+
+void connect_to_mqtt() {
+  Serial.print("Connecting to MQTT...");
+  if (client.connect("esp32-mfa-totp-generator")) {
+    Serial.println("connected");
+    client.subscribe(MQTT_WRITE_NEW_SECRET_TOPIC);
+    Serial.println("subscribed to esp32-totp-write-new-secret topic");
+  } else {
+    Serial.print("failed, rc=");
+    Serial.print(client.state());
+    Serial.printf("will try again in %d ms\n", MQTT_RECONNECT_INTERVAL);
+  }
+}
 
 void init_wifi(){
-  Serial.printf("Connecting to %s", ssid);
-  WiFi.begin(ssid, pwd);
+  if(WIFI_SSID == NULL || WIFI_PASSWORD == NULL){
+    Serial.printf("Failed to get WiFi details from environment variables");
+    return; // Or handle error appropriately
+  }
+
+  Serial.printf("Connecting to %s", WIFI_SSID);
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
   }
   Serial.println("WiFi connected.");
+  Serial.println(WiFi.localIP());
 }
 
 void sync_time(){
@@ -71,7 +209,8 @@ DecodedBase32Secret decode_encoded_base32_secret(char *secret) {
       Serial.print(tempDecoded[i], HEX);
       Serial.print(" ");
   }
-  Serial.printf("decoded base 32 secret length: %d\n", keyLength);
+  Serial.println();
+  Serial.printf("length: %d\n", keyLength);
 
   DecodedBase32Secret decodedBase32Secret;
   decodedBase32Secret.length = keyLength;
@@ -82,21 +221,17 @@ DecodedBase32Secret decode_encoded_base32_secret(char *secret) {
   return decodedBase32Secret; 
 }
 
-void init_secrets(){
-  Serial.println("fetching /secrets.txt");
+void load_mfa_totp_keys(){
+  Serial.println("fetching /keys.txt");
 
-  if(!SD.begin(TF_CS)){
-    Serial.println("sd card mount failed");
+  if (!SD.exists(KEYS_FILE_PATH)) {
+    Serial.println("keys.txt file does not exist");
     return;
   }
-  if (!SD.exists("/secrets.txt")) {
-    Serial.println("secrets.txt file does not exist");
-    return;
-  } 
 
-  File file = SD.open("/secrets.txt");
+  File file = SD.open(KEYS_FILE_PATH, FILE_READ);
   if (!file) {
-    Serial.println("failed to open /secrets.txt for reading");
+    Serial.println("failed to open /keys.txt for reading");
     return;
   }
 
@@ -116,31 +251,57 @@ void init_secrets(){
     }
   }
   Serial.println("all secrets were decoded");
-
+  file.flush();
   file.close();
+  Serial.println("file closed after reading secrets");
+}
+
+void init_mqtt(){
+  client.setServer(mqttServer, MQTT_PORT);
+  client.setCallback(on_mqtt_message_received);
 }
 
 void setup() {
   Serial.begin(115200);
 
-  // SETUP
+  // SETUP TIME
   init_wifi();
   sync_time();
-  WiFi.disconnect(true);
-  init_secrets();
 
-  // GENERATE FIRST TOTPS BASED ON THE CURRENT TIME
+  // SETUP MFA
+  init_sd_card_reader();
+  load_mfa_totp_keys();
   generate_totps();
 
-  // UI
-  smartdisplay_init();
-  auto disp = lv_disp_get_default();
-  lv_disp_set_rotation(disp, LV_DISP_ROT_90);
-  smartdisplay_lcd_set_backlight(1);
+  // SETUP MQTT
+  init_mqtt();
+
+  // SETUP UI
+  init_display_and_touch();
   ui_init();
 }
 
+long lastPrint = 0;  
+unsigned long printInterval = 5000;
+
 void loop() {
+  unsigned long currentMillis = millis();
+  if(currentMillis - lastPrint >= printInterval) {
+    lastPrint = currentMillis;
+    Serial.print("Free Memory: ");
+    Serial.println(xPortGetFreeHeapSize());
+  }
+
+
+  // NOTE: connect to MQTT topics every 5000 ms
+  static unsigned long lastMqttReconnectAttempt = 0;
+  if (!client.connected() && (currentMillis - lastMqttReconnectAttempt > MQTT_RECONNECT_INTERVAL)) {
+    lastMqttReconnectAttempt = currentMillis;
+    connect_to_mqtt();
+  } else {
+    client.loop();
+  }
+
   // NOTE: ensures totps are generated exactly every 30 seconds. For example: 00:00:00, 00:00:30, 00:01:00, 00:01:30...
   unsigned long now = ((rtc.getMinute() * 60) + rtc.getSecond());
   static unsigned long nextTrigger = 0;
@@ -159,6 +320,16 @@ void loop() {
       previousSecond = currentSecond;
   }
 
-  lv_timer_handler();
+  // NOTE: semaphore to allow a single processes to work with the sd card
+  if(processMqttMessage){
+    processMqttMessage = false;
+    if (!isWorkingWithSD) {
+      isWorkingWithSD = true;
+      add_new_secret(globalPayload.payload, globalPayload.length);
+      isWorkingWithSD = false;
+    }
+  }
+
+  display_and_touch_handler();
 }
 
