@@ -40,7 +40,7 @@ void on_display_change(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *c
 }
 
 
-static uint32_t last_touch_time = 0;  // Global state, stores time of last touch event
+static uint32_t lastTouchTime = 0;  // Global state, stores time of last touch event
 bool isScreenOn = true;
 bool wasReleased = true;  // a flag indicating whether the previous event was a release event
 
@@ -58,9 +58,9 @@ void on_touchpad_change(lv_indev_drv_t * indev_driver, lv_indev_data_t * data) {
         data->point.x = touchPoint.x;
         data->point.y = touchPoint.y;
 
-        uint32_t current_touch_time = millis();
+        uint32_t currentTouchTime = millis();
 
-        if(wasReleased && current_touch_time - last_touch_time < DOUBLE_TOUCH_INTERVAL) {
+        if(wasReleased && currentTouchTime - lastTouchTime < DOUBLE_TOUCH_INTERVAL) {
             // Toggle screen if the previous event was a release event and time interval conditions are met
             if(isScreenOn){
                 ledcWrite(PWM_CHANNEL_BCKL, 0);
@@ -70,7 +70,7 @@ void on_touchpad_change(lv_indev_drv_t * indev_driver, lv_indev_data_t * data) {
                 isScreenOn = true;
             }
         }
-        last_touch_time = current_touch_time;  // Update time of last touch event
+        lastTouchTime = currentTouchTime;  // Update time of last touch event
         wasReleased = false;  // Update the flag
     } else {
         data->state = LV_INDEV_STATE_REL;
