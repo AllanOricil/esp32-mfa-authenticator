@@ -22,7 +22,6 @@ lv_obj_t* create_totp_component(
 ){
     lv_obj_t* container = lv_obj_create(parent);
     lv_obj_set_width(container, 150);
-    lv_obj_set_height(container, 70);
     lv_obj_set_height(container, LV_SIZE_CONTENT);
     lv_obj_set_flex_flow(container, LV_FLEX_FLOW_COLUMN);
     lv_obj_set_flex_align(container, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_START);

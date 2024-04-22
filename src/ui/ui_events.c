@@ -36,9 +36,42 @@ void on_totp_component_label_value_changed(lv_event_t *e) {
     }
 }
 
-void on_totp_component_bar_value_changed(lv_event_t *e){
+void on_totp_component_bar_value_changed(lv_event_t *e) {
     LV_LOG_TRACE("on_totp_component_bar_value_changed");
     lv_obj_t *bar = lv_event_get_target(e);
     int val = calculate_new_bar_value();
     lv_bar_set_value(bar, val, LV_ANIM_OFF);
+}
+
+void on_keyboard_button_clicked(lv_event_t *e){
+    lv_obj_t *keyboard = lv_event_get_target(e);
+    uint16_t btn_id = lv_btnmatrix_get_selected_btn(keyboard);
+    printf("Debug message: %u\n", btn_id);
+
+    if(btn_id != LV_BTNMATRIX_BTN_NONE){
+        // const char* btn_text = lv_btnmatrix_get_btn_text(keyboard, btn_id);
+        // const char* current_text_const = lv_textarea_get_text(ui_pin_textarea);
+
+        // char* current_text = lv_mem_alloc(strlen(current_text_const) + 1);
+        // strcpy(current_text, current_text_const);
+
+        // if (btn_text != NULL && strlen(btn_text) == 1) {
+        //     if (strlen(current_text) < PIN_LENGTH) {
+        //         strcat(current_text, btn_text);
+        //         lv_textarea_set_text(ui_pin_textarea, current_text);
+        //     }
+        // } else if (strcmp(btn_text, "Delete") == 0) {
+        //     size_t len = strlen(current_text);
+        //     if (len > 0) {
+        //         current_text[len - 1] = '\0';
+        //         lv_textarea_set_text(ui_pin_textarea, current_text);
+        //     }
+        // } else if (strcmp(btn_text, "OK") == 0) {
+        //     if (strlen(current_text) == PIN_LENGTH) {
+        //         lv_disp_load_scr(ui_totp_screen);
+        //     }
+        // }
+
+        // lv_mem_free(current_text);
+    }
 }
