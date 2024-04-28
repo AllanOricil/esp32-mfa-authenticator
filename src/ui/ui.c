@@ -5,72 +5,114 @@
 
 #include "ui.h"
 #include "ui_helpers.h"
+#include <string.h>
+
+#ifdef PIN_HASH
+#pragma message "PIN_HASH is set to: " PIN_HASH
+#endif
+
+#ifdef PIN_KEY
+#pragma message "PIN_KEY is set to: " PIN_KEY
+#endif
+
 
 // CUSTOM EVENTS
 uint32_t LV_EVENT_SETUP_COMPLETE;
-
 
 ///////////////////// VARIABLES ////////////////////
 
 // SCREEN: ui_totp_screen
 lv_obj_t *ui_totp_screen;
+lv_obj_t *ui_pin_screen;
+lv_obj_t *ui_load_screen;
+lv_obj_t *ui_pin_textarea;
 lv_obj_t *ui____initial_actions0;
 void ui_totp_screen_screen_init(void);
-void ui_event_totp_component_label(lv_event_t * e);
-void ui_event_totp_component_bar(lv_event_t * e);
+void ui_pin_screen_screen_init(void);
+void ui_event_totp_component_label(lv_event_t *e);
+void ui_event_totp_component_bar(lv_event_t *e);
+void ui_event_keyboard_button(lv_event_t *e);
+void ui_event_pin_textarea(lv_event_t *e);
 
 ///////////////////// TEST LVGL SETTINGS ////////////////////
 #if LV_COLOR_DEPTH != 16
-    #error "LV_COLOR_DEPTH should be 16bit to match SquareLine Studio's settings"
+#error "LV_COLOR_DEPTH should be 16bit to match SquareLine Studio's settings"
 #endif
 
 ///////////////////// ANIMATIONS ////////////////////
 
 ///////////////////// FUNCTIONS ////////////////////
-void ui_event_totp_component_label(lv_event_t * e) {
+void ui_event_totp_component_label(lv_event_t *e)
+{
     lv_event_code_t event_code = lv_event_get_code(e);
-    lv_obj_t * target = lv_event_get_target(e);
-    if (event_code == LV_EVENT_VALUE_CHANGED) {
+    if (event_code == LV_EVENT_VALUE_CHANGED)
+    {
         on_totp_component_label_value_changed(e);
     }
 }
 
-void ui_event_totp_component_bar(lv_event_t * e) {
+void ui_event_totp_component_bar(lv_event_t *e)
+{
     lv_event_code_t event_code = lv_event_get_code(e);
-    lv_obj_t * target = lv_event_get_target(e);
-    if (event_code == LV_EVENT_VALUE_CHANGED) {
+    if (event_code == LV_EVENT_VALUE_CHANGED)
+    {
         on_totp_component_bar_value_changed(e);
     }
 }
 
+void ui_event_keyboard_button(lv_event_t *e)
+{
+    lv_event_code_t event_code = lv_event_get_code(e);
+    if (event_code == LV_EVENT_VALUE_CHANGED)
+    {
+        on_keyboard_button_clicked(e);
+    }
+}
+
+void ui_event_pin_textarea(lv_event_t *e)
+{
+    lv_event_code_t event_code = lv_event_get_code(e);
+    if (event_code == LV_EVENT_READY)
+    {
+        on_validate_pin(e);
+    }
+}
 
 ///////////////////// SCREENS ////////////////////
 
-void ui_init( void ){
+void ui_init(void)
+{
     lv_disp_t *disp = lv_disp_get_default();
     lv_theme_t *theme = lv_theme_default_init(
-        disp, 
-        lv_palette_main(LV_PALETTE_BLUE), 
-        lv_palette_main(LV_PALETTE_RED), 
-        true, 
-        LV_FONT_DEFAULT
-    );
+        disp,
+        lv_palette_main(LV_PALETTE_BLUE),
+        lv_palette_main(LV_PALETTE_RED),
+        true,
+        LV_FONT_DEFAULT);
     LV_EVENT_SETUP_COMPLETE = lv_event_register_id();
     lv_disp_set_theme(disp, theme);
     ui_totp_screen_screen_init();
     ui____initial_actions0 = lv_obj_create(NULL);
-    lv_disp_load_scr(ui_totp_screen);
+
+    if(strcmp(PIN_HASH,"") != 0 && strcmp(PIN_KEY,"") != 0){
+        ui_pin_screen_screen_init();
+        lv_disp_load_scr(ui_pin_screen);
+    } else {
+        lv_disp_load_scr(ui_totp_screen);
+    }
+    
 }
 
-
-void refresh_totp_labels() {
+void refresh_totp_labels()
+{
     LV_LOG_INFO("refresh_totp_labels");
     lv_obj_t *container;
     lv_obj_t *label;
     int index = 0;
 
     container = lv_obj_get_child(ui_totp_screen, index);
-    while (container) {
+    while (container)
+    {
         label = lv_obj_get_child(container, 1);
         TotpValueChangeEvent event;
         event.index = index;
@@ -80,14 +122,16 @@ void refresh_totp_labels() {
     }
 }
 
-void refresh_counter_bars(){
+void refresh_counter_bars()
+{
     LV_LOG_INFO("refresh_counter_bars");
     lv_obj_t *container;
     lv_obj_t *bar;
     int index = 0;
 
     container = lv_obj_get_child(ui_totp_screen, index);
-    while (container) {
+    while (container)
+    {
         bar = lv_obj_get_child(container, 2);
         TotpValueChangeEvent event;
         event.index = index;

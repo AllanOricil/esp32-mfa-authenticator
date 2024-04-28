@@ -3,6 +3,8 @@
 #include <TFT_eSPI.h>
 #include <SPI.h>
 #include <XPT2046_Bitbang.h>
+#include <string.h>
+#include "constants.h"
 
 #define LVGL_TICK_PERIOD_MS 1
 #define LVGL_BUFFER_PIXELS (LCD_WIDTH*LCD_HEIGHT/4)
@@ -12,7 +14,7 @@
 #define PWM_FREQ_BCKL 400
 #define PWM_BITS_BCKL 8
 #define PWM_MAX_BCKL ((1 << PWM_BITS_BCKL) - 1)
-#define DOUBLE_TOUCH_INTERVAL 500
+#define DOUBLE_TOUCH_INTERVAL 100
 
 TFT_eSPI tft = TFT_eSPI();
 XPT2046_Bitbang touchscreen(TOUCH_MOSI, TOUCH_MISO, TOUCH_CLK, TOUCH_CS);
@@ -40,9 +42,9 @@ void on_display_change(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *c
 }
 
 
-static uint32_t lastTouchTime = 0;  // Global state, stores time of last touch event
+static uint32_t lastTouchTime = 0;
 bool isScreenOn = true;
-bool wasReleased = true;  // a flag indicating whether the previous event was a release event
+bool wasReleased = true;
 
 void on_touchpad_change(lv_indev_drv_t * indev_driver, lv_indev_data_t * data) {
     Point touchPoint = touchscreen.getTouch();
@@ -53,25 +55,30 @@ void on_touchpad_change(lv_indev_drv_t * indev_driver, lv_indev_data_t * data) {
     touchPoint.x = tmp_y;
     touchPoint.y = tmp_x;
 
-    if (touchPoint.x >= 0 && touchPoint.x < 240 && touchPoint.y >= 0 && touchPoint.y < 320) {
+    if (touchPoint.x >= 0 && touchPoint.x < LCD_WIDTH && touchPoint.y >= 0 && touchPoint.y < LCD_HEIGHT) {
         data->state = LV_INDEV_STATE_PR;
         data->point.x = touchPoint.x;
         data->point.y = touchPoint.y;
 
         uint32_t currentTouchTime = millis();
 
-        if(wasReleased && currentTouchTime - lastTouchTime < DOUBLE_TOUCH_INTERVAL) {
-            // Toggle screen if the previous event was a release event and time interval conditions are met
-            if(isScreenOn){
-                ledcWrite(PWM_CHANNEL_BCKL, 0);
-                isScreenOn = false;
-            }else{
-                ledcWrite(PWM_CHANNEL_BCKL, 0.5 * PWM_MAX_BCKL);
-                isScreenOn = true;
+        lv_obj_t *active_screen = lv_scr_act();
+        const char *active_screen_name = (const char *)lv_obj_get_user_data(active_screen);
+
+        if(strcmp(active_screen_name,TOTP_SCREEN_NAME) == 0){
+            if(wasReleased && currentTouchTime - lastTouchTime < DOUBLE_TOUCH_INTERVAL) {
+                if(isScreenOn){
+                    ledcWrite(PWM_CHANNEL_BCKL, 0);
+                    isScreenOn = false;
+                }else{
+                    ledcWrite(PWM_CHANNEL_BCKL, 0.5 * PWM_MAX_BCKL);
+                    isScreenOn = true;
+                }
             }
         }
-        lastTouchTime = currentTouchTime;  // Update time of last touch event
-        wasReleased = false;  // Update the flag
+
+        lastTouchTime = currentTouchTime;
+        wasReleased = false;
     } else {
         data->state = LV_INDEV_STATE_REL;
         wasReleased = true; 
