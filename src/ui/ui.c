@@ -5,6 +5,7 @@
 
 #include "ui.h"
 #include "ui_helpers.h"
+#include <string.h>
 
 #ifdef PIN_HASH
 #pragma message "PIN_HASH is set to: " PIN_HASH
@@ -13,6 +14,7 @@
 #ifdef PIN_KEY
 #pragma message "PIN_KEY is set to: " PIN_KEY
 #endif
+
 
 // CUSTOM EVENTS
 uint32_t LV_EVENT_SETUP_COMPLETE;
@@ -92,15 +94,13 @@ void ui_init(void)
     ui_totp_screen_screen_init();
     ui____initial_actions0 = lv_obj_create(NULL);
 
-    if (PIN_HASH && PIN_KEY)
-    {
+    if(strcmp(PIN_HASH,"") != 0 && strcmp(PIN_KEY,"") != 0){
         ui_pin_screen_screen_init();
         lv_disp_load_scr(ui_pin_screen);
-    }
-    else
-    {
+    } else {
         lv_disp_load_scr(ui_totp_screen);
     }
+    
 }
 
 void refresh_totp_labels()
