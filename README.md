@@ -74,7 +74,7 @@ https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/6e240518
 
 ## Runtime Requirements
 
-- 2.4Ghz WiFi signal with internet connection, in order to sync with NTP
+- 2.4Ghz WiFi signal with internet connection, in order to sync the board's clock with the NTP server
 - SD card
 
 ## Pre-build Steps
@@ -84,43 +84,42 @@ Before building the code, set the following env variables:
 ```bash
 export WIFI_SSID=CHOCOLATE
 export WIFI_PASSWORD=CHOCOLATE
+export PIN_HASH=HMAC_SHA256_PASSWORD_HASH_AS_HEX_STRING
+export PIN_KEY=PASSWORD_HASH_KEY
 ```
 
-This step is required because the board uses the NTP server to set its time.
+- Wifi variables are required because this project uses the NTP server to set its time.
+- Pin variables are optional. If both are set, a screen asking for a pin number is shown before your TOTP Codes can be displayed.
 
 > **WARNING**: remember to use a network which has access to the internet, and is isolated from your main network.
 
 > **WARNING**: platform.io vscode extension tasks (build, upload, monitor...) are not using env variables. Therefore, you must open platformio.ini and set `-D WIFI_SSID` and `-D WIFI_PASSWORD` with your values.
 
-## Project Setup
+> **INFO**: use this [app](https://www.devglan.com/online-tools/hmac-sha256-online) to hash your password. Its hashed output is the value you have to load `PIN_HAS` env variable. Remember to set `PIN_KEY` to the same secret you used to hash your password.
+
+## Build steps
 
 1. Install PlatformIO IDE extension in VSCode.
 2. Open this project in a new vscode workspace, and wait for Platform.IO to install everything.
 3. Connect your board to your computer. If you installed the proper drivers, the next steps should work just fine.
 4. Click on the Platform.IO button, in VSCode's sidebar.
-5. disable some mbedtls library settings
+5. Then click on `esp32-2432S028Rv3 -> General -> Build` and wait until the build is done.
+6. Finally, click on `esp32-2432S028Rv3 -> General -> Upload ad Monitor` to flash the code into your board.
 
-comment the following configs at `~/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/mbedtls/mbedtls/include/mbedtls/config.h` and `./.pio/libdeps/esp32dev/mbedtls/include/mbedtls/mbedtls_config.h`:
+Alternatively, if you prefer using platform.io cli follow these steps:
 
-```c
-MBEDTLS_CCM_C
-MBEDTLS_GCM_C
-MBEDTLS_KEY_EXCHANGE_ECDH_ECDSA_ENABLED
-MBEDTLS_KEY_EXCHANGE_ECDH_RSA_ENABLED
-MBEDTLS_KEY_EXCHANGE_ECDHE_PSK_ENABLED
-MBEDTLS_KEY_EXCHANGE_ECDHE_RSA_ENABLED
-MBEDTLS_KEY_EXCHANGE_ECDHE_ECDSA_ENABLED
-MBEDTLS_SSL_TICKET_C
-MBEDTLS_SSL_CONTEXT_SERIALIZATION
-MBEDTLS_SSL_TRUNCATED_HMAC
-```
+1. run `platformio device list` and annotate the device path of your board.
 
-6. Then click on `esp32-2432S028Rv3 -> General -> Build` and wait until the build is done.
-7. Finally, click on `esp32-2432S028Rv3 -> General -> Upload ad Monitor` to flash the code into your board.
+> **INFO**: You can discover which one belongs to your board by comparing the outputs of this command when your board is connected and not.
 
-## Secrets
+2. run `platformio run --environment esp32dev` to build the application
+3. upload the code to your board using `platformio run --target upload --upload-port ${DEVICE_PATH} --target monitor --environment esp32dev`.
 
-Secrets are stored in a file called `keys.txt`, located in the root of an SD card. It must follow the format shown below:
+> **WARNING**: Remember to substitue `${DEVICE_PATH}` with the value you got in step 1.
+
+## TOTP Secrets
+
+The secrets used to compute TOTP codes must be stored in a file called `keys.txt`, and be placed in the root of an SD card. It must follow the format shown below:
 
 ```bash
 service_id,encoded_base_32_secret
@@ -139,20 +138,22 @@ aws-3,DSAJDHHAHASAUDOASNOTREALOADAKLDASAJFPOAIDONTEVENTRYOASFAIPO
 
 > **WARNING**: file must end with a new line.
 
-## How to verify if it is working
+## How to verify if TOTP codes are being generated correctly
 
 1. Go to https://totp.danhersam.com/
 2. Paste/type your encoded base 32 secret in the secret field, and then compare the TOTP code shown with the one you are seeing on the ESP32's screen.
 
-## Registering Secrets via local network with MQTT
+## Registering Secrets via your local network with MQTT
 
-To enable saving secrets to ESP32 via a local network, this project uses [MQTT](https://mqtt.org/) as the messaging protocol, [Node-red](https://nodered.org/) as the postman (per say) and [Eclipse Mosquito](https://mosquitto.org/) as the MQTT broker. Both services are started using a docker compose, in order to ease the setup. So, before continuing, install Docker on your computer following the guide found [here](https://www.docker.com/get-started/).
+To enable saving secrets to ESP32 via a local network, this project uses [MQTT](https://mqtt.org/) as the messaging protocol, [Node-red](https://nodered.org/) as the postman (per say) and [Eclipse Mosquito](https://mosquitto.org/) as the MQTT broker. Both services can be started using docker compose using a docker-compose.yaml file located in the root of this project, in order to ease the setup. So, before continuing, install Docker on your computer following the guide found [here](https://www.docker.com/get-started/).
 
 After that, run the following script to start both node-red and the mqtt broker:
 
 ```bash
 ./scripts/start-node-red.sh
 ```
+
+Open node-red at `http://localhost:1880`, and then load the flow from `./node-red/insert-secret.json`. For now you must manually setup the node input with the secret you want to send to your ESP32, but in the future I plan to have a small app and a chrome extension as clients using the local node-red services to ease the process of storing secrets on the board.
 
 > **WARNING** Make sure to have the following ports free before running `./scripts/start-node-red.sh`: 1880 (node-red), 1883 (eclipse/mosquitto), 9001 (eclipse/mosquito).
 
@@ -180,13 +181,13 @@ After services have initialized, open node-red at `localhost:1880`, and import `
 
   **R:** people often use multiple services that require MFA TOTP codes with high frequency because of their short living sessions.
 
-- read encrypted keys from the sd card, and ask for password/pin/fingerprint during resets in order to decipher them
+- read encrypted keys from the sd card, and ask for password/pin during resets in order to exhibit them ✅
 
   **why?**
 
   **R:** it is not secure to have unencrypted secrets stored without protection
 
-- enable ESP32 to receive secrets via a local network, using a secure channel.
+- enable ESP32 to receive secrets via a local network, using a secure channel. ✅
 
   **why?**
 
