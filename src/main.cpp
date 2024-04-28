@@ -14,7 +14,8 @@
 extern bool isWorkingWithSD;
 extern volatile bool processMqttMessage;
 
-void setup() {
+void setup()
+{
   Serial.begin(115200);
 
   // SETUP TIME
@@ -29,12 +30,15 @@ void setup() {
   // SETUP MQTT
   init_mqtt();
 
-  // SETUP UI
+  // SETUP SCREEN
   init_display_and_touch();
+
+  // SETUP UI
   ui_init();
 }
 
-void loop() {
+void loop()
+{
   // NOTE: display available free memory
   print_free_memory();
 
@@ -44,7 +48,8 @@ void loop() {
   // NOTE: ensures totps are generated exactly every 30 seconds. For example: 00:00:00, 00:00:30, 00:01:00, 00:01:30...
   unsigned long now = ((rtc.getMinute() * 60) + rtc.getSecond());
   static unsigned long nextTrigger = 0;
-  if (now % TOTP_PERIOD == 0 && now != nextTrigger) {
+  if (now % TOTP_PERIOD == 0 && now != nextTrigger)
+  {
     generate_totps();
     refresh_totp_labels();
     nextTrigger = now;
@@ -53,16 +58,19 @@ void loop() {
   // NOTE: ensures the counter is updated on every second, instead of after 1 second
   static unsigned long previousSecond = 0;
   unsigned long currentSecond = rtc.getSecond();
-  if (currentSecond != previousSecond) {
-      refresh_counter_bars();
-      previousSecond = currentSecond;
+  if (currentSecond != previousSecond)
+  {
+    refresh_counter_bars();
+    previousSecond = currentSecond;
   }
 
   // NOTE: semaphore to notify that there is a mqtt message waiting to be processed
-  if(processMqttMessage){
+  if (processMqttMessage)
+  {
     processMqttMessage = false;
     // NOTE: semaphore to allow a single processes to work with the sd card
-    if (!isWorkingWithSD) {
+    if (!isWorkingWithSD)
+    {
       isWorkingWithSD = true;
       add_new_secret(globalPayload.payload, globalPayload.length);
       isWorkingWithSD = false;
@@ -71,4 +79,3 @@ void loop() {
 
   display_and_touch_handler();
 }
-

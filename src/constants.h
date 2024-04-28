@@ -31,5 +31,12 @@
 // NOTE: this topic is used to create new secrets in the sd card
 #define MQTT_WRITE_NEW_SECRET_TOPIC "esp32-totp-write-new-secret"
 
+// PIN
+#define PIN_MIN_LENGTH 10
+#define PIN_MAX_LENGTH 20
+#define PIN_HASH "ccab26629773e35c4f32748e829b382e42950f04a851b72ee6aa52c0bc1141f0"
+#define PIN_SALT "=kxCImuICYdLOTPC-Xer!ksJSB5*+xIK"
 
-
+// UI
+#define PIN_SCREEN_NAME "pin"
+#define TOTP_SCREEN_NAME "totp"

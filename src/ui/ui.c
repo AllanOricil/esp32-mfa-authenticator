@@ -8,13 +8,13 @@
 
 // CUSTOM EVENTS
 uint32_t LV_EVENT_SETUP_COMPLETE;
-#define PIN_LENGTH 4
 
 ///////////////////// VARIABLES ////////////////////
 
 // SCREEN: ui_totp_screen
 lv_obj_t *ui_totp_screen;
 lv_obj_t *ui_pin_screen;
+lv_obj_t *ui_load_screen;
 lv_obj_t *ui_pin_textarea;
 lv_obj_t *ui____initial_actions0;
 void ui_totp_screen_screen_init(void);
@@ -22,6 +22,7 @@ void ui_pin_screen_screen_init(void);
 void ui_event_totp_component_label(lv_event_t *e);
 void ui_event_totp_component_bar(lv_event_t *e);
 void ui_event_keyboard_button(lv_event_t *e);
+void ui_event_pin_textarea(lv_event_t *e);
 
 ///////////////////// TEST LVGL SETTINGS ////////////////////
 #if LV_COLOR_DEPTH != 16
@@ -31,28 +32,33 @@ void ui_event_keyboard_button(lv_event_t *e);
 ///////////////////// ANIMATIONS ////////////////////
 
 ///////////////////// FUNCTIONS ////////////////////
-void ui_event_totp_component_label(lv_event_t *e) {
+void ui_event_totp_component_label(lv_event_t * e) {
     lv_event_code_t event_code = lv_event_get_code(e);
     if (event_code == LV_EVENT_VALUE_CHANGED) {
         on_totp_component_label_value_changed(e);
     }
 }
 
-void ui_event_totp_component_bar(lv_event_t *e) {
+void ui_event_totp_component_bar(lv_event_t * e) {
     lv_event_code_t event_code = lv_event_get_code(e);
     if (event_code == LV_EVENT_VALUE_CHANGED) {
         on_totp_component_bar_value_changed(e);
     }
 }
 
-void ui_event_keyboard_button(lv_event_t *e) {
+void ui_event_keyboard_button(lv_event_t * e) {
     lv_event_code_t event_code = lv_event_get_code(e);
     if (event_code == LV_EVENT_VALUE_CHANGED) {
         on_keyboard_button_clicked(e);
     }
 }
 
-
+void ui_event_pin_textarea(lv_event_t * e) {
+    lv_event_code_t event_code = lv_event_get_code(e);
+    if (event_code == LV_EVENT_READY) {
+        on_validate_pin(e);
+    }
+}
 
 ///////////////////// SCREENS ////////////////////
 

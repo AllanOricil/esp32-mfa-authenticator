@@ -3,11 +3,13 @@
 // LVGL version: 8.3.6
 // Project name: SquareLine_Project
 
+#include <time.h>
+#include <string.h>
 #include "ui.h"
 #include "totp-map.h"
 #include "esp_log.h"
-#include <time.h>
 #include "constants.h"
+#include "pin.h"
 
 extern int setup_complete;
 extern uint32_t LV_EVENT_SETUP_COMPLETE;
@@ -45,33 +47,27 @@ void on_totp_component_bar_value_changed(lv_event_t *e) {
 
 void on_keyboard_button_clicked(lv_event_t *e){
     lv_obj_t *keyboard = lv_event_get_target(e);
-    uint16_t btn_id = lv_btnmatrix_get_selected_btn(keyboard);
+    uint32_t btn_id = lv_btnmatrix_get_selected_btn(keyboard);
     printf("Debug message: %u\n", btn_id);
 
     if(btn_id != LV_BTNMATRIX_BTN_NONE){
-        // const char* btn_text = lv_btnmatrix_get_btn_text(keyboard, btn_id);
-        // const char* current_text_const = lv_textarea_get_text(ui_pin_textarea);
+        const char* btn_text = lv_btnmatrix_get_btn_text(keyboard, btn_id);
 
-        // char* current_text = lv_mem_alloc(strlen(current_text_const) + 1);
-        // strcpy(current_text, current_text_const);
-
-        // if (btn_text != NULL && strlen(btn_text) == 1) {
-        //     if (strlen(current_text) < PIN_LENGTH) {
-        //         strcat(current_text, btn_text);
-        //         lv_textarea_set_text(ui_pin_textarea, current_text);
-        //     }
-        // } else if (strcmp(btn_text, "Delete") == 0) {
-        //     size_t len = strlen(current_text);
-        //     if (len > 0) {
-        //         current_text[len - 1] = '\0';
-        //         lv_textarea_set_text(ui_pin_textarea, current_text);
-        //     }
-        // } else if (strcmp(btn_text, "OK") == 0) {
-        //     if (strlen(current_text) == PIN_LENGTH) {
-        //         lv_disp_load_scr(ui_totp_screen);
-        //     }
-        // }
-
-        // lv_mem_free(current_text);
+        if(strcmp(btn_text, "DEL") == 0) lv_textarea_del_char(ui_pin_textarea);
+        else if(strcmp(btn_text, "CLEAR") == 0) lv_textarea_set_text(ui_pin_textarea, "");
+        else if(strcmp(btn_text, "OK") == 0) lv_event_send(ui_pin_textarea, LV_EVENT_READY, NULL);
+        else lv_textarea_add_text(ui_pin_textarea, btn_text);
     }
+}
+
+void on_validate_pin(lv_event_t *e){
+    lv_obj_t *textarea = lv_event_get_target(e);
+    const char *pin = lv_textarea_get_text(textarea);
+
+    if(!validate_pin(pin)){
+        lv_obj_t * wrongPasswordModal = lv_msgbox_create(NULL, "ERROR", "PIN isn't valid", NULL, true);
+        lv_obj_center(wrongPasswordModal);
+    }
+
+    lv_scr_load(ui_totp_screen);
 }
