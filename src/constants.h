@@ -1,5 +1,3 @@
-// NOTE: network to sync to NTP. Uncomment it to setup the wifi connection
-
 // NOTE: used when reading data from the SD card
 #define TF_CS 5
 
@@ -32,10 +30,8 @@
 #define MQTT_WRITE_NEW_SECRET_TOPIC "esp32-totp-write-new-secret"
 
 // PIN
-#define PIN_MIN_LENGTH 10
+#define PIN_MIN_LENGTH 6
 #define PIN_MAX_LENGTH 20
-#define PIN_HASH "ccab26629773e35c4f32748e829b382e42950f04a851b72ee6aa52c0bc1141f0"
-#define PIN_SALT "=kxCImuICYdLOTPC-Xer!ksJSB5*+xIK"
 
 // UI
 #define PIN_SCREEN_NAME "pin"

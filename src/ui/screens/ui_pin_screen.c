@@ -29,10 +29,10 @@ void ui_pin_screen_screen_init(void)
     lv_obj_align(ui_pin_textarea, LV_ALIGN_TOP_LEFT, 0, 0);
     lv_obj_set_pos(ui_pin_textarea, 0, 0);
     lv_obj_set_width(ui_pin_textarea, LV_HOR_RES - 10);
-    lv_obj_set_height(ui_pin_textarea, 40);
+    lv_obj_set_height(ui_pin_textarea, 45);
     lv_obj_add_event_cb(ui_pin_textarea, ui_event_pin_textarea, LV_EVENT_ALL, NULL);
     lv_obj_set_style_text_font(ui_pin_textarea, &lv_font_montserrat_18, 0);
-
+    lv_obj_set_style_text_align(ui_pin_textarea, LV_TEXT_ALIGN_CENTER, 0);
 
     static const char *btnm_map[] = {
         "1", "2", "3", "4", "5", "\n",

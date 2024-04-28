@@ -67,6 +67,7 @@ void on_validate_pin(lv_event_t *e){
     if(!validate_pin(pin)){
         lv_obj_t * wrongPasswordModal = lv_msgbox_create(NULL, "ERROR", "PIN isn't valid", NULL, true);
         lv_obj_center(wrongPasswordModal);
+        return;
     }
 
     lv_scr_load(ui_totp_screen);
