@@ -19,8 +19,6 @@ This is a personal project that creates MFA TOTP codes. I created it to help me 
 - unlock it
 - find the TOTP for the service I need, which sometimes requires a lot of vertical scrolling.
 
-Therefore, my plan is to place this MFA device under my monitor, and just look at it when I need to get a new TOTP, instead of doing the aforementioned process. It is going to generate TOTPs for the services I use the most, and have short non configurable session times.
-
 Other motives:
 
 - when using my personal phone to get mfa totp codes, I get distracted by notifications and a lot of other things.
@@ -79,17 +77,17 @@ https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/6e240518
 
 ## Pre-build Steps
 
-Before building the code, set the following env variables:
+Before building the code, set the following env variables in your machine:
 
 ```bash
-export WIFI_SSID=CHOCOLATE
-export WIFI_PASSWORD=CHOCOLATE
+export WIFI_SSID=WIFI_SSID
+export WIFI_PASSWORD=WIFI_PASSWORD
 export PIN_HASH=HMAC_SHA256_PASSWORD_HASH_AS_HEX_STRING
 export PIN_KEY=PASSWORD_HASH_KEY
 ```
 
-- Wifi variables are required because this project uses the NTP server to set its time.
-- Pin variables are optional. If both are set, a screen asking for a pin number is shown before your TOTP Codes can be displayed.
+- Wi-Fi variables are required because this project uses the NTP server to set its time.
+- Pin variables are optional. If both are set, the [pin number screen](https://private-user-images.githubusercontent.com/55927613/326233320-bf9b4940-22e4-42a5-9e29-1b4edcd033eb.jpg?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTQzNzQzNzMsIm5iZiI6MTcxNDM3NDA3MywicGF0aCI6Ii81NTkyNzYxMy8zMjYyMzMzMjAtYmY5YjQ5NDAtMjJlNC00MmE1LTllMjktMWI0ZWRjZDAzM2ViLmpwZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDA0MjklMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwNDI5VDA3MDExM1omWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTZiOGRmNzVlZTUwNDIzNmQ0MDYyYTM5ZGU2Y2MwOWJkODIxNTkzYmVlMzdmMjEyMGFiNjYwYzk2MjIzYzAxN2MmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.ndeMs3_NFAMehUgutSZ2DYogijwZwrvGFUuOhOoGQMI) is shown before your TOTP Codes can be displayed.
 
 > **WARNING**: remember to use a network which has access to the internet, and is isolated from your main network.
 
@@ -97,7 +95,7 @@ export PIN_KEY=PASSWORD_HASH_KEY
 
 > **INFO**: use this [app](https://www.devglan.com/online-tools/hmac-sha256-online) to hash your password. Its hashed output is the value you have to load `PIN_HAS` env variable. Remember to set `PIN_KEY` to the same secret you used to hash your password.
 
-## Build steps
+## How to build
 
 1. Install PlatformIO IDE extension in VSCode.
 2. Open this project in a new vscode workspace, and wait for Platform.IO to install everything.
@@ -106,7 +104,7 @@ export PIN_KEY=PASSWORD_HASH_KEY
 5. Then click on `esp32-2432S028Rv3 -> General -> Build` and wait until the build is done.
 6. Finally, click on `esp32-2432S028Rv3 -> General -> Upload ad Monitor` to flash the code into your board.
 
-Alternatively, if you prefer using platform.io cli follow these steps:
+Alternatively, if you prefer using the platform.io cli, follow these steps:
 
 1. run `platformio device list` and annotate the device path of your board.
 
@@ -117,7 +115,7 @@ Alternatively, if you prefer using platform.io cli follow these steps:
 
 > **WARNING**: Remember to substitue `${DEVICE_PATH}` with the value you got in step 1.
 
-## TOTP Secrets
+## How to add TOTP Secrets
 
 The secrets used to compute TOTP codes must be stored in a file called `keys.txt`, and be placed in the root of an SD card. It must follow the format shown below:
 
@@ -134,16 +132,17 @@ aws-3,DSAJDHHAHASAUDOASNOTREALOADAKLDASAJFPOAIDONTEVENTRYOASFAIPO
 
 ```
 
-> **WARNING**: for now, secrets must be unencrypted and based 32 encoded. In the future, Users will have the option to encrypt their secrets, and ask for fingerpint/pin/password before retrieving the current TOTP. The plan is to make this feature configurable per service.
-
 > **WARNING**: file must end with a new line.
 
-## How to verify if TOTP codes are being generated correctly
+> **WARNING**: secrets must be unencrypted and based 32 encoded. In the future, my plan is to decrypt secrets using a secret stored in the board. With this approach, a stolen SD card won't work on a different board flashed with the same code unless the board has the same key.
+
+
+## How to verify if TOTP codes are correct
 
 1. Go to https://totp.danhersam.com/
 2. Paste/type your encoded base 32 secret in the secret field, and then compare the TOTP code shown with the one you are seeing on the ESP32's screen.
 
-## Registering Secrets via your local network with MQTT
+## How to register TOTP Secrets without inserting the SD card into a computer
 
 To enable saving secrets to ESP32 via a local network, this project uses [MQTT](https://mqtt.org/) as the messaging protocol, [Node-red](https://nodered.org/) as the postman (per say) and [Eclipse Mosquito](https://mosquitto.org/) as the MQTT broker. Both services can be started using docker compose using a docker-compose.yaml file located in the root of this project, in order to ease the setup. So, before continuing, install Docker on your computer following the guide found [here](https://www.docker.com/get-started/).
 
@@ -161,17 +160,16 @@ You should see the following containers in the docker app.
 
 <img src="./images/docker-compose-totp-service-running.png" width="800">
 
-and both container must not contain any error messages.
-
 <img src="./images/docker-node-red-start.png" width="800">
 
 <img src="./images/docker-mosquitto-start.png" width="800">
 
-> **WARNING** remember to assign static ips to the host running the MQTT service, as weel as for the esp32, in your router. This is required to avoid having to update the `MQTT_SERVER` constant with a new ip every time your router decides to change the ip of your host.
+> **WARNING** remember to assign static ips to the host running the MQTT service, as weel as for the esp32, in your router. This is a suggestion to avoid having to update the `MQTT_SERVER` constant with a new ip every time your router decides to change the ip of your host.
 
 > **WARNING** if your host can't receive messages from other devices on the same network, it could be a firewall problem. Configure the firewall in the host to enable it to receive requests from other devices on your local network.
 
-After services have initialized, open node-red at `localhost:1880`, and import `./node-red/insert-secret.json` flow.
+After all services have initialized, open node-red at `localhost:1880`, and import `./node-red/insert-secret.json` flow. Use this [tutorial](https://nodered.org/docs/user-guide/editor/workspace/import-export) to guide you to import flows into node-red.
+
 
 ## Roadmap
 
