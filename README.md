@@ -120,7 +120,7 @@ export PIN_KEY="PASSWORD HASH KEY"
 
 > **WARNING**: Remember to substitue `${DEVICE_PATH}` with the value you got in step 1.
 
-## 📚 How to add TOTP Secrets
+### 📚 How to add TOTP Secrets
 
 The secrets used to compute TOTP codes must be stored in a file called `keys.txt`, and be placed in the root of an SD card. It must follow the format shown below:
 
