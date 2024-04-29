@@ -80,10 +80,10 @@ https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/6e240518
 Before building the code, set the following env variables in your machine:
 
 ```bash
-export WIFI_SSID=WIFI_SSID
-export WIFI_PASSWORD=WIFI_PASSWORD
-export PIN_HASH=HMAC_SHA256_PASSWORD_HASH_AS_HEX_STRING
-export PIN_KEY=PASSWORD_HASH_KEY
+export WIFI_SSID="WIFI PASSWORD"
+export WIFI_PASSWORD="WIFI PASSWORD"
+export PIN_HASH="HMAC SHA256 PASSWORD HASH HEX STRING"
+export PIN_KEY="PASSWORD HASH KEY"
 ```
 
 - Wi-Fi variables are required because this project uses the NTP server to set its time.
