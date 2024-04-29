@@ -180,7 +180,7 @@ After all services have initialized, open node-red at `localhost:1880`, and impo
 
 ## 🎯 Roadmap
 
-### ✅ Enable the UI to display multiple TOTP codes at once
+### ✅ Display multiple TOTP codes
 People often use multiple services that require MFA TOTP codes with high frequency because of their short living sessions.
 
 ### ✅ Unlock with PIN Code
