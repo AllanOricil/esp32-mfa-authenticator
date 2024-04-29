@@ -70,10 +70,10 @@ https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/6e240518
 
 > **INFO**: if platform.io extension does not recognize your board after clicking on `Upload`, `Upload and Monitor` or `Monitor` buttons, it means the driver was not properly setup. In Macos, after installing the driver from Sillicon Labs, I had to restart the system before mac could identify the board.
 
-## Runtime Requirements
+## Boot and Reset Requirements
 
-- 2.4Ghz WiFi signal with internet connection, in order to sync the board's clock with the NTP server
-- SD card
+- 2.4Ghz WiFi signal with internet connection, in order to sync the board's clock with the NTP server,
+- SD card. Once the board has finished its setup, you can remove the SD card, and store somewhere safe.
 
 ## Pre-build Steps
 
@@ -169,6 +169,8 @@ You should see the following containers in the docker app.
 > **WARNING** if your host can't receive messages from other devices on the same network, it could be a firewall problem. Configure the firewall in the host to enable it to receive requests from other devices on your local network.
 
 After all services have initialized, open node-red at `localhost:1880`, and import `./node-red/insert-secret.json` flow. Use this [tutorial](https://nodered.org/docs/user-guide/editor/workspace/import-export) to guide you to import flows into node-red.
+
+> **WARNING** remember to put the SD card again in the board, if you want the secret to be stored. If you don't do it, after a reset the TOTP code for that secret won't appear because the secret wasn't written to disk.
 
 
 ## Roadmap
