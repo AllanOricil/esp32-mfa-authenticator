@@ -175,20 +175,23 @@ After all services have initialized, open node-red at `localhost:1880`, and impo
 
 ## Roadmap
 
-- enable the UI to display multiple TOTP codes at once. ✅
+### ✅ Enable the UI to display multiple TOTP codes at once
+People often use multiple services that require MFA TOTP codes with high frequency because of their short living sessions.
 
-  **why?**
+### ✅ Unlock with PIN Code
+It is not secure to have unencrypted secrets stored without protection
 
-  **R:** people often use multiple services that require MFA TOTP codes with high frequency because of their short living sessions.
+### ✅ Add secrets via a local network, using a secure channel
+Ease the process of adding new services. With this feature I won't need to insert the SD card on my computer. If there is no SD card on the board, the channel to register new services is going to be closed. I also plan to require fingerprint/pin/password before opening this channel.
 
-- read encrypted keys from the sd card, and ask for password/pin during resets in order to exhibit them ✅
+### 🔜 Group TOTP Codes
+I work with a customer that has multiple AWS accounts, and each has its own MFA Virtual device. To help me to easily find the MFA TOTP codes for a group of accounts that belongs to the same customer, I decided to create a way to group TOTP codes together on its own separate view. Each group of TOTP secrets will result in a page on the TOTP Screen. The User can select the page by swiping to the right or left. With this feature, Users will be able to manage multiple virtual MFA devices for multiple customers using the same device. To further secure TOTPs for a group, the User will be able to set a PIN code for a group. If PIN code is set for that group, a PIN Screen appears before the group of TOTPs can be rendered. There will also still exist the Global PIN code, which protects all TOTPs.
 
-  **why?**
+### 🔜 Block access after few wrong unlock attempts
+Improve the validation function to block access to the board after few wrong attempts happened. With this enhancement, brute forcing all possible combinations won't be possible.
 
-  **R:** it is not secure to have unencrypted secrets stored without protection
+### 🔜 Unlock with fingerprint
+Instead of typing a pin code, it will be possible to unlock the board using a fingerprint. The goal is to ease the access to the TOTP codes, while maintaining them secure. It will also work globally or by group.
 
-- enable ESP32 to receive secrets via a local network, using a secure channel. ✅
-
-  **why?**
-
-  **R:** ease the process of adding new services. With this feature I won't need to insert the SD card on my computer. If there is no SD card on the board, the channel to register new services is going to be closed. I also plan to require fingerprint/pin/password before opening this channel.
+### 🔜 Custom Styles
+Users will be able to create custom styles for the UI standard components
