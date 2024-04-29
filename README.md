@@ -178,7 +178,7 @@ After all services have initialized, open node-red at `localhost:1880`, and impo
 > **WARNING** remember to put the SD card again in the board, if you want the secret to be stored. If you don't do it, after a reset the TOTP code for that secret won't appear because the secret wasn't written to disk.
 
 
-## Roadmap
+## 🎯 Roadmap
 
 ### ✅ Enable the UI to display multiple TOTP codes at once
 People often use multiple services that require MFA TOTP codes with high frequency because of their short living sessions.
