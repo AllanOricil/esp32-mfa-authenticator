@@ -32,7 +32,7 @@ https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/166f6ea7
 
 https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/6e240518-a35b-4bf0-8a41-ece0dad9efb9
 
-## Parts
+## ⚙️ Parts
 
 - `ESP32-2432S028`
 - 3D printed black case
@@ -44,7 +44,7 @@ https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/6e240518
 
 > **INFO** the 3D model for the black case was taking from this [link](https://makerworld.com/en/models/137424#profileId-149549)
 
-### Total Project Cost
+## 💵 Total Project Cost
 
 | Part                  | Cost     |
 | --------------------- | -------- |
@@ -56,7 +56,7 @@ https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/6e240518
 
 > **INFO**: all prices were taking in February 2024.
 
-## Dev Environment Requirements
+## 💻 Dev Environment Requirements
 
 - python >= v3.9
 - node >= v18.18
@@ -70,15 +70,34 @@ https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/6e240518
 
 > **INFO**: if platform.io extension does not recognize your board after clicking on `Upload`, `Upload and Monitor` or `Monitor` buttons, it means the driver was not properly setup. In Macos, after installing the driver from Sillicon Labs, I had to restart the system before mac could identify the board.
 
-## Boot and Reset Requirements
+## 🔌 Boot and Reset Requirements
 
 - 2.4Ghz WiFi signal with internet connection, in order to sync the board's clock with the NTP server,
 - SD card. Once the board has finished its setup, you can remove the SD card, and store somewhere safe.
 
-## Pre-build Steps
+## 📖 Guides
 
-Before building the code, set the following env variables in your machine:
+### 📚 How to build
 
+#### 📚 Using Platform IO IDE in VS Code
+
+1. Install Platform IO IDE extension in VS Code.
+2. Open this project in a new vscode workspace, and wait for Platform.IO to finish its automatic setup.
+3. Open `platformio.ini` and edit 
+4. Connect your board to your computer. If you installed the proper drivers, the next steps should work just fine.
+5. Click on the Platform.IO button, in VSCode's sidebar.
+6. Then click on `esp32dev -> General -> Build` and wait until the build is done.
+7. Finally, click on `esp32dev -> General -> Upload ad Monitor` to flash the code into your board.
+
+#### 📚 Using Platform IO CLI 
+
+Alternatively, if you prefer using clis, install PlatformIO's CLI using this [tutorial](https://platformio.org/install/cli), and then follow the next steps:
+
+1. run `platformio device list` and annotate the device path of your board.
+
+> **INFO**: You can discover which path belongs to your board by comparing the outputs of this command when your board is connected and not.
+
+2. setup environment variables
 ```bash
 export WIFI_SSID="WIFI PASSWORD"
 export WIFI_PASSWORD="WIFI PASSWORD"
@@ -86,8 +105,9 @@ export PIN_HASH="HMAC SHA256 PASSWORD HASH HEX STRING"
 export PIN_KEY="PASSWORD HASH KEY"
 ```
 
-- Wi-Fi variables are required because this project uses the NTP server to set its time.
-- Pin variables are optional. If both are set, the [pin number screen](https://private-user-images.githubusercontent.com/55927613/326233320-bf9b4940-22e4-42a5-9e29-1b4edcd033eb.jpg?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTQzNzQzNzMsIm5iZiI6MTcxNDM3NDA3MywicGF0aCI6Ii81NTkyNzYxMy8zMjYyMzMzMjAtYmY5YjQ5NDAtMjJlNC00MmE1LTllMjktMWI0ZWRjZDAzM2ViLmpwZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDA0MjklMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwNDI5VDA3MDExM1omWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTZiOGRmNzVlZTUwNDIzNmQ0MDYyYTM5ZGU2Y2MwOWJkODIxNTkzYmVlMzdmMjEyMGFiNjYwYzk2MjIzYzAxN2MmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.ndeMs3_NFAMehUgutSZ2DYogijwZwrvGFUuOhOoGQMI) is shown before your TOTP Codes can be displayed.
+> **INFO**: Wi-Fi variables are required because this project uses the NTP server to set its time.
+
+> **INFO**: Pin variables are optional. If both are set, the [pin number screen](https://private-user-images.githubusercontent.com/55927613/326233320-bf9b4940-22e4-42a5-9e29-1b4edcd033eb.jpg?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTQzNzQzNzMsIm5iZiI6MTcxNDM3NDA3MywicGF0aCI6Ii81NTkyNzYxMy8zMjYyMzMzMjAtYmY5YjQ5NDAtMjJlNC00MmE1LTllMjktMWI0ZWRjZDAzM2ViLmpwZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDA0MjklMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwNDI5VDA3MDExM1omWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTZiOGRmNzVlZTUwNDIzNmQ0MDYyYTM5ZGU2Y2MwOWJkODIxNTkzYmVlMzdmMjEyMGFiNjYwYzk2MjIzYzAxN2MmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.ndeMs3_NFAMehUgutSZ2DYogijwZwrvGFUuOhOoGQMI) is shown before your TOTP Codes can be displayed.
 
 > **WARNING**: remember to use a network which has access to the internet, and is isolated from your main network.
 
@@ -95,27 +115,12 @@ export PIN_KEY="PASSWORD HASH KEY"
 
 > **INFO**: use this [app](https://www.devglan.com/online-tools/hmac-sha256-online) to hash your password. Its hashed output is the value you have to load `PIN_HAS` env variable. Remember to set `PIN_KEY` to the same secret you used to hash your password.
 
-## How to build
-
-1. Install PlatformIO IDE extension in VSCode.
-2. Open this project in a new vscode workspace, and wait for Platform.IO to install everything.
-3. Connect your board to your computer. If you installed the proper drivers, the next steps should work just fine.
-4. Click on the Platform.IO button, in VSCode's sidebar.
-5. Then click on `esp32-2432S028Rv3 -> General -> Build` and wait until the build is done.
-6. Finally, click on `esp32-2432S028Rv3 -> General -> Upload ad Monitor` to flash the code into your board.
-
-Alternatively, if you prefer using the platform.io cli, follow these steps:
-
-1. run `platformio device list` and annotate the device path of your board.
-
-> **INFO**: You can discover which one belongs to your board by comparing the outputs of this command when your board is connected and not.
-
 2. run `platformio run --environment esp32dev` to build the application
 3. upload the code to your board using `platformio run --target upload --upload-port ${DEVICE_PATH} --target monitor --environment esp32dev`.
 
 > **WARNING**: Remember to substitue `${DEVICE_PATH}` with the value you got in step 1.
 
-## How to add TOTP Secrets
+## 📚 How to add TOTP Secrets
 
 The secrets used to compute TOTP codes must be stored in a file called `keys.txt`, and be placed in the root of an SD card. It must follow the format shown below:
 
@@ -137,12 +142,12 @@ aws-3,DSAJDHHAHASAUDOASNOTREALOADAKLDASAJFPOAIDONTEVENTRYOASFAIPO
 > **WARNING**: secrets must be unencrypted and based 32 encoded. In the future, my plan is to decrypt secrets using a secret stored in the board. With this approach, a stolen SD card won't work on a different board flashed with the same code unless the board has the same key.
 
 
-## How to verify if TOTP codes are correct
+### 📚 How to verify if TOTP codes are correct
 
 1. Go to https://totp.danhersam.com/
 2. Paste/type your encoded base 32 secret in the secret field, and then compare the TOTP code shown with the one you are seeing on the ESP32's screen.
 
-## How to register TOTP Secrets without inserting the SD card into a computer
+### 📚 How to register TOTP Secrets without inserting the SD card into a computer
 
 To enable saving secrets to ESP32 via a local network, this project uses [MQTT](https://mqtt.org/) as the messaging protocol, [Node-red](https://nodered.org/) as the postman (per say) and [Eclipse Mosquito](https://mosquitto.org/) as the MQTT broker. Both services can be started using docker compose using a docker-compose.yaml file located in the root of this project, in order to ease the setup. So, before continuing, install Docker on your computer following the guide found [here](https://www.docker.com/get-started/).
 
