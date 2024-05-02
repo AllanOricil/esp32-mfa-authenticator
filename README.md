@@ -72,7 +72,7 @@ https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/6e240518
 
 ## 🔌 Boot and Reset Requirements
 
-- 2.4Ghz WiFi signal with internet connection, in order to sync the board's clock with the NTP server,
+- 2.4Ghz WiFi signal with internet connection, in order to sync the board's clock with the NTP server.
 - SD card. Once the board has finished its setup, you can remove the SD card, and store somewhere safe.
 
 ## 📖 Guides
@@ -115,8 +115,8 @@ export PIN_KEY="PASSWORD HASH KEY"
 
 > **INFO**: use this [app](https://www.devglan.com/online-tools/hmac-sha256-online) to hash your password. Its hashed output is the value you have to load `PIN_HAS` env variable. Remember to set `PIN_KEY` to the same secret you used to hash your password.
 
-2. run `platformio run --environment esp32dev` to build the application
-3. upload the code to your board using `platformio run --target upload --upload-port ${DEVICE_PATH} --target monitor --environment esp32dev`.
+3. run `platformio run --environment esp32dev` to build the application
+4. upload the code to your board using `platformio run --target upload --upload-port ${DEVICE_PATH} --target monitor --environment esp32dev`.
 
 > **WARNING**: Remember to substitue `${DEVICE_PATH}` with the value you got in step 1.
 
