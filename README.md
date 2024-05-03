@@ -63,13 +63,16 @@ https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/b610d1de
 
 ## 💻 Dev Environment Requirements
 
-- python >= v3.9
-- node >= v18.18
-- pnpm >= v8.15
-- vscode >= v1.87
-- platform.io ide vscode extension >= v3.3
-- docker >= v25.0
-- [driver to allow your OS to recognize esp32](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers)
+| dependency                       | version   |
+|----------------------------------|-----------|
+| python                           | >= v3.9   |
+| node                             | >= v18.18 |
+| pnpm                             | >= v8.15  |
+| vscode                           | >= v1.87  |
+| platform.io ide vscode extension | >= v3.3   |
+| docker                           | >= v25.0  |
+
+> **WARNING**: don't forget to install a [driver to allow your OS to recognize esp32](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers)
 
 > **INFO**: Node.js is required because it runs several development tools used in this project. Among these tools are those that enforce the "conventional commits" standard. This standard is a lightweight convention on top of commit messages, offering an easy set of rules for creating an explicit commit history.
 
