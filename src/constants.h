@@ -17,16 +17,9 @@
 
 #define KEYS_FILE_PATH "/keys.txt"
 
-// MQTT Broker
-#define MQTT_SERVER "192.168.31.198"
-#define MQTT_PORT 1883
-#define MQTT_USERNAME "MQTT_USERNAME"
-#define MQTT_PASSWORD "MQTT_PASSWORD"
-#define MQTT_RECONNECT_INTERVAL 5000
+// MQTT
+#define MQTT_RECONNECT_INTERVAL 60000
 #define MQTT_MAX_PAYLOAD_SIZE 1024
-
-// MQTT Topics
-// NOTE: this topic is used to create new secrets in the sd card
 #define MQTT_WRITE_NEW_SECRET_TOPIC "esp32-totp-write-new-secret"
 
 // PIN
