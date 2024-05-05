@@ -18,7 +18,7 @@
 #define KEYS_FILE_PATH "/keys.txt"
 
 // MQTT
-#define MQTT_RECONNECT_INTERVAL 5000
+#define MQTT_RECONNECT_INTERVAL 60000
 #define MQTT_MAX_PAYLOAD_SIZE 1024
 #define MQTT_WRITE_NEW_SECRET_TOPIC "esp32-totp-write-new-secret"
 
