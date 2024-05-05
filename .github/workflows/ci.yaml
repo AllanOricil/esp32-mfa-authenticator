@@ -59,6 +59,10 @@ jobs:
           WIFI_PASSWORD: "test"
         run: pio run
 
+      - name: Create build
+        if: github.ref == 'refs/heads/main'
+        run: tar -cvf esp32-cyd.tar .pio/build
+
       - name: Semantic Release
         if: github.ref == 'refs/heads/main'
         env:

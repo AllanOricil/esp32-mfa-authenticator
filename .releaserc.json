@@ -15,7 +15,7 @@
       "@semantic-release/github",
       {
         "assets": [
-          { "path": ".pio/build", "label": "ESP32 - CYD distribution" }
+          { "path": "esp32-cyd.tar", "label": "ESP32 - CYD distribution" }
         ]
       }
     ]
