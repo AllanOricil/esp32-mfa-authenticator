@@ -26,7 +26,6 @@ Other motives:
 - I wanted to learn how MFA works.
 - I wanted to learn how ESP32 works.
 
-
 ## 🎬 Demos
 
 https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/166f6ea7-1046-4117-ae22-67991c8e6d8c
@@ -64,7 +63,7 @@ https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/b610d1de
 ## 💻 Dev Environment Requirements
 
 | dependency                       | version   |
-|----------------------------------|-----------|
+| -------------------------------- | --------- |
 | python                           | >= v3.9   |
 | node                             | >= v18.18 |
 | pnpm                             | >= v8.15  |
@@ -91,13 +90,13 @@ https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/b610d1de
 
 1. Install Platform IO IDE extension in VS Code.
 2. Open this project in a new vscode workspace, and wait for Platform.IO to finish its automatic setup.
-3. Open `platformio.ini` and edit 
+3. Open `platformio.ini` and edit
 4. Connect your board to your computer. If you installed the proper drivers, the next steps should work just fine.
 5. Click on the Platform.IO button, in VSCode's sidebar.
-6. Then click on `esp32dev -> General -> Build` and wait until the build is done.
-7. Finally, click on `esp32dev -> General -> Upload ad Monitor` to flash the code into your board.
+6. Then click on `esp32-cyd -> General -> Build` and wait until the build is done.
+7. Finally, click on `esp32-cyd -> General -> Upload ad Monitor` to flash the code into your board.
 
-#### 📚 Using Platform IO CLI 
+#### 📚 Using Platform IO CLI
 
 Alternatively, if you prefer using clis, install PlatformIO's CLI using this [tutorial](https://platformio.org/install/cli), and then follow the next steps:
 
@@ -106,11 +105,16 @@ Alternatively, if you prefer using clis, install PlatformIO's CLI using this [tu
 > **INFO**: You can discover which path belongs to your board by comparing the outputs of this command when your board is connected and not.
 
 2. setup environment variables
+
 ```bash
 export WIFI_SSID="WIFI PASSWORD"
 export WIFI_PASSWORD="WIFI PASSWORD"
 export PIN_HASH="HMAC SHA256 PASSWORD HASH HEX STRING"
 export PIN_KEY="PASSWORD HASH KEY"
+export MQTT_PORT="1883"
+export MQTT_SERVER="192.168.0.1"
+export MQTT_USERNAME="test"
+export MQTT_PASSWORD="test"
 ```
 
 > **INFO**: Wi-Fi variables are required because this project uses the NTP server to set its time.
@@ -121,10 +125,12 @@ export PIN_KEY="PASSWORD HASH KEY"
 
 > **WARNING**: platform.io vscode extension tasks (build, upload, monitor...) are not using env variables. Therefore, you must open platformio.ini and set `-D WIFI_SSID` and `-D WIFI_PASSWORD` with your values.
 
-> **INFO**: use this [app](https://www.devglan.com/online-tools/hmac-sha256-online) to hash your password. Its hashed output is the value you have to load `PIN_HAS` env variable. Remember to set `PIN_KEY` to the same secret you used to hash your password.
+> **INFO**: use this [app](https://www.devglan.com/online-tools/hmac-sha256-online) to hash your password. Its hashed output is the value you have to load `PIN_HASH` env variable. Remember to set `PIN_KEY` to the same secret you used to hash your password.
 
-3. run `platformio run --environment esp32dev` to build the application
-4. upload the code to your board using `platformio run --target upload --upload-port ${DEVICE_PATH} --target monitor --environment esp32dev`.
+> **INFO**: `MQTT` env variables are optional. To enable the board to receive secrets from an mqtt broker, `MQTT_SERVER` and `MQTT_PORT` must be specified.
+
+3. run `platformio run --environment esp32-cyd` to build the application
+4. upload the code to your board using `platformio run --target upload --upload-port ${DEVICE_PATH} --target monitor --environment esp32-cyd`.
 
 > **WARNING**: Remember to substitue `${DEVICE_PATH}` with the value you got in step 1.
 
@@ -148,7 +154,6 @@ aws-3,DSAJDHHAHASAUDOASNOTREALOADAKLDASAJFPOAIDONTEVENTRYOASFAIPO
 > **WARNING**: file must end with a new line.
 
 > **WARNING**: secrets must be unencrypted and based 32 encoded. In the future, my plan is to decrypt secrets using a secret stored in the board. With this approach, a stolen SD card won't work on a different board flashed with the same code unless the board has the same key.
-
 
 ### 📚 How to verify if TOTP codes are correct
 
@@ -185,26 +190,32 @@ After all services have initialized, open node-red at `localhost:1880`, and impo
 
 > **WARNING** remember to put the SD card again in the board, if you want the secret to be stored. If you don't do it, after a reset the TOTP code for that secret won't appear because the secret wasn't written to disk.
 
-
 ## 🎯 Roadmap
 
 ### ✅ Display multiple TOTP codes
+
 People often use multiple services that require MFA TOTP codes with high frequency because of their short living sessions.
 
 ### ✅ Unlock with PIN Code
+
 It is not secure to have unencrypted secrets stored without protection
 
 ### ✅ Add secrets via a local network, using a secure channel
+
 Ease the process of adding new services. With this feature I won't need to insert the SD card on my computer. If there is no SD card on the board, the channel to register new services is going to be closed. I also plan to require fingerprint/pin/password before opening this channel.
 
 ### 🔜 Group TOTP Codes
+
 I work with a customer that has multiple AWS accounts, and each has its own MFA Virtual device. To help me to easily find the MFA TOTP codes for a group of accounts that belongs to the same customer, I decided to create a way to group TOTP codes together on its own separate view. Each group of TOTP secrets will result in a page on the TOTP Screen. The User can select the page by swiping to the right or left. With this feature, Users will be able to manage multiple virtual MFA devices for multiple customers using the same device. To further secure TOTPs for a group, the User will be able to set a PIN code for a group. If PIN code is set for that group, a PIN Screen appears before the group of TOTPs can be rendered. There will also still exist the Global PIN code, which protects all TOTPs.
 
 ### 🔜 Block access after few wrong unlock attempts
+
 Improve the validation function to block access to the board after few wrong attempts happened. With this enhancement, brute forcing all possible combinations won't be possible.
 
 ### 🔜 Unlock with fingerprint
+
 Instead of typing a pin code, it will be possible to unlock the board using a fingerprint. The goal is to ease the access to the TOTP codes, while maintaining them secure. It will also work globally or by group.
 
 ### 🔜 Custom Styles
+
 Users will be able to create custom styles for the UI standard components
