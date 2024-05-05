@@ -1,21 +1,23 @@
 {
-	"branches": ["main"],
-	"plugins": [
-	  "@semantic-release/commit-analyzer",
-	  "@semantic-release/release-notes-generator",
-	  "@semantic-release/changelog",
-	  [
-		"@semantic-release/git",
-		{
-		  "assets": ["package.json", "CHANGELOG.md"],
-		  "message": "chore(release): ${nextRelease.version} [skip ci] ${nextRelease.notes}"
-		}
-	  ],
-	  [
-		"@semantic-release/github",
-		{
-		  "assets": ["dist/**"]
-		}
-	  ]
-	]
+  "branches": ["main"],
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    "@semantic-release/changelog",
+    [
+      "@semantic-release/git",
+      {
+        "assets": ["package.json", "CHANGELOG.md"],
+        "message": "chore(release): ${nextRelease.version} [skip ci] ${nextRelease.notes}"
+      }
+    ],
+    [
+      "@semantic-release/github",
+      {
+        "assets": [
+          { "path": ".pio/build", "label": "ESP32 - CYD distribution" }
+        ]
+      }
+    ]
+  ]
 }
