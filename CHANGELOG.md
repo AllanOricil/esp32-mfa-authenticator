@@ -1,3 +1,15 @@
+# [0.6.0](https://github.com/AllanOricil/esp32-mfa-totp-generator/compare/v0.5.0...v0.6.0) (2024-05-05)
+
+
+### Bug Fixes
+
+* not having an mqtt server running will no longer break the runtime ([4c7f24f](https://github.com/AllanOricil/esp32-mfa-totp-generator/commit/4c7f24f0ce82516db7ae7b8ab098ee24c851ba4f))
+
+
+### Features
+
+* add MQTT configuration options to build flags ([2e21013](https://github.com/AllanOricil/esp32-mfa-totp-generator/commit/2e21013c899243ae5a84c31d8a8f2b047c36b09b))
+
 # [0.5.0](https://github.com/AllanOricil/esp32-mfa-totp-generator/compare/v0.4.0...v0.5.0) (2024-04-28)
 
 
