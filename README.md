@@ -204,6 +204,26 @@ It is not secure to have unencrypted secrets stored without protection
 
 Ease the process of adding new services. With this feature I won't need to insert the SD card on my computer. If there is no SD card on the board, the channel to register new services is going to be closed. I also plan to require fingerprint/pin/password before opening this channel.
 
+### 🔜 Create chrome extension to ease registering TOTP secrets
+
+When the ESP32-MFA-Authenticator extension is enabled, a new button called "register secret" appears, in the browser's context menu, when right clicking over a QR code. When selecting this button, the registration flow starts.
+
+```
+1. User select "register secret" to start the registration flow.
+2. The ESP32-MFA-Authenticator extension receives it, and forwards the message, using an HTTPS, to the ESP32-MFA-Authenticator service, built with keycloak.
+3. The ESP32-MFA-Authenticator service verifies if the User is authenticated. If the request doesn't have the User's credentials, the Authentication flow starts.
+4. After finishing the authentication flow, the registration flow begin.
+5. The first step is to connect to the right MQTT topic using username and password. These credentials are stored securely in the server. If a successful connection is opened, the registration flow continues.
+6. The ESP32-MFA-Authenticator service creates the message that contains the secret name and its value, then signs it with a strong key, and finally posts the message to the MQTT topic the esp32 board can read.
+7. The esp32 then validates if the message came from the ESP32-MFA-Authenticator service. If the message is valid, the flow continues.
+8. The esp32 then reads the secret and stores it in the SD Card, if one is present.
+9. The esp32 then notifies the ESP32-MFA-Authenticator service if everything went well or not.
+10.The ESP32-MFA-Authenticator service notifies the ESP32-MFA-Authenticator extension about the result.
+```
+
+> **INFO:** the above steps are summarizing my initial plan.
+
+
 ### 🔜 Group TOTP Codes
 
 I work with a customer that has multiple AWS accounts, and each has its own MFA Virtual device. To help me to easily find the MFA TOTP codes for a group of accounts that belongs to the same customer, I decided to create a way to group TOTP codes together on its own separate view. Each group of TOTP secrets will result in a page on the TOTP Screen. The User can select the page by swiping to the right or left. With this feature, Users will be able to manage multiple virtual MFA devices for multiple customers using the same device. To further secure TOTPs for a group, the User will be able to set a PIN code for a group. If PIN code is set for that group, a PIN Screen appears before the group of TOTPs can be rendered. There will also still exist the Global PIN code, which protects all TOTPs.
