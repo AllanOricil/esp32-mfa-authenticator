@@ -204,6 +204,11 @@ It is not secure to have unencrypted secrets stored without protection
 
 Ease the process of adding new services. With this feature I won't need to insert the SD card on my computer. If there is no SD card on the board, the channel to register new services is going to be closed. I also plan to require fingerprint/pin/password before opening this channel.
 
+### 🔜 Display turns off automatically after N seconds without user interaction
+
+After booting, the display turns off automatically if it doesn't receive touch events after N seconds. N is a configurable build variable, and it defaults to 3 seconds. This behavior is enabled by default, but can be disabled with another build variable.
+
+
 ### 🔜 Create chrome extension to ease registering TOTP secrets
 
 When the ESP32-MFA-Authenticator extension is enabled, a new button called "register secret" appears, in the browser's context menu, when right clicking over a QR code. When selecting this button, the registration flow starts.
