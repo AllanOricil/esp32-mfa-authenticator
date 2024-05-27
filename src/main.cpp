@@ -35,6 +35,7 @@ void setup()
   init_display();
 
   // SETUP UI
+  // TODO: create setup screen with steps for configuring WIFI, MQTT and calibrate touch
   ui_init();
 
   // SETUP TOUCH

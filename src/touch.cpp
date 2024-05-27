@@ -62,6 +62,8 @@ void init_touch()
     Serial.println("Initializing touch");
     // NOTE: these values are for xpt2040 when in landscape mode / rotated 90
     touchscreen.begin();
+
+    // TODO: create screen to ease manual calibration
     touchscreen.setCalibration(TOUCH_X_MIN, TOUCH_Y_MIN, TOUCH_X_MAX, TOUCH_Y_MAX);
 
     lv_indev_drv_init(&indev_drv);
