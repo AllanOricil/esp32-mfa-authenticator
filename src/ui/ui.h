@@ -26,6 +26,7 @@ extern "C"
 	void ui_event_keyboard_button(lv_event_t *e);
 	void ui_event_pin_textarea(lv_event_t *e);
 	void ui_init(void);
+	void ui_task_handler();
 	void refresh_totp_labels();
 	void refresh_counter_bars();
 
