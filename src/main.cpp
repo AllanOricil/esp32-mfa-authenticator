@@ -2,6 +2,7 @@
 
 #include "ui/ui.h"
 #include "constants.h"
+#include "config.hpp"
 #include "utils.hpp"
 #include "clock.hpp"
 #include "mfa.hpp"
@@ -11,6 +12,7 @@
 #include "touch.hpp"
 #include "wifi.hpp"
 #include "mqtt.hpp"
+#include "pin.h"
 
 extern bool isWorkingWithSD;
 extern volatile bool processMqttMessage;
@@ -18,18 +20,25 @@ extern volatile bool processMqttMessage;
 void setup()
 {
   Serial.begin(115200);
+  // SETUP SD CARD
+  init_sd_card_reader();
+
+  // SETUP CONFIG
+  Configuration config = init_configuration();
+
+  // SETUP PIN
+  init_pin(config.security.pin.hash.c_str(), config.security.pin.key.c_str());
 
   // SETUP TIME
-  init_wifi();
+  init_wifi(config);
   sync_time();
 
   // SETUP MFA
-  init_sd_card_reader();
   load_mfa_totp_keys();
   generate_totps();
 
   // SETUP MQTT
-  init_mqtt();
+  init_mqtt(config);
 
   // SETUP SCREEN
   init_display();
@@ -40,7 +49,7 @@ void setup()
 
   // SETUP TOUCH
   // NOTE: touch comes after initializing UI because I plan to add a manual calibration screen
-  init_touch();
+  init_touch(config);
 }
 
 void loop()

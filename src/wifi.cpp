@@ -1,15 +1,10 @@
 #include <WiFi.h>
+#include "config.hpp"
 
-void init_wifi()
+void init_wifi(Configuration config)
 {
-  if (WIFI_SSID == NULL || WIFI_PASSWORD == NULL)
-  {
-    Serial.printf("Failed to get WiFi details from environment variables");
-    return; // Or handle error appropriately
-  }
-
-  Serial.printf("Connecting to %s", WIFI_SSID);
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  Serial.printf("Connecting to %s", config.wifi.ssid);
+  WiFi.begin(config.wifi.ssid, config.wifi.password);
   while (WiFi.status() != WL_CONNECTED)
   {
     delay(500);

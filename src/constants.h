@@ -1,5 +1,5 @@
-// NOTE: used when reading data from the SD card
-#define TF_CS 5
+#define CONFIG_FILE_PATH "/config.yml"
+#define KEYS_FILE_PATH "/keys.txt"
 
 // NOTE: NTP server variables
 #define NTP_SERVER_URL "pool.ntp.org"
@@ -14,8 +14,6 @@
 #define MAX_SERVICE_NAME_LENGTH 61
 // NOTE: 6 digits + 1 for the null-terminating character
 #define MAX_TOTP_LENGTH 7
-
-#define KEYS_FILE_PATH "/keys.txt"
 
 // MQTT
 #define MQTT_RECONNECT_INTERVAL 60000
@@ -36,10 +34,6 @@
 #define TOUCH_X_MAX 1869
 #define TOUCH_Y_MIN 132
 #define TOUCH_Y_MAX 1784
-
-#ifndef TOUCH_FORCE_CALIBRATION
-#define TOUCH_FORCE_CALIBRATION 0
-#endif
 
 // DISPLAY
 #define LVGL_TICK_PERIOD_MS 1

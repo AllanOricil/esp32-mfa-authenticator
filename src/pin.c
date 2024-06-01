@@ -6,6 +6,9 @@
 #include <stdlib.h>
 #include "constants.h"
 
+const char *pinHash;
+const char *pinKey;
+
 unsigned char *hex_to_bin(const char *hex_string)
 {
 	size_t len = strlen(hex_string);
@@ -48,12 +51,18 @@ bool validate_pin(const char *pin)
 	mbedtls_md_context_t ctx;
 	mbedtls_md_init(&ctx);
 	mbedtls_md_setup(&ctx, mbedtls_md_info_from_type(MBEDTLS_MD_SHA256), 1);
-	mbedtls_md_hmac_starts(&ctx, PIN_KEY, strlen((char *)PIN_KEY));
+	mbedtls_md_hmac_starts(&ctx, pinKey, strlen(pinKey));
 	mbedtls_md_hmac_update(&ctx, (const unsigned char *)pin, strlen(pin));
 	mbedtls_md_hmac_finish(&ctx, generated_hash);
 	mbedtls_md_free(&ctx);
 
 	print_hash(generated_hash, sizeof(generated_hash) / sizeof(generated_hash[0]));
 
-	return memcmp(generated_hash, hex_to_bin(PIN_HASH), sizeof(generated_hash)) == 0;
+	return memcmp(generated_hash, hex_to_bin(pinHash), sizeof(generated_hash)) == 0;
+}
+
+void init_pin(const char *_pinHash, const char *_pinKey)
+{
+	pinHash = _pinHash;
+	pinKey = _pinKey;
 }

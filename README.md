@@ -79,8 +79,32 @@ https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/b610d1de
 
 ## 🔌 Boot and Reset Requirements
 
-- 2.4Ghz WiFi signal with internet connection, in order to sync the board's clock with the NTP server.
-- SD card. Once the board has finished its setup, you can remove the SD card, and store somewhere safe.
+- 2.4Ghz WiFi signal with internet connection, in order to sync the board's clock with the [NTP server](https://ntp.org/).
+- SD card with `config.yml` in the root as shown below:
+
+### config.yml
+
+```yml
+version: 0.0.0
+
+wifi:
+  password: test
+  ssid: test
+
+mqtt:
+  port: 1883
+  server: 192.168.0.1
+  username: test
+  password: test
+
+security:
+  pin:
+    hash: test
+    key: test
+
+touch:
+  force_calibration: 0
+```
 
 ## 📖 Guides
 
@@ -91,10 +115,10 @@ https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/b610d1de
 1. Install Platform IO IDE extension in VS Code.
 2. Open this project in a new vscode workspace, and wait for Platform.IO to finish its automatic setup.
 3. Open `platformio.ini` and edit
-4. Connect your board to your computer. If you installed the proper drivers, the next steps should work just fine.
-5. Click on the Platform.IO button, in VSCode's sidebar.
-6. Then click on `esp32-cyd -> General -> Build` and wait until the build is done.
-7. Finally, click on `esp32-cyd -> General -> Upload ad Monitor` to flash the code into your board.
+4. Connect your board to your computer. If you installed the right drivers, the next steps should work just fine.
+5. Click on the Platform.IO button, in VS Code's sidebar.
+6. Then click on `esp32-cyd -> General -> Build` and wait until the build is finished with success.
+7. Finally, click on `esp32-cyd -> General -> Upload ad Monitor` to flash the code into your board, and verify its outputs using a terminal.
 
 #### 📚 Using Platform IO CLI
 
@@ -102,38 +126,10 @@ Alternatively, if you prefer using clis, install PlatformIO's CLI using this [tu
 
 1. run `platformio device list` and annotate the device path of your board.
 
-> **INFO**: You can discover which path belongs to your board by comparing the outputs of this command when your board is connected and not.
+   > **INFO**: You can discover which path belongs to your board by comparing the outputs of this command when your board is connected and not.
 
-2. setup environment variables
-
-```bash
-export WIFI_SSID="WIFI PASSWORD"
-export WIFI_PASSWORD="WIFI PASSWORD"
-export PIN_HASH="HMAC SHA256 PASSWORD HASH HEX STRING"
-export PIN_KEY="PASSWORD HASH KEY"
-export MQTT_PORT="1883"
-export MQTT_SERVER="192.168.0.1"
-export MQTT_USERNAME="test"
-export MQTT_PASSWORD="test"
-export TOUCH_FORCE_CALIBRATION=0
-```
-
-> **INFO**: Wi-Fi variables are required because this project uses the NTP server to set its time.
-
-> **INFO**: Pin variables are optional. If both are set, the [pin number screen](https://private-user-images.githubusercontent.com/55927613/326233320-bf9b4940-22e4-42a5-9e29-1b4edcd033eb.jpg?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTQzNzQzNzMsIm5iZiI6MTcxNDM3NDA3MywicGF0aCI6Ii81NTkyNzYxMy8zMjYyMzMzMjAtYmY5YjQ5NDAtMjJlNC00MmE1LTllMjktMWI0ZWRjZDAzM2ViLmpwZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDA0MjklMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwNDI5VDA3MDExM1omWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTZiOGRmNzVlZTUwNDIzNmQ0MDYyYTM5ZGU2Y2MwOWJkODIxNTkzYmVlMzdmMjEyMGFiNjYwYzk2MjIzYzAxN2MmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.ndeMs3_NFAMehUgutSZ2DYogijwZwrvGFUuOhOoGQMI) is shown before your TOTP Codes can be displayed.
-
-> **WARNING**: remember to use a network which has access to the internet, and is isolated from your main network.
-
-> **WARNING**: platform.io vscode extension tasks (build, upload, monitor...) are not using env variables. Therefore, you must open platformio.ini and set `-D WIFI_SSID` and `-D WIFI_PASSWORD` with your values.
-
-> **INFO**: use this [app](https://www.devglan.com/online-tools/hmac-sha256-online) to hash your password. Its hashed output is the value you have to load `PIN_HASH` env variable. Remember to set `PIN_KEY` to the same secret you used to hash your password.
-
-> **INFO**: `MQTT` env variables are optional. To enable the board to receive secrets from an mqtt broker, `MQTT_SERVER` and `MQTT_PORT` must be specified.
-
-> **INFO**: `TOUCH_FORCE_CALIBRATION` env variable is optional, and it can be either `0` or `1`. If its value was set to `1` before a build, the touch calibration flow will run during boot as shown in the following picture: <img src="./images/touch-calibration-flow.png">
-
-1. run `platformio run --environment esp32-cyd` to build the application
-2. upload the code to your board using `platformio run --target upload --upload-port ${DEVICE_PATH} --target monitor --environment esp32-cyd`.
+2. run `platformio run --environment esp32-cyd` to build the application
+3. upload the code to your board using `platformio run --target upload --upload-port ${DEVICE_PATH} --target monitor --environment esp32-cyd`.
 
 > **WARNING**: Remember to substitue `${DEVICE_PATH}` with the value you got in step 1.
 
@@ -210,7 +206,6 @@ Ease the process of adding new services. With this feature I won't need to inser
 ### 🔜 Display turns off automatically after N seconds without user interaction
 
 After booting, the display turns off automatically if it doesn't receive touch events after N seconds. N is a configurable build variable, and it defaults to 3 seconds. This behavior is enabled by default, but can be disabled with another build variable.
-
 
 ### 🔜 Create chrome extension to ease registering TOTP secrets
 

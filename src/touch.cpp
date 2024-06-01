@@ -2,6 +2,7 @@
 #include <XPT2046_Bitbang.h>
 #include <string.h>
 #include "constants.h"
+#include "config.hpp"
 
 XPT2046_Bitbang touch(TOUCH_MOSI, TOUCH_MISO, TOUCH_CLK, TOUCH_CS);
 static lv_indev_drv_t touchDriver;
@@ -14,17 +15,17 @@ void on_touch_change(lv_indev_drv_t *touchDriver, lv_indev_data_t *touchData)
     Point touchPoint = touch.getTouch();
     int16_t tmpTouchPointX = touchPoint.x;
     int16_t tmpTouchPointY = touchPoint.y;
-    Serial.printf("BEFORE TX: %d TY %d \n", touchPoint.x, touchPoint.y);
+    // Serial.printf("BEFORE TX: %d TY %d \n", touchPoint.x, touchPoint.y);
 
     // NOTE: swapping due to the rotation
     touchPoint.x = tmpTouchPointY;
     touchPoint.y = tmpTouchPointX;
 
-    Serial.printf("AFTER TX: %d TY %d \n", touchPoint.x, touchPoint.y);
-    // NOTE: because x and y cordinates were swaped, x limits are now bound to DISPLAY HEIGHT, while y limits to the DISPLAY_WIDTH
+    // Serial.printf("AFTER TX: %d TY %d \n", touchPoint.x, touchPoint.y);
+    //  NOTE: because x and y cordinates were swaped, x limits are now bound to DISPLAY HEIGHT, while y limits to the DISPLAY_WIDTH
     if (touchPoint.x >= 0 && touchPoint.x < DISPLAY_HEIGHT && touchPoint.y >= 0 && touchPoint.y < DISPLAY_WIDTH)
     {
-        Serial.println("TOUCH PRESSED");
+        // Serial.println("TOUCH PRESSED");
         uint32_t secondTouchTime = millis();
 
         touchData->state = LV_INDEV_STATE_PRESSED;
@@ -35,8 +36,8 @@ void on_touch_change(lv_indev_drv_t *touchDriver, lv_indev_data_t *touchData)
         const char *activeDisplayName = (const char *)lv_obj_get_user_data(activeDisplay);
         if (strcmp(activeDisplayName, TOTP_SCREEN_NAME) == 0)
         {
-            Serial.printf("TIME SINCE FIRST TOUCH %lu \n", secondTouchTime - firstTouchTime);
-            Serial.printf("STATE %d \n", touchData->state);
+            // Serial.printf("TIME SINCE FIRST TOUCH %lu \n", secondTouchTime - firstTouchTime);
+            // Serial.printf("STATE %d \n", touchData->state);
             if (captureSecondTouch && secondTouchTime - firstTouchTime < TOUCH_DOUBLE_TOUCH_INTERVAL)
             {
                 if (isDisplayOn)
@@ -59,20 +60,20 @@ void on_touch_change(lv_indev_drv_t *touchDriver, lv_indev_data_t *touchData)
     {
         touchData->state = LV_INDEV_STATE_RELEASED;
         captureSecondTouch = true;
-        Serial.println("TOUCH RELEASED");
+        // Serial.println("TOUCH RELEASED");
     }
 }
 
-void init_touch()
+void init_touch(Configuration config)
 {
     Serial.println("Initializing touch");
     // NOTE: these values are for XPT2040 when in landscape mode / rotated 90
     touch.begin();
 
     // TODO: create screen to enable touch calibration without using serial output
-    if (TOUCH_FORCE_CALIBRATION)
+    if (config.touch.force_calibration)
     {
-        Serial.println("Calibrating Touch Sensor");
+        Serial.println("Calibrating touch");
         delay(2000);
         touch.calibrate();
         touch.saveCalibration();
@@ -87,5 +88,5 @@ void init_touch()
     touchDriver.type = LV_INDEV_TYPE_POINTER;
     touchDriver.read_cb = on_touch_change;
     lv_indev_drv_register(&touchDriver);
-    Serial.println("Touch initialized and registered");
+    Serial.println("Touch initialized");
 }

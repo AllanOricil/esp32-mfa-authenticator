@@ -48,16 +48,6 @@ jobs:
       # TODO: run tests
 
       - name: Build
-        env:
-          MQTT_PORT: "1883"
-          MQTT_SERVER: "192.168.0.1"
-          MQTT_USERNAME: "test"
-          MQTT_PASSWORD: "test"
-          PIN_HASH: "test"
-          PIN_KEY: "test"
-          WIFI_SSID: "test"
-          WIFI_PASSWORD: "test"
-          TOUCH_FORCE_CALIBRATION: 1
         run: pio run
 
       - name: Create build
