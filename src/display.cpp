@@ -47,8 +47,8 @@ void init_display()
     Serial.println("TFT rotation set.");
 
     lv_disp_drv_init(&disp_drv);
-    disp_drv.hor_res = LCD_WIDTH;
-    disp_drv.ver_res = LCD_HEIGHT;
+    disp_drv.hor_res = DISPLAY_WIDTH;
+    disp_drv.ver_res = DISPLAY_HEIGHT;
     disp_drv.flush_cb = on_display_change;
     disp_drv.draw_buf = (lv_disp_draw_buf_t *)malloc(sizeof(lv_disp_draw_buf_t));
     disp_drv.antialiasing = 1;
