@@ -100,7 +100,11 @@ void ui_init(void)
     } else {
         lv_disp_load_scr(ui_totp_screen);
     }
-    
+}
+
+void ui_task_handler()
+{
+    lv_task_handler();
 }
 
 void refresh_totp_labels()

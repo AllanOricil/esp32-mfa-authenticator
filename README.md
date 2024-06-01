@@ -115,6 +115,7 @@ export MQTT_PORT="1883"
 export MQTT_SERVER="192.168.0.1"
 export MQTT_USERNAME="test"
 export MQTT_PASSWORD="test"
+export TOUCH_FORCE_CALIBRATION=0
 ```
 
 > **INFO**: Wi-Fi variables are required because this project uses the NTP server to set its time.
@@ -129,8 +130,10 @@ export MQTT_PASSWORD="test"
 
 > **INFO**: `MQTT` env variables are optional. To enable the board to receive secrets from an mqtt broker, `MQTT_SERVER` and `MQTT_PORT` must be specified.
 
-3. run `platformio run --environment esp32-cyd` to build the application
-4. upload the code to your board using `platformio run --target upload --upload-port ${DEVICE_PATH} --target monitor --environment esp32-cyd`.
+> **INFO**: `TOUCH_FORCE_CALIBRATION` env variable is optional, and it can be either `0` or `1`. If its value was set to `1` before a build, the touch calibration flow will run during boot as shown in the following picture: <img src="./images/touch-calibration-flow.png">
+
+1. run `platformio run --environment esp32-cyd` to build the application
+2. upload the code to your board using `platformio run --target upload --upload-port ${DEVICE_PATH} --target monitor --environment esp32-cyd`.
 
 > **WARNING**: Remember to substitue `${DEVICE_PATH}` with the value you got in step 1.
 
@@ -227,7 +230,6 @@ When the ESP32-MFA-Authenticator extension is enabled, a new button called "regi
 ```
 
 > **INFO:** the above steps are summarizing my initial plan.
-
 
 ### 🔜 Group TOTP Codes
 

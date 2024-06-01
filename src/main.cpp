@@ -7,7 +7,8 @@
 #include "mfa.hpp"
 #include "totp-map.h"
 #include "file.hpp"
-#include "tft-touch.hpp"
+#include "display.hpp"
+#include "touch.hpp"
 #include "wifi.hpp"
 #include "mqtt.hpp"
 
@@ -31,10 +32,15 @@ void setup()
   init_mqtt();
 
   // SETUP SCREEN
-  init_display_and_touch();
+  init_display();
 
   // SETUP UI
+  // TODO: create setup screen with steps for configuring WIFI, MQTT and calibrate touch
   ui_init();
+
+  // SETUP TOUCH
+  // NOTE: touch comes after initializing UI because I plan to add a manual calibration screen
+  init_touch();
 }
 
 void loop()
@@ -77,5 +83,5 @@ void loop()
     }
   }
 
-  display_and_touch_handler();
+  ui_task_handler();
 }
