@@ -57,6 +57,7 @@ jobs:
           PIN_KEY: "test"
           WIFI_SSID: "test"
           WIFI_PASSWORD: "test"
+          TOUCH_FORCE_CALIBRATION: 1
         run: pio run
 
       - name: Create build
