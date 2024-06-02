@@ -32,10 +32,10 @@ public:
 		bool forceCalibration = false;
 	} touch;
 
-	static Configuration deserialize(const char *filePath);
+	static Configuration parse(const char *filePath);
 };
 
-Configuration Configuration::deserialize(const char *filePath)
+Configuration Configuration::parse(const char *filePath)
 {
 	File file = SD.open(filePath);
 	if (!file)
@@ -102,7 +102,7 @@ Configuration Configuration::deserialize(const char *filePath)
 Configuration init_configuration()
 {
 	Serial.println("Initializing configuration.");
-	Configuration config = Configuration::deserialize(CONFIG_FILE_PATH);
+	Configuration config = Configuration::parse(CONFIG_FILE_PATH);
 	Serial.println("Configuration initialized.");
 	return config;
 }

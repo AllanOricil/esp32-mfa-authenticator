@@ -35,7 +35,7 @@ public:
 		bool forceCalibration = false;
 	} touch;
 
-	static Configuration deserialize(const char *filePath);
+	static Configuration parse(const char *filePath);
 };
 
 Configuration init_configuration();
