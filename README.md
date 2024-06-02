@@ -28,13 +28,13 @@ Other motives:
 
 ## 🎬 Demos
 
-https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/166f6ea7-1046-4117-ae22-67991c8e6d8c
+<https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/166f6ea7-1046-4117-ae22-67991c8e6d8c>
 
-https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/6e240518-a35b-4bf0-8a41-ece0dad9efb9
+<https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/6e240518-a35b-4bf0-8a41-ece0dad9efb9>
 
-https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/a398b55b-a415-4d21-8f28-91df153bac9f
+<https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/a398b55b-a415-4d21-8f28-91df153bac9f>
 
-https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/b610d1de-1bf9-47fe-9148-8973cb30205d
+<https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/b610d1de-1bf9-47fe-9148-8973cb30205d>
 
 ## ⚙️ Parts
 
@@ -116,6 +116,9 @@ touch:
   force_calibration: 0
 ```
 
+> **WARNING:** once the boot process is finished, remove the SD card from the board.
+> **WARNING:** upon the initial boot-up, it is imperative to undergo the calibration process outlined here.
+
 ## 📖 Guides
 
 ### 📚 How to build
@@ -128,20 +131,28 @@ touch:
 4. Connect your board to your computer. If you installed the right drivers, the next steps should work just fine.
 5. Click on the Platform.IO button, in VS Code's sidebar.
 6. Then click on `esp32-cyd -> General -> Build` and wait until the build is finished with success.
-7. Finally, click on `esp32-cyd -> General -> Upload ad Monitor` to flash the code into your board, and verify its outputs using a terminal.
+7. Orient the board horizontally, placing the USB port(s) on the right side and positioning the screen towards you. This step is important for when calibrating the touch sensor.
+8. Finally, click on `esp32-cyd -> General -> Upload ad Monitor` to flash the code into your board, and verify its outputs using a terminal.
 
 #### 📚 Using Platform IO CLI
 
-Alternatively, if you prefer using clis, install PlatformIO's CLI using this [tutorial](https://platformio.org/install/cli), and then follow the next steps:
+Alternatively, if you prefer using CLIs, install PlatformIO's official CLI using this [tutorial](https://platformio.org/install/cli), and then follow the next steps:
 
-1. run `platformio device list` and annotate the device path of your board.
+1. Run `platformio device list` and annotate the device path of your board.
 
    > **INFO**: You can discover which path belongs to your board by comparing the outputs of this command when your board is connected and not.
 
-2. run `platformio run --environment esp32-cyd` to build the application
-3. upload the code to your board using `platformio run --target upload --upload-port ${DEVICE_PATH} --target monitor --environment esp32-cyd`.
+2. Run `platformio run --environment esp32-cyd` to build the application
+3. Orient the board horizontally, placing the USB port(s) on the right side and positioning the screen towards you. This step is important for when calibrating the touch sensor.
+4. Upload the code to your board using `platformio run --target upload --upload-port ${DEVICE_PATH} --target monitor --environment esp32-cyd`.
+5. Wait until the screen turns white, then proceed to follow the calibration instructions displayed in your terminal for the touch sensor.
+   <img src="./images/touch-calibration-flow.png">
 
-> **WARNING**: Remember to substitue `${DEVICE_PATH}` with the value you got in step 1.
+   > **INFO:** the calibration process occurs only once, immediately after flashing the board and during its initial boot.
+
+   > **WARNING:** the pin screen won't work if you did not calibrate the touch sensor using the orientation described above in step 3.
+
+   > **WARNING**: remember to substitue `${DEVICE_PATH}` with the value you got in step 1.
 
 ### 📚 How to add TOTP Secrets
 
@@ -166,8 +177,30 @@ aws-3,DSAJDHHAHASAUDOASNOTREALOADAKLDASAJFPOAIDONTEVENTRYOASFAIPO
 
 ### 📚 How to verify if TOTP codes are correct
 
-1. Go to https://totp.danhersam.com/
+1. Go to <https://totp.danhersam.com/>
 2. Paste/type your encoded base 32 secret in the secret field, and then compare the TOTP code shown with the one you are seeing on the ESP32's screen.
+
+### 📚 How to recalibrate the touch sensor
+
+1. Add the following property to the root of your `config.yml` and save it.
+   > **WARNING:** The calibration process will initiate upon the initial boot of the board, regardless of the content stored in `config.yml`.
+
+```yml
+touch:
+  force_calibration: true
+```
+
+2. Connect the board to your computer.
+3. Open a terminal, and run `platformio device monitor --baud 115200` to monitor the board's serial port.
+   ![monitor-serial-port](./images/monitor-serial-port.png)
+4. Orient the board horizontally, placing the USB port(s) on the right side and positioning the screen towards you.
+5. Ensure the SD card containing `config.yml` is on the board.
+6. Press the `RST` button on the board and wait until the screen becomes pure white, and follow the instructions as shown below.
+   <img src="./images/touch-calibration-flow.png">
+7. Remove the touch properties from `config.yml`, save it and put it back on the board.
+8. Press the `RST` button once more, and now verify that the calibration flow isn't triggered anymore.
+
+> **WARNING:** the pin screen won't work if you did not calibrate the touch sensor using the orientation described above in step 4.
 
 ### 📚 How to register TOTP Secrets without inserting the SD card into a computer
 
