@@ -2,29 +2,12 @@
 #include <PubSubClient.h>
 #include <stdbool.h>
 #include "constants.h"
+#include "config.hpp"
 
-#ifndef MQTT_USERNAME
-  #warning "MQTT_USERNAME is not defined! Please define MQTT_USERNAME."
-#else
-  #pragma message "MQTT_USERNAME is set to: " MQTT_USERNAME
-#endif
+WiFiClient espClient;
+PubSubClient client(espClient);
 
-#ifndef MQTT_PASSWORD
-  #warning "MQTT_PASSWORD is not defined! Please define MQTT_PASSWORD."
-#else
-  #pragma message "MQTT_PASSWORD is set to: " MQTT_PASSWORD
-#endif
-
-#ifndef MQTT_SERVER
-  #warning "MQTT_SERVER is not defined! Please define MQTT_SERVER."
-#elif defined(MQTT_PORT)
-  #pragma message "MQTT_SERVER is set to: " MQTT_SERVER
-  #pragma message "MQTT_PORT is set to: " MQTT_PORT
-  WiFiClient espClient;
-  PubSubClient client(espClient);
-  #else
-  #warning "MQTT_SERVER is defined but MQTT_PORT is not defined! Please define MQTT_PORT."
-#endif
+Configuration config;
 
 struct PayloadData{
   byte payload[MQTT_MAX_PAYLOAD_SIZE];
@@ -32,11 +15,17 @@ struct PayloadData{
 };
 
 bool isMqttConfigured = false;
-
 volatile bool processMqttMessage = false;
 volatile PayloadData globalPayload = {{0}, 0};
 unsigned long lastReconnectAttempt = 0;
 
+bool isMqttServerConfigSet(){
+  return !config.mqtt.server.isEmpty() && !config.mqtt.port.isEmpty();
+}
+
+bool isMqttCredentialsConfigSet(){
+  return !config.mqtt.username.isEmpty() && !config.mqtt.password.isEmpty();
+}
 
 void print_mqtt_topic_message(char *topic, byte *payload, unsigned int length){
   // NOTE: Print topic
@@ -66,10 +55,9 @@ void on_mqtt_message_received(char *topic, byte *payload, unsigned int length){
   }
 }
 
-
 bool connect(const char *topic){
-  if(strlen(MQTT_USERNAME) && strlen(MQTT_PASSWORD)){
-    client.connect(topic, MQTT_USERNAME, MQTT_PASSWORD);
+  if(isMqttCredentialsConfigSet()){
+    client.connect(topic, config.mqtt.username.c_str(), config.mqtt.password.c_str());
   } else {
     client.connect(topic);
   }
@@ -103,12 +91,14 @@ void connect_to_mqtt(){
   }
 }
 
-void init_mqtt(){
-  if(strlen(MQTT_SERVER) && strlen(MQTT_PORT)){
-    Serial.println("Configuring MQTT client");
-    unsigned long mqtt_port = strtoul(MQTT_PORT, NULL, 10);
-    client.setServer(MQTT_SERVER, mqtt_port);
+void init_mqtt(Configuration _config){
+  config = _config;
+  if(isMqttServerConfigSet()){
+    Serial.println("Initializing MQTT client");
+    config = _config;
+    client.setServer(config.mqtt.server.c_str(), config.mqtt.port.toInt());
     client.setCallback(on_mqtt_message_received);
     isMqttConfigured = true;
+    Serial.println("MQTT client initialized");
   }
 }

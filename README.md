@@ -28,13 +28,13 @@ Other motives:
 
 ## 🎬 Demos
 
-https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/166f6ea7-1046-4117-ae22-67991c8e6d8c
+<https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/166f6ea7-1046-4117-ae22-67991c8e6d8c>
 
-https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/6e240518-a35b-4bf0-8a41-ece0dad9efb9
+<https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/6e240518-a35b-4bf0-8a41-ece0dad9efb9>
 
-https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/a398b55b-a415-4d21-8f28-91df153bac9f
+<https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/a398b55b-a415-4d21-8f28-91df153bac9f>
 
-https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/b610d1de-1bf9-47fe-9148-8973cb30205d
+<https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/b610d1de-1bf9-47fe-9148-8973cb30205d>
 
 ## ⚙️ Parts
 
@@ -79,8 +79,45 @@ https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/b610d1de
 
 ## 🔌 Boot and Reset Requirements
 
-- 2.4Ghz WiFi signal with internet connection, in order to sync the board's clock with the NTP server.
-- SD card. Once the board has finished its setup, you can remove the SD card, and store somewhere safe.
+- 2.4Ghz WiFi signal with internet connection, in order to sync the board's clock with the [NTP server](https://ntp.org/).
+- SD card with `config.yml` in the root as shown below:
+
+### config.yml
+
+```yml
+# [REQUIRED] necessary for enabling future changes
+version: 0.0.0
+
+wifi:
+  # [REQUIRED] (text) wifi connection password
+  password: test
+  # [REQUIRED] (text) wifi id
+  ssid: test
+
+mqtt:
+  # [OPTIONAL] (text) mqtt server port
+  port: 1883
+  # [OPTIONAL] (text) mqtt server ip
+  server: 192.168.0.1
+  # [OPTIONAL] (text) mqtt connection username
+  username: test
+  # [OPTIONAL] (text) mqtt connection password
+  password: test
+
+security:
+  pin:
+    # [OPTIONAL] (text) pin code HMAC-SHA256 hashed
+    hash: test
+    # [OPTIONAL] (text) key used to hash pin code
+    key: test
+
+touch:
+  # [OPTIONAL] (bool=false|0) calibrate touch sensor if true or 1
+  force_calibration: 0
+```
+
+> **WARNING:** once the boot process is finished, remove the SD card from the board.
+> **WARNING:** upon the initial boot-up, it is imperative to undergo the calibration process outlined here.
 
 ## 📖 Guides
 
@@ -91,51 +128,31 @@ https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/b610d1de
 1. Install Platform IO IDE extension in VS Code.
 2. Open this project in a new vscode workspace, and wait for Platform.IO to finish its automatic setup.
 3. Open `platformio.ini` and edit
-4. Connect your board to your computer. If you installed the proper drivers, the next steps should work just fine.
-5. Click on the Platform.IO button, in VSCode's sidebar.
-6. Then click on `esp32-cyd -> General -> Build` and wait until the build is done.
-7. Finally, click on `esp32-cyd -> General -> Upload ad Monitor` to flash the code into your board.
+4. Connect your board to your computer. If you installed the right drivers, the next steps should work just fine.
+5. Click on the Platform.IO button, in VS Code's sidebar.
+6. Then click on `esp32-cyd -> General -> Build` and wait until the build is finished with success.
+7. Orient the board horizontally, placing the USB port(s) on the right side and positioning the screen towards you. This step is important for when calibrating the touch sensor.
+8. Finally, click on `esp32-cyd -> General -> Upload ad Monitor` to flash the code into your board, and verify its outputs using a terminal.
 
 #### 📚 Using Platform IO CLI
 
-Alternatively, if you prefer using clis, install PlatformIO's CLI using this [tutorial](https://platformio.org/install/cli), and then follow the next steps:
+Alternatively, if you prefer using CLIs, install PlatformIO's official CLI using this [tutorial](https://platformio.org/install/cli), and then follow the next steps:
 
-1. run `platformio device list` and annotate the device path of your board.
+1. Run `platformio device list` and annotate the device path of your board.
 
-> **INFO**: You can discover which path belongs to your board by comparing the outputs of this command when your board is connected and not.
+   > **INFO**: You can discover which path belongs to your board by comparing the outputs of this command when your board is connected and not.
 
-2. setup environment variables
+2. Run `platformio run --environment esp32-cyd` to build the application
+3. Orient the board horizontally, placing the USB port(s) on the right side and positioning the screen towards you. This step is important for when calibrating the touch sensor.
+4. Upload the code to your board using `platformio run --target upload --upload-port ${DEVICE_PATH} --target monitor --environment esp32-cyd`.
+5. Wait until the screen turns white, then proceed to follow the calibration instructions displayed in your terminal for the touch sensor.
+   <img src="./images/touch-calibration-flow.png">
 
-```bash
-export WIFI_SSID="WIFI PASSWORD"
-export WIFI_PASSWORD="WIFI PASSWORD"
-export PIN_HASH="HMAC SHA256 PASSWORD HASH HEX STRING"
-export PIN_KEY="PASSWORD HASH KEY"
-export MQTT_PORT="1883"
-export MQTT_SERVER="192.168.0.1"
-export MQTT_USERNAME="test"
-export MQTT_PASSWORD="test"
-export TOUCH_FORCE_CALIBRATION=0
-```
+   > **INFO:** the calibration process occurs only once, immediately after flashing the board and during its initial boot.
 
-> **INFO**: Wi-Fi variables are required because this project uses the NTP server to set its time.
+   > **WARNING:** the pin screen won't work if you did not calibrate the touch sensor using the orientation described above in step 3.
 
-> **INFO**: Pin variables are optional. If both are set, the [pin number screen](https://private-user-images.githubusercontent.com/55927613/326233320-bf9b4940-22e4-42a5-9e29-1b4edcd033eb.jpg?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTQzNzQzNzMsIm5iZiI6MTcxNDM3NDA3MywicGF0aCI6Ii81NTkyNzYxMy8zMjYyMzMzMjAtYmY5YjQ5NDAtMjJlNC00MmE1LTllMjktMWI0ZWRjZDAzM2ViLmpwZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDA0MjklMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwNDI5VDA3MDExM1omWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTZiOGRmNzVlZTUwNDIzNmQ0MDYyYTM5ZGU2Y2MwOWJkODIxNTkzYmVlMzdmMjEyMGFiNjYwYzk2MjIzYzAxN2MmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.ndeMs3_NFAMehUgutSZ2DYogijwZwrvGFUuOhOoGQMI) is shown before your TOTP Codes can be displayed.
-
-> **WARNING**: remember to use a network which has access to the internet, and is isolated from your main network.
-
-> **WARNING**: platform.io vscode extension tasks (build, upload, monitor...) are not using env variables. Therefore, you must open platformio.ini and set `-D WIFI_SSID` and `-D WIFI_PASSWORD` with your values.
-
-> **INFO**: use this [app](https://www.devglan.com/online-tools/hmac-sha256-online) to hash your password. Its hashed output is the value you have to load `PIN_HASH` env variable. Remember to set `PIN_KEY` to the same secret you used to hash your password.
-
-> **INFO**: `MQTT` env variables are optional. To enable the board to receive secrets from an mqtt broker, `MQTT_SERVER` and `MQTT_PORT` must be specified.
-
-> **INFO**: `TOUCH_FORCE_CALIBRATION` env variable is optional, and it can be either `0` or `1`. If its value was set to `1` before a build, the touch calibration flow will run during boot as shown in the following picture: <img src="./images/touch-calibration-flow.png">
-
-1. run `platformio run --environment esp32-cyd` to build the application
-2. upload the code to your board using `platformio run --target upload --upload-port ${DEVICE_PATH} --target monitor --environment esp32-cyd`.
-
-> **WARNING**: Remember to substitue `${DEVICE_PATH}` with the value you got in step 1.
+   > **WARNING**: remember to substitue `${DEVICE_PATH}` with the value you got in step 1.
 
 ### 📚 How to add TOTP Secrets
 
@@ -160,8 +177,30 @@ aws-3,DSAJDHHAHASAUDOASNOTREALOADAKLDASAJFPOAIDONTEVENTRYOASFAIPO
 
 ### 📚 How to verify if TOTP codes are correct
 
-1. Go to https://totp.danhersam.com/
+1. Go to <https://totp.danhersam.com/>
 2. Paste/type your encoded base 32 secret in the secret field, and then compare the TOTP code shown with the one you are seeing on the ESP32's screen.
+
+### 📚 How to recalibrate the touch sensor
+
+1. Add the following property to the root of your `config.yml` and save it.
+   > **WARNING:** The calibration process will initiate upon the initial boot of the board, regardless of the content stored in `config.yml`.
+
+```yml
+touch:
+  force_calibration: true
+```
+
+2. Connect the board to your computer.
+3. Open a terminal, and run `platformio device monitor --baud 115200` to monitor the board's serial port.
+   ![monitor-serial-port](./images/monitor-serial-port.png)
+4. Orient the board horizontally, placing the USB port(s) on the right side and positioning the screen towards you.
+5. Ensure the SD card containing `config.yml` is on the board.
+6. Press the `RST` button on the board and wait until the screen becomes pure white, and follow the instructions as shown below.
+   <img src="./images/touch-calibration-flow.png">
+7. Remove the touch properties from `config.yml`, save it and put it back on the board.
+8. Press the `RST` button once more, and now verify that the calibration flow isn't triggered anymore.
+
+> **WARNING:** the pin screen won't work if you did not calibrate the touch sensor using the orientation described above in step 4.
 
 ### 📚 How to register TOTP Secrets without inserting the SD card into a computer
 
@@ -210,7 +249,6 @@ Ease the process of adding new services. With this feature I won't need to inser
 ### 🔜 Display turns off automatically after N seconds without user interaction
 
 After booting, the display turns off automatically if it doesn't receive touch events after N seconds. N is a configurable build variable, and it defaults to 3 seconds. This behavior is enabled by default, but can be disabled with another build variable.
-
 
 ### 🔜 Create chrome extension to ease registering TOTP secrets
 

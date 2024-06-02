@@ -1,16 +1,17 @@
 #include <Arduino.h>
 
+#include "pin.h"
 #include "ui/ui.h"
 #include "constants.h"
+#include "totp-map.h"
+#include "config.hpp"
 #include "utils.hpp"
 #include "clock.hpp"
 #include "mfa.hpp"
-#include "totp-map.h"
 #include "file.hpp"
-#include "display.hpp"
-#include "touch.hpp"
 #include "wifi.hpp"
 #include "mqtt.hpp"
+#include "touch-screen.hpp"
 
 extern bool isWorkingWithSD;
 extern volatile bool processMqttMessage;
@@ -18,29 +19,34 @@ extern volatile bool processMqttMessage;
 void setup()
 {
   Serial.begin(115200);
+  // SETUP SD CARD
+  init_sd_card_reader();
+
+  // SETUP CONFIG
+  Configuration config = init_configuration();
+
+  // SETUP PIN
+  init_pin(config.security.pin.hash.c_str(), config.security.pin.key.c_str());
 
   // SETUP TIME
-  init_wifi();
+  init_wifi(config);
   sync_time();
 
   // SETUP MFA
-  init_sd_card_reader();
   load_mfa_totp_keys();
   generate_totps();
 
   // SETUP MQTT
-  init_mqtt();
+  init_mqtt(config);
 
-  // SETUP SCREEN
-  init_display();
+  // SETUP TOUCH SCREEN
+  init_touch_screen(config);
 
   // SETUP UI
   // TODO: create setup screen with steps for configuring WIFI, MQTT and calibrate touch
-  ui_init();
-
-  // SETUP TOUCH
-  // NOTE: touch comes after initializing UI because I plan to add a manual calibration screen
-  init_touch();
+  // TODO: encapsulate this logic the UI controller
+  bool displayPinScreen = !config.security.pin.hash.isEmpty() && !config.security.pin.key.isEmpty();
+  ui_init(displayPinScreen);
 }
 
 void loop()
