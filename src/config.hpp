@@ -12,27 +12,27 @@ public:
 	String version;
 	struct WiFiSettings
 	{
-		String ssid;
-		String password;
+		String ssid = "";
+		String password = "";
 	} wifi;
 	struct MQTTSettings
 	{
-		String server;
-		String port;
-		String username;
-		String password;
+		String server = "";
+		String port = "";
+		String username = "";
+		String password = "";
 	} mqtt;
 	struct SecuritySettings
 	{
 		struct PinSettings
 		{
-			String hash;
-			String key;
+			String hash = "";
+			String key = "";
 		} pin;
 	} security;
 	struct TouchSettings
 	{
-		int force_calibration;
+		bool forceCalibration = false;
 	} touch;
 
 	static Configuration deserialize(const char *filePath);

@@ -4,6 +4,8 @@
 #include <SPI.h>
 #include <string.h>
 #include "constants.h"
+#include "config.hpp"
+#include "touch.hpp"
 
 TFT_eSPI tft = TFT_eSPI();
 static lv_disp_drv_t disp_drv;
@@ -32,20 +34,29 @@ void on_display_change(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *c
 
 void init_display()
 {
+    Serial.println("Initializing display.");
+
+    Serial.println("Initializing backlight.");
     pinMode(TFT_BCKL, OUTPUT);
     digitalWrite(TFT_BCKL, HIGH);
+    Serial.println("Backlight initialized.");
 
-    Serial.println("Backlight enabled.");
-
+    Serial.println("Initializing lvgl.");
     lv_init();
     Serial.println("LVGL initialized.");
 
+    Serial.println("Initializing tft.");
     tft.begin();
     tft.setSwapBytes(true);
-    Serial.println("TFT initialized.");
     tft.setRotation(2); /* Landscape orientation */
-    Serial.println("TFT rotation set.");
+    Serial.println("TFT initialized.");
 
+    Serial.println("Display initialized.");
+}
+
+lv_disp_t *register_display()
+{
+    Serial.println("Registering display in lvgl.");
     lv_disp_drv_init(&disp_drv);
     disp_drv.hor_res = DISPLAY_WIDTH;
     disp_drv.ver_res = DISPLAY_HEIGHT;
@@ -55,10 +66,10 @@ void init_display()
     void *drawBuffer = heap_caps_malloc(sizeof(lv_color_t) * LVGL_BUFFER_PIXELS, LVGL_BUFFER_MALLOC_FLAGS);
     lv_disp_draw_buf_init(disp_drv.draw_buf, drawBuffer, NULL, LVGL_BUFFER_PIXELS);
     lv_disp_t *disp = lv_disp_drv_register(&disp_drv);
-    Serial.println("LVGL display driver registered.");
     lv_obj_clean(lv_scr_act());
-
     ledcSetup(PWM_CHANNEL_BCKL, PWM_FREQ_BCKL, PWM_BITS_BCKL);
     ledcAttachPin(21, PWM_CHANNEL_BCKL);
     ledcWrite(PWM_CHANNEL_BCKL, 0.5 * PWM_MAX_BCKL);
+    Serial.println("Display registered.");
+    return disp;
 }

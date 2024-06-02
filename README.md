@@ -85,24 +85,34 @@ https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/b610d1de
 ### config.yml
 
 ```yml
+# [REQUIRED] necessary for enabling future changes
 version: 0.0.0
 
 wifi:
+  # [REQUIRED] (text) wifi connection password
   password: test
+  # [REQUIRED] (text) wifi id
   ssid: test
 
 mqtt:
+  # [OPTIONAL] (text) mqtt server port
   port: 1883
+  # [OPTIONAL] (text) mqtt server ip
   server: 192.168.0.1
+  # [OPTIONAL] (text) mqtt connection username
   username: test
+  # [OPTIONAL] (text) mqtt connection password
   password: test
 
 security:
   pin:
+    # [OPTIONAL] (text) pin code HMAC-SHA256 hashed
     hash: test
+    # [OPTIONAL] (text) key used to hash pin code
     key: test
 
 touch:
+  # [OPTIONAL] (bool=false|0) calibrate touch sensor if true or 1
   force_calibration: 0
 ```
 

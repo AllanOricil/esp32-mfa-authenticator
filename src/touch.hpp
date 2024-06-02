@@ -10,5 +10,6 @@
 
 // Function declarations
 void init_touch(Configuration config);
+void register_touch(lv_disp_t *disp);
 
 #endif // LVGL_TOUCH_H

@@ -7,8 +7,11 @@
 #include <TFT_eSPI.h>
 #include <SPI.h>
 #include "constants.h"
+#include "config.hpp"
+#include "touch.hpp"
 
 // Function declarations
 void init_display();
+lv_disp_t *register_display();
 
 #endif // LVGL_DISPLAY_H

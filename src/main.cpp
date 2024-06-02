@@ -3,16 +3,15 @@
 #include "pin.h"
 #include "ui/ui.h"
 #include "constants.h"
+#include "totp-map.h"
 #include "config.hpp"
 #include "utils.hpp"
 #include "clock.hpp"
 #include "mfa.hpp"
-#include "totp-map.h"
 #include "file.hpp"
-#include "display.hpp"
-#include "touch.hpp"
 #include "wifi.hpp"
 #include "mqtt.hpp"
+#include "touch-screen.hpp"
 
 extern bool isWorkingWithSD;
 extern volatile bool processMqttMessage;
@@ -40,16 +39,14 @@ void setup()
   // SETUP MQTT
   init_mqtt(config);
 
-  // SETUP SCREEN
-  init_display();
-
-  // SETUP TOUCH
-  // NOTE: touch comes after initializing UI because I plan to add a manual calibration screen
-  init_touch(config);
+  // SETUP TOUCH SCREEN
+  init_touch_screen(config);
 
   // SETUP UI
   // TODO: create setup screen with steps for configuring WIFI, MQTT and calibrate touch
-  ui_init(!config.security.pin.hash.isEmpty() && !config.security.pin.key.isEmpty());
+  // TODO: encapsulate this logic the UI controller
+  bool displayPinScreen = !config.security.pin.hash.isEmpty() && !config.security.pin.key.isEmpty();
+  ui_init(displayPinScreen);
 }
 
 void loop()
