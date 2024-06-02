@@ -1,5 +1,6 @@
 #include <Arduino.h>
 
+#include "pin.h"
 #include "ui/ui.h"
 #include "constants.h"
 #include "config.hpp"
@@ -12,7 +13,6 @@
 #include "touch.hpp"
 #include "wifi.hpp"
 #include "mqtt.hpp"
-#include "pin.h"
 
 extern bool isWorkingWithSD;
 extern volatile bool processMqttMessage;
@@ -43,13 +43,13 @@ void setup()
   // SETUP SCREEN
   init_display();
 
-  // SETUP UI
-  // TODO: create setup screen with steps for configuring WIFI, MQTT and calibrate touch
-  ui_init();
-
   // SETUP TOUCH
   // NOTE: touch comes after initializing UI because I plan to add a manual calibration screen
   init_touch(config);
+
+  // SETUP UI
+  // TODO: create setup screen with steps for configuring WIFI, MQTT and calibrate touch
+  ui_init(!config.security.pin.hash.isEmpty() && !config.security.pin.key.isEmpty());
 }
 
 void loop()

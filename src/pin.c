@@ -6,8 +6,8 @@
 #include <stdlib.h>
 #include "constants.h"
 
-const char *pinHash;
-const char *pinKey;
+static const char *pinHash = NULL;
+static const char *pinKey = NULL;
 
 unsigned char *hex_to_bin(const char *hex_string)
 {
@@ -61,8 +61,8 @@ bool validate_pin(const char *pin)
 	return memcmp(generated_hash, hex_to_bin(pinHash), sizeof(generated_hash)) == 0;
 }
 
-void init_pin(const char *_pinHash, const char *_pinKey)
+void init_pin(const char *hash, const char *key)
 {
-	pinHash = _pinHash;
-	pinKey = _pinKey;
+	pinHash = hash;
+	pinKey = key;
 }

@@ -7,15 +7,6 @@
 #include "ui_helpers.h"
 #include <string.h>
 
-#ifdef PIN_HASH
-#pragma message "PIN_HASH is set to: " PIN_HASH
-#endif
-
-#ifdef PIN_KEY
-#pragma message "PIN_KEY is set to: " PIN_KEY
-#endif
-
-
 // CUSTOM EVENTS
 uint32_t LV_EVENT_SETUP_COMPLETE;
 
@@ -80,7 +71,7 @@ void ui_event_pin_textarea(lv_event_t *e)
 
 ///////////////////// SCREENS ////////////////////
 
-void ui_init(void)
+void ui_init(bool displayPinScreen)
 {
     lv_disp_t *disp = lv_disp_get_default();
     lv_theme_t *theme = lv_theme_default_init(
@@ -94,10 +85,13 @@ void ui_init(void)
     ui_totp_screen_screen_init();
     ui____initial_actions0 = lv_obj_create(NULL);
 
-    if(strcmp(PIN_HASH,"") != 0 && strcmp(PIN_KEY,"") != 0){
+    if (displayPinScreen)
+    {
         ui_pin_screen_screen_init();
         lv_disp_load_scr(ui_pin_screen);
-    } else {
+    }
+    else
+    {
         lv_disp_load_scr(ui_totp_screen);
     }
 }
