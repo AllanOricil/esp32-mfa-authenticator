@@ -1,3 +1,17 @@
+# [0.7.0](https://github.com/AllanOricil/esp32-mfa-totp-generator/compare/v0.6.0...v0.7.0) (2024-06-02)
+
+
+### Bug Fixes
+
+* pin screen buttons are clickable again ([76ba5a8](https://github.com/AllanOricil/esp32-mfa-totp-generator/commit/76ba5a8a1a97753f94644b283af822e5d3dd0cae))
+* pin validation no longer throws a runtime exception ([72a43d3](https://github.com/AllanOricil/esp32-mfa-totp-generator/commit/72a43d3a52358411b1eb7382318252c762935910))
+* src/main.cpp:30: undefined reference to init_pin(char const*, char const*) ([1b0e268](https://github.com/AllanOricil/esp32-mfa-totp-generator/commit/1b0e268f49236efddcc54c6f3913a247c297bd69))
+
+
+### Features
+
+* read user specific values from .yml instead of env variables set during build ([6806dac](https://github.com/AllanOricil/esp32-mfa-totp-generator/commit/6806dacced68640f1638c6f51cc42bfaa49ed879))
+
 # [0.6.0](https://github.com/AllanOricil/esp32-mfa-totp-generator/compare/v0.5.0...v0.6.0) (2024-05-05)
 
 
