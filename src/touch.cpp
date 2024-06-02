@@ -20,7 +20,6 @@ void on_touch_change(lv_indev_drv_t *touchDriver, lv_indev_data_t *touchData)
     touchPoint.x = tmpTouchPointY;
     touchPoint.y = tmpTouchPointX;
 
-    //  NOTE: because x and y cordinates were swaped, x limits are now bound to DISPLAY HEIGHT, while y limits to the DISPLAY_WIDTH
     if (touchPoint.x >= 0 && touchPoint.x < DISPLAY_WIDTH && touchPoint.y >= 0 && touchPoint.y < DISPLAY_HEIGHT)
     {
         uint32_t secondTouchTime = millis();
