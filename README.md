@@ -152,8 +152,8 @@ Alternatively, if you prefer using CLIs, install PlatformIO's official CLI using
 
 1. Run `platformio device list` and annotate the device path of your board.
 
-   > [!NOTE]
-   > You can discover which path belongs to your board by comparing the outputs of this command when your board is connected and not.
+> [!NOTE]
+> You can discover which path belongs to your board by comparing the outputs of this command when your board is connected and not.
 
 2. Run `platformio run --environment esp32-cyd` to build the application
 3. Orient the board horizontally, placing the USB port(s) on the right side and positioning the screen towards you. This step is important for when calibrating the touch sensor.
@@ -161,14 +161,14 @@ Alternatively, if you prefer using CLIs, install PlatformIO's official CLI using
 5. Wait until the screen turns white, then proceed to follow the calibration instructions displayed in your terminal for the touch sensor.
    <img src="./images/touch-calibration-flow.png">
 
-   > [!NOTE]
-   > The calibration process occurs only once, immediately after flashing the board and during its initial boot.
+> [!NOTE]
+> The calibration process occurs only once, immediately after flashing the board and during its initial boot.
 
-   > [!WARNING]
-   > The pin screen won't work if you did not calibrate the touch sensor using the orientation described above in step 3.
+> [!WARNING]
+> The pin screen won't work if you did not calibrate the touch sensor using the orientation described above in step 3.
 
-   > [!TIP]
-   > Remember to substitue `${DEVICE_PATH}` with the value you got in step 1.
+> [!TIP]
+> Remember to substitue `${DEVICE_PATH}` with the value you got in step 1.
 
 ### 📚 How to add TOTP Secrets
 
