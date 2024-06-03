@@ -42,11 +42,14 @@ Other motives:
 - 3D printed black case
 - Acrillic case
 
-> **INFO**: you can buy this board from Aliexpress clicking on any of these affiliate links: [USD](https://s.click.aliexpress.com/e/_mNCBRAA) [BRL](https://s.click.aliexpress.com/e/_mOtZaxM)
+> [!TIP]
+> You can buy this board from Aliexpress clicking on any of these affiliate links: [USD](https://s.click.aliexpress.com/e/_mNCBRAA) [BRL](https://s.click.aliexpress.com/e/_mOtZaxM)
 
-> **INFO**: you can buy this acrillic case from Aliexpress clicking on any of these affiliate links: [USD](https://s.click.aliexpress.com/e/_mLYVthc) [BRL](https://s.click.aliexpress.com/e/_m0Tt9wq)
+> [!TIP]
+> You can buy this acrillic case from Aliexpress clicking on any of these affiliate links: [USD](https://s.click.aliexpress.com/e/_mLYVthc) [BRL](https://s.click.aliexpress.com/e/_m0Tt9wq)
 
-> **INFO** the 3D model for the black case was taking from this [link](https://makerworld.com/en/models/137424#profileId-149549)
+> [!TIP]
+> The 3D model for the black case was taking from this [link](https://makerworld.com/en/models/137424#profileId-149549)
 
 ## 💵 Total Project Cost
 
@@ -56,9 +59,11 @@ Other motives:
 | 3D printed black case | 12.7 USD |
 | Acrillic case         | 2.5 USD  |
 
-> **INFO**: all prices do not consider expenses with taxes and shipping.
+> [!NOTE]
+> Prices do not consider expenses with taxes and shipping.
 
-> **INFO**: all prices were taking in February 2024.
+> [!NOTE]
+> Prices were taking in February 2024.
 
 ## 💻 Dev Environment Requirements
 
@@ -71,11 +76,14 @@ Other motives:
 | platform.io ide vscode extension | >= v3.3   |
 | docker                           | >= v25.0  |
 
-> **WARNING**: don't forget to install a [driver to allow your OS to recognize esp32](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers)
+> [!WARNING]
+> Don't forget to install a [driver to allow your OS to recognize esp32](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers)
 
-> **INFO**: Node.js is required because it runs several development tools used in this project. Among these tools are those that enforce the "conventional commits" standard. This standard is a lightweight convention on top of commit messages, offering an easy set of rules for creating an explicit commit history.
+> [!IMPORTANT]
+> Node.js is required because it runs several development tools used in this project. Among these tools are those that enforce the "conventional commits" standard. This standard is a lightweight convention on top of commit messages, offering an easy set of rules for creating an explicit commit history.
 
-> **INFO**: if platform.io extension does not recognize your board after clicking on `Upload`, `Upload and Monitor` or `Monitor` buttons, it means the driver was not properly setup. In Macos, after installing the driver from Sillicon Labs, I had to restart the system before mac could identify the board.
+> [!IMPORTANT]
+> If platform.io extension does not recognize your board after clicking on `Upload`, `Upload and Monitor` or `Monitor` buttons, it means the driver was not properly setup. In MacOS, after installing the driver from Sillicon Labs, I had to restart the system before mac could identify the board.
 
 ## 🔌 Boot and Reset Requirements
 
@@ -116,10 +124,12 @@ touch:
   force_calibration: 0
 ```
 
-> **WARNING:** once the boot process is finished, remove the SD card from the board.
+> [!WARNING]
+> Once the boot process is finished, remove the SD card from the board.
 
 
-> **WARNING:** upon the initial boot-up, it is imperative to undergo the calibration process outlined here.
+> [!WARNING]
+> Upon the initial boot-up, it is imperative to undergo the calibration process at least once, as outlined in the `How to build` section.
 
 ## 📖 Guides
 
@@ -142,7 +152,8 @@ Alternatively, if you prefer using CLIs, install PlatformIO's official CLI using
 
 1. Run `platformio device list` and annotate the device path of your board.
 
-   > **INFO**: You can discover which path belongs to your board by comparing the outputs of this command when your board is connected and not.
+   > [!NOTE]
+   > You can discover which path belongs to your board by comparing the outputs of this command when your board is connected and not.
 
 2. Run `platformio run --environment esp32-cyd` to build the application
 3. Orient the board horizontally, placing the USB port(s) on the right side and positioning the screen towards you. This step is important for when calibrating the touch sensor.
@@ -150,11 +161,14 @@ Alternatively, if you prefer using CLIs, install PlatformIO's official CLI using
 5. Wait until the screen turns white, then proceed to follow the calibration instructions displayed in your terminal for the touch sensor.
    <img src="./images/touch-calibration-flow.png">
 
-   > **INFO:** the calibration process occurs only once, immediately after flashing the board and during its initial boot.
+   > [!NOTE]
+   > The calibration process occurs only once, immediately after flashing the board and during its initial boot.
 
-   > **WARNING:** the pin screen won't work if you did not calibrate the touch sensor using the orientation described above in step 3.
+   > [!WARNING]
+   > The pin screen won't work if you did not calibrate the touch sensor using the orientation described above in step 3.
 
-   > **WARNING**: remember to substitue `${DEVICE_PATH}` with the value you got in step 1.
+   > [!TIP]
+   > Remember to substitue `${DEVICE_PATH}` with the value you got in step 1.
 
 ### 📚 How to add TOTP Secrets
 
@@ -173,9 +187,11 @@ aws-3,DSAJDHHAHASAUDOASNOTREALOADAKLDASAJFPOAIDONTEVENTRYOASFAIPO
 
 ```
 
-> **WARNING**: file must end with a new line.
+> [!WARNING]
+> This file must end with a new line.
 
-> **WARNING**: secrets must be unencrypted and based 32 encoded. In the future, my plan is to decrypt secrets using a secret stored in the board. With this approach, a stolen SD card won't work on a different board flashed with the same code unless the board has the same key.
+> [!WARNING]
+> Secrets must be unencrypted and based 32 encoded. In the future, my plan is to decrypt secrets using a secret stored in the board. With this approach, a stolen SD card won't work on a different board flashed with the same code unless the board has the same key.
 
 ### 📚 How to verify if TOTP codes are correct
 
@@ -185,7 +201,8 @@ aws-3,DSAJDHHAHASAUDOASNOTREALOADAKLDASAJFPOAIDONTEVENTRYOASFAIPO
 ### 📚 How to recalibrate the touch sensor
 
 1. Add the following property to the root of your `config.yml` and save it.
-   > **WARNING:** The calibration process will initiate upon the initial boot of the board, regardless of the content stored in `config.yml`.
+   > [!WARNING]
+   > The calibration process will initiate upon the initial boot of the board, regardless of the content stored in `config.yml`.
 
 ```yml
 touch:
@@ -202,7 +219,8 @@ touch:
 7. Remove the touch properties from `config.yml`, save it and put it back on the board.
 8. Press the `RST` button once more, and now verify that the calibration flow isn't triggered anymore.
 
-> **WARNING:** the pin screen won't work if you did not calibrate the touch sensor using the orientation described above in step 4.
+> [!WARNING]
+> The pin screen won't work if you did not calibrate the touch sensor using the orientation described above in step 4.
 
 ### 📚 How to register TOTP Secrets without inserting the SD card into a computer
 
@@ -216,7 +234,8 @@ After that, run the following script to start both node-red and the mqtt broker:
 
 Open node-red at `http://localhost:1880`, and then load the flow from `./node-red/insert-secret.json`. For now you must manually setup the node input with the secret you want to send to your ESP32, but in the future I plan to have a small app and a chrome extension as clients using the local node-red services to ease the process of storing secrets on the board.
 
-> **WARNING** Make sure to have the following ports free before running `./scripts/start-node-red.sh`: 1880 (node-red), 1883 (eclipse/mosquitto), 9001 (eclipse/mosquito).
+> [!WARNING]
+> Make sure to have the following ports free before running `./scripts/start-node-red.sh`: 1880 (node-red), 1883 (eclipse/mosquitto), 9001 (eclipse/mosquito).
 
 You should see the following containers in the docker app.
 
@@ -226,13 +245,16 @@ You should see the following containers in the docker app.
 
 <img src="./images/docker-mosquitto-start.png" width="800">
 
-> **WARNING** remember to assign static ips to the host running the MQTT service, as weel as for the esp32, in your router. This is a suggestion to avoid having to update the `MQTT_SERVER` constant with a new ip every time your router decides to change the ip of your host.
+> [!WARNING]
+> Remember to assign static ips to the host running the MQTT service, as weel as for the esp32, in your router. This is a suggestion to avoid having to update the `MQTT_SERVER` constant with a new ip every time your router decides to change the ip of your host.
 
-> **WARNING** if your host can't receive messages from other devices on the same network, it could be a firewall problem. Configure the firewall in the host to enable it to receive requests from other devices on your local network.
+> [!TIP]
+> If your host can't receive messages from other devices on the same network, it could be a firewall problem. Configure the firewall in the host to enable it to receive requests from other devices on your local network.
 
 After all services have initialized, open node-red at `localhost:1880`, and import `./node-red/insert-secret.json` flow. Use this [tutorial](https://nodered.org/docs/user-guide/editor/workspace/import-export) to guide you to import flows into node-red.
 
-> **WARNING** remember to put the SD card again in the board, if you want the secret to be stored. If you don't do it, after a reset the TOTP code for that secret won't appear because the secret wasn't written to disk.
+> [!WARNING]
+> Remember to put the SD card again in the board, if you want the secret to be stored. If you don't do it, after a reset the TOTP code for that secret won't appear because the secret wasn't written to disk.
 
 ## 🎯 Roadmap
 
