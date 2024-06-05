@@ -152,7 +152,7 @@ Alternatively, if you prefer using CLIs, install PlatformIO's official CLI using
 
 1. Run `platformio device list` and annotate the device path of your board.
 
-> [!NOTE]
+> [!TIP]
 > You can discover which path belongs to your board by comparing the outputs of this command when your board is connected and not.
 
 2. Run `platformio run --environment esp32-cyd` to build the application
@@ -167,7 +167,7 @@ Alternatively, if you prefer using CLIs, install PlatformIO's official CLI using
 > [!WARNING]
 > The pin screen won't work if you did not calibrate the touch sensor using the orientation described above in step 3.
 
-> [!TIP]
+> [!IMPORTANT]
 > Remember to substitue `${DEVICE_PATH}` with the value you got in step 1.
 
 ### 📚 How to add TOTP Secrets
