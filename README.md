@@ -124,12 +124,12 @@ touch:
   force_calibration: 0
 ```
 
-> [!WARNING]
-> Once the boot process is finished, remove the SD card from the board.
+> [!TIP]
+> Once the boot process is finished, remove the SD card from the board, and store it somewhere safe. Before rebooting, or if you want to add new secrets, remember to put it back in the board.
 
 
 > [!WARNING]
-> Upon the initial boot-up, it is imperative to undergo the calibration process at least once, as outlined in the `How to build` section.
+> Upon the initial boot, it is imperative to undergo the calibration process at least once, as outlined in the `How to build` section below.
 
 ## 📖 Guides
 
