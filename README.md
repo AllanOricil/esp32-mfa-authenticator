@@ -201,13 +201,14 @@ aws-3,DSAJDHHAHASAUDOASNOTREALOADAKLDASAJFPOAIDONTEVENTRYOASFAIPO
 ### 📚 How to recalibrate the touch sensor
 
 1. Add the following property to the root of your `config.yml` and save it.
-   > [!WARNING]
-   > The calibration process will initiate upon the initial boot of the board, regardless of the content stored in `config.yml`.
 
 ```yml
 touch:
   force_calibration: true
 ```
+
+> [!WARNING]
+> The calibration process will initiate upon the initial boot of the board, regardless of the content stored in `config.yml`.
 
 2. Connect the board to your computer.
 3. Open a terminal, and run `platformio device monitor --baud 115200` to monitor the board's serial port.
