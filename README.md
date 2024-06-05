@@ -82,7 +82,7 @@ Other motives:
 > [!IMPORTANT]
 > Node.js is required because it runs several development tools used in this project. Among these tools are those that enforce the "conventional commits" standard. This standard is a lightweight convention on top of commit messages, offering an easy set of rules for creating an explicit commit history.
 
-> [!IMPORTANT]
+> [!TIP]
 > If platform.io extension does not recognize your board after clicking on `Upload`, `Upload and Monitor` or `Monitor` buttons, it means the driver was not properly setup. In MacOS, after installing the driver from Sillicon Labs, I had to restart the system before mac could identify the board.
 
 ## 🔌 Boot and Reset Requirements
