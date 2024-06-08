@@ -114,7 +114,7 @@ mqtt:
 
 security:
   pin:
-    # [OPTIONAL] (text) pin code HMAC-SHA256 hashed
+    # [OPTIONAL] (text) pin code composed of numbers only and HMAC-SHA256 hashed
     hash: test
     # [OPTIONAL] (text) key used to hash pin code
     key: test
