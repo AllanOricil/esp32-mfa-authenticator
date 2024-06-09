@@ -276,7 +276,7 @@ Ease the process of adding new services. With this feature I won't need to inser
 
 ### ✅ Display turns off automatically after N seconds without user interaction
 
-After booting, the display turns off automatically if it doesn't receive touch events after N seconds. N is a configurable build variable, and it defaults to 3 seconds. This behavior is enabled by default, but can be disabled with another build variable.
+After booting, the display turns off automatically if it doesn't receive touch events after N seconds. N is a configurable in the `config.yml`.
 
 ### 🔜 Create chrome extension to ease registering TOTP secrets
 
