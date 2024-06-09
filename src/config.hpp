@@ -34,7 +34,10 @@ public:
 	{
 		bool forceCalibration = false;
 	} touch;
-
+	struct DisplaySettings
+	{
+		int sleepTimeout = 0;
+	} display;
 	static Configuration parse(const char *filePath);
 };
 

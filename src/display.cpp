@@ -9,6 +9,71 @@
 
 TFT_eSPI tft = TFT_eSPI();
 static lv_disp_drv_t disp_drv;
+unsigned long sleepTimeout = 0;
+unsigned long lastActivityTime = 0;
+bool displayIsOn = false;
+
+void turn_off_display()
+{
+    ledcWrite(PWM_CHANNEL_BCKL, 0);
+    displayIsOn = false;
+    Serial.println("Display turned off.");
+}
+
+void turn_on_display()
+{
+    ledcWrite(PWM_CHANNEL_BCKL, 0.5 * PWM_MAX_BCKL);
+    displayIsOn = true;
+    Serial.println("Display turned on.");
+}
+
+void reset_display_off_timer()
+{
+    lastActivityTime = millis();
+    if (!displayIsOn)
+    {
+        turn_on_display();
+    }
+    Serial.println("Reset display off timer.");
+}
+
+void check_display_timeout()
+{
+    if (sleepTimeout)
+    {
+        unsigned long elapsedTime = millis() - lastActivityTime;
+        if (elapsedTime >= sleepTimeout && displayIsOn)
+        {
+            Serial.print("Display timeout reached.");
+            turn_off_display();
+            lastActivityTime = millis();
+        }
+    }
+}
+
+void display_handle_single_touch()
+{
+    reset_display_off_timer();
+}
+
+void display_handle_double_touch()
+{
+    lv_obj_t *activeDisplay = lv_scr_act();
+    const char *activeDisplayName = (const char *)lv_obj_get_user_data(activeDisplay);
+    if (strcmp(activeDisplayName, TOTP_SCREEN_NAME) == 0)
+    {
+
+        if (displayIsOn)
+        {
+            turn_off_display();
+        }
+        else
+        {
+            turn_on_display();
+            reset_display_off_timer();
+        }
+    }
+}
 
 void on_display_change(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_p)
 {
@@ -32,9 +97,11 @@ void on_display_change(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *c
     lv_disp_flush_ready(disp);
 }
 
-void init_display()
+void init_display(Configuration config)
 {
     Serial.println("Initializing display.");
+
+    sleepTimeout = config.display.sleepTimeout * 1000;
 
     Serial.println("Initializing backlight.");
     pinMode(TFT_BCKL, OUTPUT);
@@ -51,6 +118,7 @@ void init_display()
     tft.setRotation(2); /* Landscape orientation */
     Serial.println("TFT initialized.");
 
+    displayIsOn = true;
     Serial.println("Display initialized.");
 }
 

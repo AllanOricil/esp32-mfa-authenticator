@@ -119,6 +119,10 @@ security:
     # [OPTIONAL] (text) key used to hash pin code
     key: test
 
+display:
+  # [OPTIONAL] (number) if provided, the display will turn off after n seconds have passed
+  sleep_timeout: 10
+
 touch:
   # [OPTIONAL] (bool=false|0) calibrate touch sensor if true or 1
   force_calibration: 0
@@ -126,7 +130,6 @@ touch:
 
 > [!TIP]
 > Once the boot process is finished, remove the SD card from the board, and store it somewhere safe. Before rebooting, or if you want to add new secrets, remember to put it back in the board.
-
 
 > [!WARNING]
 > Upon the initial boot, it is imperative to undergo the calibration process at least once, as outlined in the `How to build` section below.

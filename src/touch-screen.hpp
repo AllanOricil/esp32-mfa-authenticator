@@ -7,5 +7,6 @@
 #include "touch.hpp"
 
 void init_touch_screen(Configuration config);
+void display_timeout_handler();
 
 #endif // TOUCH_SCREEN
