@@ -1,3 +1,10 @@
+# [0.8.0](https://github.com/AllanOricil/esp32-mfa-authenticator/compare/v0.7.0...v0.8.0) (2024-06-09)
+
+
+### Features
+
+* display turns off after n seconds ([c072a9a](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/c072a9a878c118ba7c92a04af758e8d191f0e603))
+
 # [0.7.0](https://github.com/AllanOricil/esp32-mfa-totp-generator/compare/v0.6.0...v0.7.0) (2024-06-02)
 
 
