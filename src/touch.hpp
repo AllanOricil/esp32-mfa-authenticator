@@ -8,8 +8,10 @@
 #include "constants.h"
 #include "config.hpp"
 
+typedef void (*TouchCallback)();
+
 // Function declarations
-void init_touch(Configuration config);
+void init_touch(Configuration config, TouchCallback singleTouchCallback, TouchCallback doubleTouchCallback);
 void register_touch(lv_disp_t *disp);
 
 #endif // LVGL_TOUCH_H

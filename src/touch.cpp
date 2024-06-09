@@ -3,13 +3,16 @@
 #include <string.h>
 #include "constants.h"
 #include "config.hpp"
+#include "touch.hpp"
 
+TouchCallback _singleTouchCallback;
+TouchCallback _doubleTouchCallback;
 XPT2046_Bitbang touch(TOUCH_MOSI, TOUCH_MISO, TOUCH_CLK, TOUCH_CS);
 static lv_indev_drv_t touchDriver;
 static uint32_t firstTouchTime = 0;
-static bool isDisplayOn = true;
-static bool captureSecondTouch = false;
-
+static bool doubleTouch = false;
+static int touchCounter = 0;
+static int touched = 0;
 void on_touch_change(lv_indev_drv_t *touchDriver, lv_indev_data_t *touchData)
 {
     Point touchPoint = touch.getTouch();
@@ -22,38 +25,54 @@ void on_touch_change(lv_indev_drv_t *touchDriver, lv_indev_data_t *touchData)
 
     if (touchPoint.x >= 0 && touchPoint.x < DISPLAY_WIDTH && touchPoint.y >= 0 && touchPoint.y < DISPLAY_HEIGHT)
     {
-        uint32_t secondTouchTime = millis();
-
+        touched = 1;
         touchData->state = LV_INDEV_STATE_PRESSED;
         touchData->point.x = touchPoint.x;
         touchData->point.y = touchPoint.y;
-
-        lv_obj_t *activeDisplay = lv_scr_act();
-        const char *activeDisplayName = (const char *)lv_obj_get_user_data(activeDisplay);
-        if (strcmp(activeDisplayName, TOTP_SCREEN_NAME) == 0)
-        {
-            if (captureSecondTouch && secondTouchTime - firstTouchTime < TOUCH_DOUBLE_TOUCH_INTERVAL)
-            {
-                if (isDisplayOn)
-                {
-                    ledcWrite(PWM_CHANNEL_BCKL, 0);
-                }
-                else
-                {
-                    ledcWrite(PWM_CHANNEL_BCKL, 0.5 * PWM_MAX_BCKL);
-                }
-
-                isDisplayOn = !isDisplayOn;
-            }
-        }
-
-        firstTouchTime = secondTouchTime;
-        captureSecondTouch = false;
     }
     else
     {
         touchData->state = LV_INDEV_STATE_RELEASED;
-        captureSecondTouch = true;
+        if (touched == 1)
+        {
+            uint32_t capturedTouchReleaseTime = millis();
+
+            if (touchCounter == 1)
+            {
+                if (capturedTouchReleaseTime - firstTouchTime <= TOUCH_DOUBLE_TOUCH_INTERVAL)
+                {
+                    doubleTouch = true;
+                }
+                else
+                {
+                    touchCounter--;
+                }
+            }
+
+            Serial.println("RELEASED");
+            touchCounter++;
+            Serial.printf("TOUCH COUNTER: %d\n", touchCounter);
+
+            if (touchCounter == 1)
+            {
+                firstTouchTime = capturedTouchReleaseTime;
+            }
+
+            touched = 0;
+        }
+    }
+
+    if (touchCounter == 1 && millis() - firstTouchTime > TOUCH_DOUBLE_TOUCH_INTERVAL)
+    {
+        _singleTouchCallback();
+        touchCounter = 0;
+    }
+
+    if (doubleTouch)
+    {
+        _doubleTouchCallback();
+        doubleTouch = false;
+        touchCounter = 0;
     }
 }
 
@@ -68,7 +87,7 @@ void calibrate()
     Serial.println("Touch calibrated.");
 }
 
-void init_touch(Configuration config)
+void init_touch(Configuration config, TouchCallback singleTouchCallback, TouchCallback doubleTouchCallback)
 {
     Serial.println("Initializing touch.");
     touch.begin();
@@ -76,6 +95,9 @@ void init_touch(Configuration config)
     {
         calibrate();
     }
+
+    _singleTouchCallback = singleTouchCallback;
+    _doubleTouchCallback = doubleTouchCallback;
     Serial.println("Touch initialized.");
 }
 

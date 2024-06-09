@@ -1,6 +1,7 @@
 #include <FS.h>
 #include <SD.h>
 #include <YAMLDuino.h>
+#include <cstdlib>
 #include "constants.h"
 
 class Configuration
@@ -31,7 +32,10 @@ public:
 	{
 		bool forceCalibration = false;
 	} touch;
-
+	struct DisplaySettings
+	{
+		int sleepTimeout = 10;
+	} display;
 	static Configuration parse(const char *filePath);
 };
 
@@ -94,6 +98,21 @@ Configuration Configuration::parse(const char *filePath)
 	{
 		const char *forceCalibration = root.gettext("touch:force_calibration");
 		config.touch.forceCalibration = forceCalibration && (strcmp(forceCalibration, "true") == 0 || strcmp(forceCalibration, "1") == 0);
+	}
+
+	if (root["display"].isMap())
+	{
+		const char *sleepTimeoutStr = root.gettext("display:sleep_timeout");
+		int parsedSleepTimeout = atoi(sleepTimeoutStr);
+
+		if (parsedSleepTimeout >= 0)
+		{
+			config.display.sleepTimeout = parsedSleepTimeout;
+		}
+		else
+		{
+			config.display.sleepTimeout = 0;
+		}
 	}
 
 	return config;

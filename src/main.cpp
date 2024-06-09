@@ -54,6 +54,8 @@ void loop()
   // NOTE: display available free memory
   print_free_memory();
 
+  display_timeout_handler();
+
   // NOTE: connect to mqtt broker and subscribe to topics
   connect_to_mqtt();
 
