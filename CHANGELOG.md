@@ -1,3 +1,10 @@
+# [0.9.0](https://github.com/AllanOricil/esp32-mfa-authenticator/compare/v0.8.0...v0.9.0) (2024-06-23)
+
+
+### Features
+
+* add a site that enables users to easily flash their ESP32-CYD board ([a72bb74](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/a72bb7475d4cb4a484cde525bee650a0c7b90e59))
+
 # [0.8.0](https://github.com/AllanOricil/esp32-mfa-authenticator/compare/v0.7.0...v0.8.0) (2024-06-09)
 
 
