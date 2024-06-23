@@ -121,11 +121,13 @@ jobs:
         uses: actions/download-artifact@v4.1.7
         with:
           name: site
+          path: ./site/dist
 
       - name: Download ESP32 Artifact
         uses: actions/download-artifact@v4.1.7
         with:
           name: esp32
+          path: ./out
 
       - name: Prepare Site Assets
         shell: bash
