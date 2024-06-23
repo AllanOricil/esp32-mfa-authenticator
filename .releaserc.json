@@ -15,7 +15,10 @@
       "@semantic-release/github",
       {
         "assets": [
-          { "path": "esp32-cyd.tar", "label": "ESP32 - CYD distribution" }
+          {
+            "path": "out/merged_firmware.bin",
+            "label": "ESP32 - CYD distribution"
+          }
         ]
       }
     ]

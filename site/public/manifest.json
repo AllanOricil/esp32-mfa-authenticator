@@ -1,0 +1,12 @@
+{
+  "name": "esp32-mfa-authenticator",
+  "version": "0.0.0",
+  "funding_url": "https://github.com/AllanOricil/esp32-mfa-authenticator-app",
+  "new_install_prompt_erase": true,
+  "builds": [
+    {
+      "chipFamily": "ESP32",
+      "parts": [{ "path": "/merged_firmware.bin", "offset": 0 }]
+    }
+  ]
+}
