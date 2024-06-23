@@ -1,0 +1,23 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@material/web": "1.2.0",
+    "bootstrap": "5.3.2",
+    "esp-web-tools": "10.0.1",
+    "js-yaml": "4.1.0",
+    "nuxt": "3.12.1",
+    "vue": "3.4.27",
+    "vue-draggable-next": "2.2.1",
+    "vue-router": "4.3.3",
+    "yup": "1.4.0"
+  }
+}

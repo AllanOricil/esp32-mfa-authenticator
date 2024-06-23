@@ -7,3 +7,5 @@ src/configuration.h
 secrets.*.txt
 keys.*.txt
 node_modules
+*.env
+config.yml
