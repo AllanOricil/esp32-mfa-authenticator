@@ -39,13 +39,17 @@ jobs:
         run: npm ci
 
       - name: Build Site
-        run: npm run generate
+        env:
+          NUXT_APP_BASE_URL: ${{ vars.NUXT_APP_BASE_URL }}
+        run: |
+          env
+          npx nuxt build --preset github_pages
 
       - name: Upload to Github Actions Artifacts
         uses: actions/upload-artifact@v4.3.3
         with:
           name: site
-          path: ./site/dist
+          path: ./site/.output/public
 
   build-esp32:
     runs-on: ubuntu-latest
@@ -121,7 +125,7 @@ jobs:
         uses: actions/download-artifact@v4.1.7
         with:
           name: site
-          path: ./site/dist
+          path: ./site/.output/public
 
       - name: Download ESP32 Artifact
         uses: actions/download-artifact@v4.1.7
@@ -133,7 +137,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p ./_site
-          cp -r ./site/dist/* ./_site
+          cp -r ./site/.output/public/* ./_site
           cp -r ./out/* ./_site
           ls ./_site
 
