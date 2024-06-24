@@ -1,3 +1,10 @@
+## [0.9.1](https://github.com/AllanOricil/esp32-mfa-authenticator/compare/v0.9.0...v0.9.1) (2024-06-24)
+
+
+### Bug Fixes
+
+* **site:** _nuxt assets can now be fetched ([b4666ff](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/b4666ff857c15b091a425aaa476413a5f35757ef))
+
 # [0.9.0](https://github.com/AllanOricil/esp32-mfa-authenticator/compare/v0.8.0...v0.9.0) (2024-06-23)
 
 
