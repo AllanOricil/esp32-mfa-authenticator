@@ -41,8 +41,13 @@ jobs:
       - name: Build Site
         env:
           NUXT_APP_BASE_URL: ${{ vars.NUXT_APP_BASE_URL }}
+        shell: bash
         run: |
           env
+          prefix=${{ env.NUXT_APP_BASE_URL }}
+          prefix="${prefix%/}"
+          jq --arg prefix "$prefix" '. | map({image: ($prefix + .image), description: .description})' assets/tutorial.json > tmp.$$.json && mv tmp.$$.json assets/tutorial.json
+          cat assets/tutorial.json
           npx nuxt build --preset github_pages
 
       - name: Upload to Github Actions Artifacts
