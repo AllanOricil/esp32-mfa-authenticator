@@ -1,3 +1,10 @@
+## [0.9.2](https://github.com/AllanOricil/esp32-mfa-authenticator/compare/v0.9.1...v0.9.2) (2024-06-24)
+
+
+### Bug Fixes
+
+* prepend all tutorial image paths with the repo's slug because nuxt github-actions preset doesn't do it ([857d9eb](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/857d9eb1eb0406c2d274a0d3da00eb20f1819e83))
+
 ## [0.9.1](https://github.com/AllanOricil/esp32-mfa-authenticator/compare/v0.9.0...v0.9.1) (2024-06-24)
 
 
