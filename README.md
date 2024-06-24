@@ -36,6 +36,13 @@ Other motives:
 
 <https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/b610d1de-1bf9-47fe-9148-8973cb30205d>
 
+## 🌐 Installation Site
+
+You can flash your ESP32-CYD board with this code using this [site](https://allanoricil.github.io/esp32-mfa-authenticator)
+
+> [!NOTE]
+> This site was based on https://esphome.github.io/esp-web-tools/
+
 ## ⚙️ Parts
 
 - `ESP32-2432S028`
