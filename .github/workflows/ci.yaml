@@ -134,6 +134,8 @@ jobs:
           path: ./out
 
       - name: Prepare Site Assets
+        env:
+          NUXT_APP_BASE_URL: ${{ vars.NUXT_APP_BASE_URL }}
         shell: bash
         run: |
           mkdir -p ./_site
@@ -143,7 +145,11 @@ jobs:
 
           tag_name="${{ github.event.release.tag_name }}"
           manifest_file_path="./_site/manifest.json"
-          jq --arg version "$tag_name" '.version = $version' "$manifest_file_path" > tmp.$$.json && mv tmp.$$.json "$manifest_file_path"
+          jq --arg version "$tag_name" --arg prefix "${{ env.NUXT_APP_BASE_URL }}" '
+            .version = $version |
+            .builds[].parts[].path |= ($prefix + .)
+          ' "$manifest_file_path" > tmp.$$.json && mv tmp.$$.json "$manifest_file_path"
+
           cat $manifest_file_path
 
       - name: Upload Site Assets Github Pages
