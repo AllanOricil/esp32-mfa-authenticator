@@ -88,6 +88,14 @@ jobs:
         with:
           python-version: "3.9"
 
+      # NOTE: the site is also used as the manager UI
+      - name: Setup Node
+        uses: actions/setup-node@v4.0.1
+        with:
+          node-version: 18
+          cache: npm
+          cache-dependency-path: ./site
+
       - name: Install PlatformIO and ESPTool
         run: |
           python -m pip install --upgrade pip
@@ -97,10 +105,7 @@ jobs:
       # TODO: run tests
 
       - name: Build
-        run: pio run
-
-      - name: Create single ESP32 firmware file
-        run: ./scripts/merge-esp32-firmware.sh
+        run: ./scripts/build.sh
         shell: bash
 
       - name: Upload ESP32 firmware to Github Actions Artifacts

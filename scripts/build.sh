@@ -12,9 +12,10 @@ public/manifest.json
 components/tutorial.vue
 plugins/esp-web-tools.client.ts"
 echo "$nuxtignore" > .nuxtignore
+npm ci
 npm run generate
 cd $base_dir
-cp -r ./site/.output/public/* ./data
+cp -r $base_dir/site/.output/public/* $base_dir/data
 platformio run --target clean
 platformio run --environment esp32-cyd
 platformio run --target buildfs --environment esp32-cyd
@@ -41,9 +42,3 @@ esptool.py --chip esp32 merge_bin \
 	0xe000 boot_app0.bin \
 	0x10000 firmware.bin \
 	0x290000 spiffs.bin
-
-cd $base_dir
-esptool.py --chip esp32 \
-	--port /dev/cu.usbserial-220 \
-	--baud 115200 write_flash \
-	-z 0x0 $base_dir/out/merged_firmware.bin
