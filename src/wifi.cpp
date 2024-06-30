@@ -11,5 +11,6 @@ void init_wifi(Configuration config)
     Serial.print(".");
   }
   Serial.println("WiFi connected.");
+  Serial.print("IP Address: ");
   Serial.println(WiFi.localIP());
 }

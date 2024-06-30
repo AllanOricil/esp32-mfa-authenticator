@@ -12,6 +12,7 @@
 #include "wifi.hpp"
 #include "mqtt.hpp"
 #include "touch-screen.hpp"
+#include "manager.hpp"
 
 extern bool isWorkingWithSD;
 extern volatile bool processMqttMessage;
@@ -19,6 +20,7 @@ extern volatile bool processMqttMessage;
 void setup()
 {
   Serial.begin(115200);
+
   // SETUP SD CARD
   init_sd_card_reader();
 
@@ -38,6 +40,9 @@ void setup()
 
   // SETUP MQTT
   init_mqtt(config);
+
+  // SETUP MANAGER
+  init_manager();
 
   // SETUP TOUCH SCREEN
   init_touch_screen(config);
