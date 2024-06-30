@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "@material/web": "1.2.0",
-    "bootstrap": "5.3.2",
     "esp-web-tools": "10.0.1",
     "js-yaml": "4.1.0",
     "nuxt": "3.12.1",
