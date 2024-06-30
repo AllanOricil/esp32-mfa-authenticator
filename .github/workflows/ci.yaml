@@ -48,6 +48,10 @@ jobs:
           prefix="${prefix%/}"
           jq --arg prefix "$prefix" '. | map({image: ($prefix + .image), description: .description})' assets/tutorial.json > tmp.$$.json && mv tmp.$$.json assets/tutorial.json
           cat assets/tutorial.json
+
+          nuxtignore="pages/esp32/*.vue"
+          echo "$nuxtignore" > .nuxtignore
+
           npx nuxt build --preset github_pages
 
       - name: Upload to Github Actions Artifacts
@@ -88,7 +92,7 @@ jobs:
         with:
           python-version: "3.9"
 
-      # NOTE: the site is also used as the manager UI
+      # NOTE: nuxt app is also used as the manager UI
       - name: Setup Node
         uses: actions/setup-node@v4.0.1
         with:
