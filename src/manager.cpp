@@ -1,9 +1,6 @@
-#include <Arduino.h>
-#include <ESPAsyncWebServer.h>
-#include <SPIFFS.h>
-#include <ESP.h>
 #include "constants.h"
 #include "config.hpp"
+#include "manager.hpp"
 
 AsyncWebServer server(80);
 Configuration _config;
@@ -81,8 +78,11 @@ void init_manager(Configuration config)
 	// NOTE: api routes
 	server.on(
 		"/api/v1/config",
-		HTTP_GET, [](AsyncWebServerRequest *request)
-		{ request->send(200, "application/json", _config.serializeToJson(true)); });
+		HTTP_GET,
+		[](AsyncWebServerRequest *request)
+		{
+			request->send(200, "application/json", _config.serializeToJson(true));
+		});
 
 	server.on(
 		"/api/v1/config",
@@ -108,6 +108,10 @@ void init_manager(Configuration config)
 		});
 
 	Serial.println("Routes configured.");
+
+	DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
+	DefaultHeaders::Instance().addHeader("Access-Control-Allow-Methods", "GET, PUT, OPTIONS");
+	DefaultHeaders::Instance().addHeader("Access-Control-Allow-Headers", "Content-Type");
 
 	server.begin();
 	Serial.println("Server initialized.");

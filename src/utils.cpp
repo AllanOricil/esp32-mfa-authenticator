@@ -42,3 +42,9 @@ void print_free_memory(){
     Serial.println(xPortGetFreeHeapSize());
   }
 }
+
+int string2Int(const char *input)
+{
+  int parsedInput = atoi(input);
+  return parsedInput >= 0 ? parsedInput : 0;
+}

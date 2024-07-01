@@ -1,5 +1,6 @@
 #include "config.hpp"
 #include "constants.h"
+#include "utils.hpp"
 
 String Configuration::serializeToJson(bool safe) const
 {
@@ -12,7 +13,7 @@ String Configuration::serializeToJson(bool safe) const
 
 	JsonObject mqttObj = doc.createNestedObject("mqtt");
 	mqttObj["server"] = mqtt.server;
-	mqttObj["port"] = mqtt.port;
+	mqttObj["port"] = string2Int(mqtt.port.c_str());
 	mqttObj["username"] = mqtt.username;
 	mqttObj["password"] = safe ? "*********" : mqtt.password;
 
@@ -67,7 +68,9 @@ Configuration Configuration::load()
 		if (!root["mqtt"]["server"].isNull())
 			config.mqtt.server = root.gettext("mqtt:server");
 		if (!root["mqtt"]["port"].isNull())
+		{
 			config.mqtt.port = root.gettext("mqtt:port");
+		}
 		if (!root["mqtt"]["username"].isNull())
 			config.mqtt.username = root.gettext("mqtt:username");
 		if (!root["mqtt"]["password"].isNull())
@@ -85,17 +88,7 @@ Configuration Configuration::load()
 
 	if (root["display"].isMap())
 	{
-		const char *sleepTimeoutStr = root.gettext("display:sleep_timeout");
-		int parsedSleepTimeout = atoi(sleepTimeoutStr);
-
-		if (parsedSleepTimeout >= 0)
-		{
-			config.display.sleepTimeout = parsedSleepTimeout;
-		}
-		else
-		{
-			config.display.sleepTimeout = 0;
-		}
+		config.display.sleepTimeout = string2Int(root.gettext("display:sleep_timeout"));
 	}
 
 	if (root["touch"].isMap())
