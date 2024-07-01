@@ -23,10 +23,10 @@ String Configuration::serializeToJson(bool safe) const
 	pinObj["key"] = safe ? "*********" : security.pin.key;
 
 	JsonObject displayObj = doc.createNestedObject("display");
-	displayObj["sleepTimeout"] = display.sleepTimeout;
+	displayObj["sleep_timeout"] = display.sleepTimeout;
 
 	JsonObject touchObj = doc.createNestedObject("touch");
-	touchObj["forceCalibration"] = touch.forceCalibration;
+	touchObj["force_calibration"] = touch.forceCalibration;
 
 	String json;
 	serializeJson(doc, json);
