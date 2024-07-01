@@ -281,6 +281,13 @@ It is not secure to have unencrypted secrets stored without protection
 
 Ease the process of adding new services. With this feature I won't need to insert the SD card on my computer. If there is no SD card on the board, the channel to register new services is going to be closed. I also plan to require fingerprint/pin/password before opening this channel.
 
+### ✅ Manage board settings using a browser
+
+Users can manage their board settings using a browser. Once the board is connected to the local network, open a browser and type `{IP_ADDRESS}/esp32/settings`.
+
+> [!WARNING]
+> At the moment, secrets must be re-entered before submiting the form. If you don't re-type the secrets, they will be stored as `*******` in the SD card, and this will break the boot.
+
 ### ✅ Display turns off automatically after N seconds without user interaction
 
 After booting, the display turns off automatically if it doesn't receive touch events after N seconds. N is a configurable in the `config.yml`.
