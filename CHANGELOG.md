@@ -1,3 +1,20 @@
+# [0.10.0](https://github.com/AllanOricil/esp32-mfa-authenticator/compare/v0.9.2...v0.10.0) (2024-07-01)
+
+
+### Bug Fixes
+
+* **esp32:** fix yaml serialization ([57d610f](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/57d610fecf96a2306554272a1e5267089e8b4985))
+* **manager:** fix routing issue caused by the spiffs.bin ([73e04a0](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/73e04a00aa2de2a8f458c88f86edb28dfeace621))
+
+
+### Features
+
+* **esp32:** add server routes for fetching and updating the config file directly from the board ([003b05c](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/003b05ca00af35861f88de4e083bacb67a7654ca))
+* **manager:** display a toast message when submiting the settings form ([58bce30](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/58bce305b097f03f002a2f729af1fa76839e89e6))
+* **manager:** expose static site in the board so that it can be managed ([2dda6f9](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/2dda6f917df0961287142ddcf7a43e70993af9b4))
+* **manager:** initial implementation for the settings form ([7ba22bc](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/7ba22bc8b0720c18eb58ed1785866681c09b60f3))
+* **manager:** setup navbar and home page ([57c6699](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/57c66998500bf394927f70c0785ecec076ba7ef9))
+
 ## [0.9.2](https://github.com/AllanOricil/esp32-mfa-authenticator/compare/v0.9.1...v0.9.2) (2024-06-24)
 
 
