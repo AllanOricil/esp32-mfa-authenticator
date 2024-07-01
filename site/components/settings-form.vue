@@ -37,11 +37,11 @@
       <div>
         <label for="port" class="form-label">Port</label>
         <input
-          type="text"
+          type="number"
           class="form-control"
           id="port"
           @input="ensureNumber"
-          v-model.trim="state.settings.mqtt.port"
+          v-model.number="state.settings.mqtt.port"
         />
       </div>
       <div>
@@ -91,14 +91,14 @@
       <h4 class="mb-3">Display</h4>
 
       <div>
-        <label for="sleep-timeout" class="form-label"
-          >Sleep Timeout (seconds)</label
-        >
+        <label for="sleep-timeout" class="form-label">
+          Sleep Timeout (seconds)
+        </label>
         <input
           type="number"
           class="form-control"
           id="sleep-timeout"
-          v-model="state.settings.display.sleep_timeout"
+          v-model.number="state.settings.display.sleepTimeout"
         />
       </div>
     </div>
@@ -110,7 +110,7 @@
         type="checkbox"
         class="form-check-input"
         id="force-calibration"
-        v-model="state.settings.touch.force_calibration"
+        v-model="state.settings.touch.forceCalibration"
       />
       <label class="form-check-label ps-2" for="force-calibration"
         >Force calibration</label
@@ -132,6 +132,7 @@ import { reactive, ref } from "vue";
 
 const errors = ref({});
 
+// TOOD: move this to /api
 const schema = object({
   settings: object({
     wifi: object({
@@ -157,10 +158,10 @@ const schema = object({
       }),
     }),
     display: object({
-      sleep_timeout: number().nullable().notRequired(),
+      sleepTimeout: number().nullable().notRequired(),
     }),
     touch: object({
-      force_calibration: boolean().default(false),
+      forceCalibration: boolean().default(false),
     }),
   }),
 });
@@ -175,7 +176,7 @@ const state = reactive({
     },
     mqtt: {
       server: undefined,
-      port: 1883,
+      port: undefined,
       username: undefined,
       password: undefined,
     },
@@ -186,10 +187,10 @@ const state = reactive({
       },
     },
     display: {
-      sleep_timeout: 5,
+      sleepTimeout: 5,
     },
     touch: {
-      force_calibration: false,
+      forceCalibration: false,
     },
   },
 });
@@ -198,12 +199,45 @@ const ensureNumber = () => {
   state.settings.mqtt.port = state.settings.mqtt.port.replace(/\D/g, "");
 };
 
+// TODO: move this to /api/
+async function updateConfig(config: Record<any, any>): Promise<boolean> {
+  try {
+    const response = await fetch("http://192.168.31.86/api/v1/config", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(config),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to update configuration");
+    }
+
+    const data = await response.json();
+  } catch (error) {
+    console.error("Error fetching configuration:", error);
+  }
+}
+
+const fetchConfig = async () => {
+  try {
+    const response = await fetch("http://192.168.31.86/api/v1/config");
+    if (!response.ok) {
+      throw new Error("Failed to fetch configuration");
+    }
+    const data = await response.json();
+    state.settings = data;
+  } catch (error) {
+    console.error("Error fetching configuration:", error);
+  }
+};
+onMounted(fetchConfig);
+
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  // Do something with event.data
   try {
     await schema.validate(state, { abortEarly: false });
-
-    const yamlContent = jsYaml.dump({
+    const updated = await updateConfig({
       version: "0.0.0",
       wifi: {
         ssid: state.settings.wifi.ssid,
@@ -211,7 +245,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       },
       mqtt: {
         server: state.settings.mqtt.server,
-        port: state.settings.mqtt.port,
+        port: state.settings.mqtt.port || 1883,
         username: state.settings.mqtt.username || "",
         password: state.settings.mqtt.password || "",
       },
@@ -222,15 +256,12 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         },
       },
       display: {
-        sleep_timeout: state.settings.display.sleep_timeout || "",
+        sleepTimeout: state.settings.display.sleepTimeout || "",
       },
       touch: {
-        force_calibration: state.settings.touch.force_calibration ? 1 : 0,
+        forceCalibration: state.settings.touch.forceCalibration ? 1 : 0,
       },
     });
-
-    // Log YAML content for verification (remove in production)
-    console.log(yamlContent);
   } catch (error) {
     const formattedErrors = {};
     error.inner.forEach((e) => {
