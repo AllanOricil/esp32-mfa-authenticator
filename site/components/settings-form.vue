@@ -1,4 +1,24 @@
 <template>
+  <!-- TODO: move toast to layout -->
+  <div
+    id="submit-toast"
+    class="toast align-items-center border-0"
+    role="alert"
+    aria-live="assertive"
+    aria-atomic="true"
+  >
+    <div class="d-flex">
+      <div class="toast-body" :class="toastClass">
+        {{ toastMessage }}
+      </div>
+      <button
+        type="button"
+        class="btn-close me-2 m-auto"
+        data-bs-dismiss="toast"
+        aria-label="Close"
+      ></button>
+    </div>
+  </div>
   <form class="space-y-4" @submit.prevent="onSubmit">
     <div class="mb-4">
       <h4 class="mb-3">Wi-Fi</h4>
@@ -228,14 +248,19 @@ const fetchConfig = async () => {
     }
     const data = await response.json();
     state.settings = data;
+    state.settings.display.sleepTimeout = data.display.sleep_timeout;
+    state.settings.touch.forceCalibration = data.touch.force_calibration;
   } catch (error) {
     console.error("Error fetching configuration:", error);
   }
 };
-onMounted(fetchConfig);
 
+let toastInstance: bootstrap.Toast | null = null;
+const toastMessage = ref<string>("");
+const toastClass = ref<string>("");
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   try {
+    throw new Error("wrong");
     await schema.validate(state, { abortEarly: false });
     const updated = await updateConfig({
       version: "0.0.0",
@@ -262,15 +287,42 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         forceCalibration: state.settings.touch.forceCalibration ? 1 : 0,
       },
     });
+
+    toastMessage.value = "Settings updated successfully!";
+    toastClass.value = "bg-dark text-white";
+    if (toastInstance) toastInstance.show();
   } catch (error) {
+    toastMessage.value = "Error updating settings. Please, try again.";
+    toastClass.value = "bg-danger text-white";
+    if (toastInstance) toastInstance.show();
+
     const formattedErrors = {};
-    error.inner.forEach((e) => {
+    error?.inner.forEach((e) => {
       const key = e.path;
       formattedErrors[key] = e.message;
     });
     errors.value = formattedErrors;
   }
 }
+
+onMounted(async () => {
+  await fetchConfig();
+
+  // TODO: move toast to layout
+  const toastElement = document.getElementById("submit-toast");
+  if (toastElement) {
+    toastInstance = new bootstrap.Toast(toastElement, {
+      autohide: false,
+    });
+  }
+});
 </script>
 
-<style></style>
+<style scoped>
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000; /* Ensure the toast is above other elements */
+}
+</style>
