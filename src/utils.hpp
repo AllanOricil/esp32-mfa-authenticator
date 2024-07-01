@@ -6,5 +6,6 @@
 
 DecodedBase32Secret decode_encoded_base32_secret(char *secret);
 void print_free_memory();
+int string2Int(const char *input);
 
-#endif //BASE32_DECODER_H
+#endif // BASE32_DECODER_H

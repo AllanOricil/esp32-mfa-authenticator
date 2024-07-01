@@ -1,4 +1,24 @@
 <template>
+  <!-- TODO: move toast to layout -->
+  <div
+    id="submit-toast"
+    class="toast align-items-center border-0"
+    role="alert"
+    aria-live="assertive"
+    aria-atomic="true"
+  >
+    <div class="d-flex">
+      <div class="toast-body" :class="toastClass">
+        {{ toastMessage }}
+      </div>
+      <button
+        type="button"
+        class="btn-close me-2 m-auto"
+        data-bs-dismiss="toast"
+        aria-label="Close"
+      ></button>
+    </div>
+  </div>
   <form class="space-y-4" @submit.prevent="onSubmit">
     <div class="mb-4">
       <h4 class="mb-3">Wi-Fi</h4>
@@ -37,11 +57,11 @@
       <div>
         <label for="port" class="form-label">Port</label>
         <input
-          type="text"
+          type="number"
           class="form-control"
           id="port"
           @input="ensureNumber"
-          v-model.trim="state.settings.mqtt.port"
+          v-model.number="state.settings.mqtt.port"
         />
       </div>
       <div>
@@ -91,14 +111,14 @@
       <h4 class="mb-3">Display</h4>
 
       <div>
-        <label for="sleep-timeout" class="form-label"
-          >Sleep Timeout (seconds)</label
-        >
+        <label for="sleep-timeout" class="form-label">
+          Sleep Timeout (seconds)
+        </label>
         <input
           type="number"
           class="form-control"
           id="sleep-timeout"
-          v-model="state.settings.display.sleep_timeout"
+          v-model.number="state.settings.display.sleepTimeout"
         />
       </div>
     </div>
@@ -110,7 +130,7 @@
         type="checkbox"
         class="form-check-input"
         id="force-calibration"
-        v-model="state.settings.touch.force_calibration"
+        v-model="state.settings.touch.forceCalibration"
       />
       <label class="form-check-label ps-2" for="force-calibration"
         >Force calibration</label
@@ -132,6 +152,7 @@ import { reactive, ref } from "vue";
 
 const errors = ref({});
 
+// TOOD: move this to /api
 const schema = object({
   settings: object({
     wifi: object({
@@ -157,10 +178,10 @@ const schema = object({
       }),
     }),
     display: object({
-      sleep_timeout: number().nullable().notRequired(),
+      sleepTimeout: number().nullable().notRequired(),
     }),
     touch: object({
-      force_calibration: boolean().default(false),
+      forceCalibration: boolean().default(false),
     }),
   }),
 });
@@ -175,7 +196,7 @@ const state = reactive({
     },
     mqtt: {
       server: undefined,
-      port: 1883,
+      port: undefined,
       username: undefined,
       password: undefined,
     },
@@ -186,10 +207,10 @@ const state = reactive({
       },
     },
     display: {
-      sleep_timeout: 5,
+      sleepTimeout: 5,
     },
     touch: {
-      force_calibration: false,
+      forceCalibration: false,
     },
   },
 });
@@ -198,12 +219,50 @@ const ensureNumber = () => {
   state.settings.mqtt.port = state.settings.mqtt.port.replace(/\D/g, "");
 };
 
-async function onSubmit(event: FormSubmitEvent<Schema>) {
-  // Do something with event.data
+// TODO: move this to /api/
+async function updateConfig(config: Record<any, any>): Promise<boolean> {
   try {
-    await schema.validate(state, { abortEarly: false });
+    const response = await fetch("http://192.168.31.86/api/v1/config", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(config),
+    });
 
-    const yamlContent = jsYaml.dump({
+    if (!response.ok) {
+      throw new Error("Failed to update configuration");
+    }
+
+    const data = await response.json();
+  } catch (error) {
+    console.error("Error fetching configuration:", error);
+  }
+}
+
+const fetchConfig = async () => {
+  try {
+    const response = await fetch("http://192.168.31.86/api/v1/config");
+    if (!response.ok) {
+      throw new Error("Failed to fetch configuration");
+    }
+    const data = await response.json();
+    state.settings = data;
+    state.settings.display.sleepTimeout = data.display.sleep_timeout;
+    state.settings.touch.forceCalibration = data.touch.force_calibration;
+  } catch (error) {
+    console.error("Error fetching configuration:", error);
+  }
+};
+
+let toastInstance: bootstrap.Toast | null = null;
+const toastMessage = ref<string>("");
+const toastClass = ref<string>("");
+async function onSubmit(event: FormSubmitEvent<Schema>) {
+  try {
+    throw new Error("wrong");
+    await schema.validate(state, { abortEarly: false });
+    const updated = await updateConfig({
       version: "0.0.0",
       wifi: {
         ssid: state.settings.wifi.ssid,
@@ -211,7 +270,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       },
       mqtt: {
         server: state.settings.mqtt.server,
-        port: state.settings.mqtt.port,
+        port: state.settings.mqtt.port || 1883,
         username: state.settings.mqtt.username || "",
         password: state.settings.mqtt.password || "",
       },
@@ -222,24 +281,48 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         },
       },
       display: {
-        sleep_timeout: state.settings.display.sleep_timeout || "",
+        sleepTimeout: state.settings.display.sleepTimeout || "",
       },
       touch: {
-        force_calibration: state.settings.touch.force_calibration ? 1 : 0,
+        forceCalibration: state.settings.touch.forceCalibration ? 1 : 0,
       },
     });
 
-    // Log YAML content for verification (remove in production)
-    console.log(yamlContent);
+    toastMessage.value = "Settings updated successfully!";
+    toastClass.value = "bg-dark text-white";
+    if (toastInstance) toastInstance.show();
   } catch (error) {
+    toastMessage.value = "Error updating settings. Please, try again.";
+    toastClass.value = "bg-danger text-white";
+    if (toastInstance) toastInstance.show();
+
     const formattedErrors = {};
-    error.inner.forEach((e) => {
+    error?.inner.forEach((e) => {
       const key = e.path;
       formattedErrors[key] = e.message;
     });
     errors.value = formattedErrors;
   }
 }
+
+onMounted(async () => {
+  await fetchConfig();
+
+  // TODO: move toast to layout
+  const toastElement = document.getElementById("submit-toast");
+  if (toastElement) {
+    toastInstance = new bootstrap.Toast(toastElement, {
+      autohide: false,
+    });
+  }
+});
 </script>
 
-<style></style>
+<style scoped>
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000; /* Ensure the toast is above other elements */
+}
+</style>

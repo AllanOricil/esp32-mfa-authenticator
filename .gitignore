@@ -9,3 +9,6 @@ keys.*.txt
 node_modules
 *.env
 config.yml
+**/.nuxtignore
+out
+data
