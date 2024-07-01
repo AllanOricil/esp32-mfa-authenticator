@@ -4,12 +4,14 @@
 #include <FS.h>
 #include <SD.h>
 #include <YAMLDuino.h>
+#include <cstdlib>
+#include <ArduinoJson.h>
 #include "constants.h"
 
 class Configuration
 {
 public:
-	String version;
+	String version = "0.0.0";
 	struct WiFiSettings
 	{
 		String ssid = "";
@@ -36,11 +38,13 @@ public:
 	} touch;
 	struct DisplaySettings
 	{
-		int sleepTimeout = 0;
+		int sleepTimeout = 10;
 	} display;
-	static Configuration parse(const char *filePath);
-};
 
-Configuration init_configuration();
+	String serializeToJson(bool safe) const;
+	static Configuration load();
+	static Configuration parse(const String &jsonString);
+	bool save() const;
+};
 
 #endif

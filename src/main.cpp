@@ -25,13 +25,18 @@ void setup()
   init_sd_card_reader();
 
   // SETUP CONFIG
-  Configuration config = init_configuration();
+  Configuration config = Configuration::load();
 
   // SETUP PIN
   init_pin(config.security.pin.hash.c_str(), config.security.pin.key.c_str());
 
   // SETUP TIME
   init_wifi(config);
+
+  // SETUP MANAGER
+  init_manager(config);
+
+  // SETUP CLOCK
   sync_time();
 
   // SETUP MFA
@@ -40,9 +45,6 @@ void setup()
 
   // SETUP MQTT
   init_mqtt(config);
-
-  // SETUP MANAGER
-  init_manager();
 
   // SETUP TOUCH SCREEN
   init_touch_screen(config);

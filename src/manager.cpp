@@ -1,9 +1,12 @@
 #include <Arduino.h>
 #include <ESPAsyncWebServer.h>
 #include <SPIFFS.h>
+#include <ESP.h>
 #include "constants.h"
+#include "config.hpp"
 
 AsyncWebServer server(80);
+Configuration _config;
 
 bool checkFileExists(const char *path)
 {
@@ -19,34 +22,14 @@ bool checkFileExists(const char *path)
 	}
 }
 
-bool checkFolderExists(const char *path)
-{
-	File root = SPIFFS.open("/");
-	File file = root.openNextFile();
-
-	while (file)
-	{
-		if (file.isDirectory())
-		{
-			if (strcmp(file.name(), path) == 0)
-			{
-				file.close();
-				return true;
-			}
-		}
-		file = root.openNextFile();
-	}
-
-	return false;
-}
-
-void init_manager()
+void init_manager(Configuration config)
 {
 	Serial.println("Initializing manager server.");
+	_config = config;
 
 	if (!SPIFFS.begin(true))
 	{
-		Serial.println("something went wrong while mounting SPIFFS");
+		Serial.println("Something went wrong while mounting SPIFFS.");
 		return;
 	}
 
@@ -54,8 +37,7 @@ void init_manager()
 		!checkFileExists("/index.html") ||
 		!checkFileExists("/200.html") ||
 		!checkFileExists("/404.html") ||
-		!checkFileExists("/favicon.ico") ||
-		!checkFolderExists("/_nuxt"))
+		!checkFileExists("/favicon.ico"))
 	{
 		Serial.println("One or more required files are missing. Server initialization aborted.");
 		return;
@@ -63,6 +45,7 @@ void init_manager()
 
 	Serial.println("Configuring routes.");
 
+	// NOTE: assets routes
 	server.on(
 		"/",
 		HTTP_GET,
@@ -93,6 +76,35 @@ void init_manager()
 		[](AsyncWebServerRequest *request)
 		{
 			request->send(SPIFFS, "/favicon.ico", "image/x-icon");
+		});
+
+	// NOTE: api routes
+	server.on(
+		"/api/v1/config",
+		HTTP_GET, [](AsyncWebServerRequest *request)
+		{ request->send(200, "application/json", _config.serializeToJson(true)); });
+
+	server.on(
+		"/api/v1/config",
+		HTTP_PUT,
+		[](AsyncWebServerRequest *request) {},
+		nullptr,
+		[](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+		{
+			try
+			{
+				String dataJson = String((char *)data);
+				Configuration newConfig = Configuration::parse(dataJson);
+				if (newConfig.save())
+				{
+					request->send(200, "application/json", "{\"message\":\"configuration updated\"}");
+				}
+			}
+			catch (const std::exception &e)
+			{
+				Serial.println(e.what());
+				request->send(500, "application/json", "{\"message\":\"something went wrong\"}");
+			}
 		});
 
 	Serial.println("Routes configured.");
