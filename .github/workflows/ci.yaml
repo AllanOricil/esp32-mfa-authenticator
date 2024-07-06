@@ -49,8 +49,10 @@ jobs:
           jq --arg prefix "$prefix" '. | map({image: ($prefix + .image), description: .description})' assets/tutorial.json > tmp.$$.json && mv tmp.$$.json assets/tutorial.json
           cat assets/tutorial.json
 
-          nuxtignore="pages/esp32/*.vue"
-          echo "$nuxtignore" > .nuxtignore
+          cat <<EOF > .nuxtignore
+          pages/esp32/*.vue
+          layouts/default.vue
+          EOF
 
           npx nuxt build --preset github_pages
 
@@ -110,6 +112,8 @@ jobs:
 
       - name: Build
         run: ./scripts/build.sh
+        env:
+          NUXT_BUILD_VERSION:
         shell: bash
 
       - name: Upload ESP32 firmware to Github Actions Artifacts
