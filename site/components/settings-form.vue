@@ -222,7 +222,7 @@ const ensureNumber = () => {
 // TODO: move this to /api/
 async function updateConfig(config: Record<any, any>): Promise<boolean> {
   try {
-    const response = await fetch("http://192.168.31.86/api/v1/config", {
+    const response = await fetch("/api/v1/config", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -242,7 +242,7 @@ async function updateConfig(config: Record<any, any>): Promise<boolean> {
 
 const fetchConfig = async () => {
   try {
-    const response = await fetch("http://192.168.31.86/api/v1/config");
+    const response = await fetch("/api/v1/config");
     if (!response.ok) {
       throw new Error("Failed to fetch configuration");
     }
@@ -260,7 +260,6 @@ const toastMessage = ref<string>("");
 const toastClass = ref<string>("");
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   try {
-    throw new Error("wrong");
     await schema.validate(state, { abortEarly: false });
     const updated = await updateConfig({
       version: "0.0.0",
@@ -295,13 +294,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     toastMessage.value = "Error updating settings. Please, try again.";
     toastClass.value = "bg-danger text-white";
     if (toastInstance) toastInstance.show();
-
-    const formattedErrors = {};
-    error?.inner.forEach((e) => {
-      const key = e.path;
-      formattedErrors[key] = e.message;
-    });
-    errors.value = formattedErrors;
   }
 }
 
