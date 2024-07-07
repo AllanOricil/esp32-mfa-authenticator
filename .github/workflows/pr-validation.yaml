@@ -16,19 +16,14 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2.4.0
-        with:
-          version: 8
-      
       - name: Setup Node
         uses: actions/setup-node@v4.0.1
         with:
           node-version: 18
-          cache: pnpm
+          cache: npm
 
       - name: Install Commitlint
-        run: pnpm add @commitlint/cli @commitlint/config-conventional --save-dev
+        run: npm install @commitlint/cli @commitlint/config-conventional --save-dev
 
       - name: Lint Commit Messages
         run: |
