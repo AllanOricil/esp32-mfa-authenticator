@@ -1,3 +1,11 @@
+## [0.10.1](https://github.com/AllanOricil/esp32-mfa-authenticator/compare/v0.10.0...v0.10.1) (2024-07-07)
+
+
+### Bug Fixes
+
+* **manager:** remove exception added for testing error when submiting the settings form ([f6e93d8](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/f6e93d8e1b839580afb8032f8ce1f9669a6d88c0))
+* **site:** remove manager default layout from the presentation site ([84e1fc3](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/84e1fc3accdd5da74419e6f635fb1a5709b329ce))
+
 # [0.10.0](https://github.com/AllanOricil/esp32-mfa-authenticator/compare/v0.9.2...v0.10.0) (2024-07-01)
 
 
