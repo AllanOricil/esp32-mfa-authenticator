@@ -6,6 +6,7 @@ export default defineNuxtConfig({
       primary: "#ff0000",
     },
   },
+  buildId: process.env.NUXT_BUILD_ID,
   devtools: { enabled: true },
   ssr: false,
   vue: {

@@ -20,21 +20,24 @@ public/manifest.json
 components/tutorial.vue
 plugins/esp-web-tools.client.ts"
 echo "$nuxtignore" > .nuxtignore
+
+# NOTE: during github release created by github actions, if tag name exists use it, otherwise generate a random number that works with spiffs max path size
+# NOTE: without the changes below, client routing won't work because nuxt breaks when it cant load its meta files
+# NOTE: these changes address this issue with SPIFFS https://techoverflow.net/2022/08/07/how-to-fix-spiffs_write-error-10010-unknown/
+if [[ "$USE_RELEASE_TAG" == "true" ]]; then
+	echo "Tag name is set to $GITHUB_REF_NAME"
+	export NUXT_BUILD_ID=$GITHUB_REF_NAME
+else
+    echo "Not a release event. Using a random number for NUXT_BUILD_ID"
+    # Generate a random number of 7 characters
+    export NUXT_BUILD_ID=$(generate_random_number 7)
+fi
+
 npm ci
 npm run generate
 cd $base_dir
 cp -r $base_dir/site/.output/public/* $base_dir/data
 
-# NOTE: without the changes below, client routing won't work.
-# NOTE: these changes address this issue with SPIFFS https://techoverflow.net/2022/08/07/how-to-fix-spiffs_write-error-10010-unknown/
-# NOTE: Because "/_nuxt/builds/meta/{RANDOM_NUMBER}.json" must be 32 characters long including terminating character, the random number can only be 7 characters long (7+1+24)
-nuxt_build_id=$(generate_random_number 7)
-mv $base_dir/data/_nuxt/builds/meta/*.json $base_dir/data/_nuxt/builds/meta/$nuxt_build_id.json
-jq --arg new_id "$nuxt_build_id" '.id = $new_id' $base_dir/data/_nuxt/builds/meta/*.json > tmp.$$.json && mv tmp.$$.json $base_dir/data/_nuxt/builds/meta/$nuxt_build_id.json
-jq --arg new_id "$nuxt_build_id" '.id = $new_id' $base_dir/data/_nuxt/builds/latest.json > tmp.$$.json && mv tmp.$$.json $base_dir/data/_nuxt/builds/latest.json
-sed "s/buildId:\"[^\"]*\"/buildId:\"$nuxt_build_id\"/" $base_dir/data/index.html > tmp.$$.index.html && mv tmp.$$.index.html $base_dir/data/index.html
-sed "s/buildId:\"[^\"]*\"/buildId:\"$nuxt_build_id\"/" $base_dir/data/200.html > tmp.$$.200.html && mv tmp.$$.200.html $base_dir/data/200.html
-sed "s/buildId:\"[^\"]*\"/buildId:\"$nuxt_build_id\"/" $base_dir/data/404.html > tmp.$$.404.html && mv tmp.$$.404.html $base_dir/data/404.html
 
 platformio run --target clean
 platformio run --environment esp32-cyd

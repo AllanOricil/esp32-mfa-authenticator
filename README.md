@@ -78,7 +78,7 @@ You can flash your ESP32-CYD board with this code using this [site](https://alla
 | -------------------------------- | --------- |
 | python                           | >= v3.9   |
 | node                             | >= v18.18 |
-| pnpm                             | >= v8.15  |
+| npm                              | >= v10.2  |
 | vscode                           | >= v1.87  |
 | platform.io ide vscode extension | >= v3.3   |
 | docker                           | >= v25.0  |
@@ -87,7 +87,7 @@ You can flash your ESP32-CYD board with this code using this [site](https://alla
 > Don't forget to install a [driver to allow your OS to recognize esp32](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers)
 
 > [!IMPORTANT]
-> Node.js is required because it runs several development tools used in this project. Among these tools are those that enforce the "conventional commits" standard. This standard is a lightweight convention on top of commit messages, offering an easy set of rules for creating an explicit commit history.
+> Node and npm, its package manager, are required because several development tools are used in this project. Among these tools are those that enforce the "conventional commits" standard. This standard is a lightweight convention on top of commit messages, offering an easy set of rules for creating an explicit commit history.
 
 > [!TIP]
 > If platform.io extension does not recognize your board after clicking on `Upload`, `Upload and Monitor` or `Monitor` buttons, it means the driver was not properly setup. In MacOS, after installing the driver from Sillicon Labs, I had to restart the system before mac could identify the board.
