@@ -101,6 +101,8 @@ jobs:
 
       - name: Build
         run: ./scripts/build.sh
+        env:
+          USE_RELEASE_TAG: ${{ github.event_name == 'release' && github.event.action == 'published' }}
         shell: bash
 
       - name: Upload ESP32 firmware to Github Actions Artifacts

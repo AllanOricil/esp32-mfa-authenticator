@@ -24,15 +24,13 @@ echo "$nuxtignore" > .nuxtignore
 # NOTE: during github release created by github actions, if tag name exists use it, otherwise generate a random number that works with spiffs max path size
 # NOTE: without the changes below, client routing won't work because nuxt breaks when it cant load its meta files
 # NOTE: these changes address this issue with SPIFFS https://techoverflow.net/2022/08/07/how-to-fix-spiffs_write-error-10010-unknown/
-TAG_NAME=${GITHUB_REF#refs/tags/}
-if [ -z "$TAG_NAME" ]; then
-	echo "Tag name is not set."
-	# NOTE: Because "/_nuxt/builds/meta/{RANDOM_NUMBER}.json" must be 32 characters long including terminating character, the random number can only be 7 characters long (7+1+24)
-	export NUXT_BUILD_ID=$(generate_random_number 7) 
+if [[ "$USE_RELEASE_TAG" == "true" ]]; then
+	echo "Tag name is set to $GITHUB_REF_NAME"
+	export NUXT_BUILD_ID=$GITHUB_REF_NAME
 else
-	# NOTE: v*.*.* works as long as the the number of characters isn't bigger than 7 characters
-	echo "Tag name is set to $TAG_NAME."
-	export NUXT_BUILD_ID=$TAG_NAME
+    echo "Not a release event. Using a random number for NUXT_BUILD_ID"
+    # Generate a random number of 7 characters
+    export NUXT_BUILD_ID=$(generate_random_number 7)
 fi
 
 npm ci
