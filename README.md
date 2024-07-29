@@ -120,7 +120,7 @@ mqtt:
   password: test
 
 security:
-  # [OPTIONAL] (number) [default 3] board is locked and requires a hard reset, after N number of wrong unlock attempts
+  # [OPTIONAL] (number) [default 3] board is locked and requires a hard reset, after N wrong unlock attempts
   max_number_of_wrong_unlock_attempts: 3
   pin:
     # [OPTIONAL] (text) pin code composed of numbers only and HMAC-SHA256 hashed
@@ -317,7 +317,7 @@ When the ESP32-MFA-Authenticator extension is enabled, a new button called "regi
 
 I work with a customer that has multiple AWS accounts, and each has its own MFA Virtual device. To help me to easily find the MFA TOTP codes for a group of accounts that belongs to the same customer, I decided to create a way to group TOTP codes together on its own separate view. Each group of TOTP secrets will result in a page on the TOTP Screen. The User can select the page by swiping to the right or left. With this feature, Users will be able to manage multiple virtual MFA devices for multiple customers using the same device. To further secure TOTPs for a group, the User will be able to set a PIN code for a group. If PIN code is set for that group, a PIN Screen appears before the group of TOTPs can be rendered. There will also still exist the Global PIN code, which protects all TOTPs.
 
-### 🔜 Block access after few wrong unlock attempts
+### ✅  Lock board after N wrong unlock attempts
 
 Improve the validation function to block access to the board after few wrong attempts happened. With this enhancement, brute forcing all possible combinations won't be possible.
 
