@@ -1,3 +1,10 @@
+# [0.11.0](https://github.com/AllanOricil/esp32-mfa-authenticator/compare/v0.10.1...v0.11.0) (2024-07-29)
+
+
+### Features
+
+* lock board after N failed unlock attempts ([d30f1ab](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/d30f1abf5b5c436c76480a2dd75a4bddfe7055dc))
+
 ## [0.10.1](https://github.com/AllanOricil/esp32-mfa-authenticator/compare/v0.10.0...v0.10.1) (2024-07-07)
 
 
