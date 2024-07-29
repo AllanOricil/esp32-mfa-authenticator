@@ -24,6 +24,9 @@
 #define PIN_MIN_LENGTH 6
 #define PIN_MAX_LENGTH 20
 
+// SECURITY
+#define MAX_NUMBER_OF_WRONG_UNLOCK_ATTEMPTS 3
+
 // UI
 #define PIN_SCREEN_NAME "pin"
 #define TOTP_SCREEN_NAME "totp"
@@ -39,3 +42,4 @@
 #define PWM_FREQ_BCKL 400
 #define PWM_BITS_BCKL 8
 #define PWM_MAX_BCKL ((1 << PWM_BITS_BCKL) - 1)
+#define SLEEP_TIMEOUT 10

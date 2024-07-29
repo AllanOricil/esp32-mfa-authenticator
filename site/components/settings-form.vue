@@ -60,6 +60,7 @@
           type="number"
           class="form-control"
           id="port"
+          min="0"
           @input="ensureNumber"
           v-model.number="state.settings.mqtt.port"
         />
@@ -86,7 +87,16 @@
 
     <div class="mb-4">
       <h4 class="mb-3">Security</h4>
-
+      <label for="max-number-of-wrong-unlock-attempts" class="form-label"
+        >Max number of wrong unlock attempts</label
+      >
+      <input
+        type="number"
+        class="form-control"
+        id="max-number-of-wrong-unlock-attempts"
+        min="1"
+        v-model.number="state.settings.security.maxNumberOfWrongUnlockAttempts"
+      />
       <div>
         <label for="pin-hash" class="form-label">Pin Hash</label>
         <input
@@ -118,6 +128,7 @@
           type="number"
           class="form-control"
           id="sleep-timeout"
+          min="0"
           v-model.number="state.settings.display.sleepTimeout"
         />
       </div>
@@ -146,49 +157,11 @@
 </template>
 
 <script lang="ts" setup>
-import { object, string, number, boolean, type InferType } from "yup";
 import jsYaml from "js-yaml";
 import { reactive, ref } from "vue";
+import { fetchConfig, updateConfig, type Config } from "../api/esp32";
 
-const errors = ref({});
-
-// TOOD: move this to /api
-const schema = object({
-  settings: object({
-    wifi: object({
-      ssid: string().required("SSID is required"),
-      password: string().required("WiFi password is required"),
-    }),
-    mqtt: object({
-      server: string().required("MQTT server is required"),
-      port: number()
-        .default(1883)
-        .required("Port is required")
-        .typeError("Port number must be a number")
-        .positive("Port number must be positive")
-        .integer("Port number must be an integer")
-        .strict(),
-      username: string().nullable().notRequired(),
-      password: string().nullable().notRequired(),
-    }),
-    security: object({
-      pin: object({
-        pin: string().nullable().notRequired(),
-        hash: string().nullable().notRequired(),
-      }),
-    }),
-    display: object({
-      sleepTimeout: number().nullable().notRequired(),
-    }),
-    touch: object({
-      forceCalibration: boolean().default(false),
-    }),
-  }),
-});
-
-type Schema = InferType<typeof schema>;
-
-const state = reactive({
+const state = reactive<{ settings: Config }>({
   settings: {
     wifi: {
       ssid: undefined,
@@ -205,6 +178,7 @@ const state = reactive({
         key: undefined,
         hash: undefined,
       },
+      maxNumberOfWrongUnlockAttempts: 3,
     },
     display: {
       sleepTimeout: 5,
@@ -219,48 +193,11 @@ const ensureNumber = () => {
   state.settings.mqtt.port = state.settings.mqtt.port.replace(/\D/g, "");
 };
 
-// TODO: move this to /api/
-async function updateConfig(config: Record<any, any>): Promise<boolean> {
-  try {
-    const response = await fetch("/api/v1/config", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(config),
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to update configuration");
-    }
-
-    const data = await response.json();
-  } catch (error) {
-    console.error("Error fetching configuration:", error);
-  }
-}
-
-const fetchConfig = async () => {
-  try {
-    const response = await fetch("/api/v1/config");
-    if (!response.ok) {
-      throw new Error("Failed to fetch configuration");
-    }
-    const data = await response.json();
-    state.settings = data;
-    state.settings.display.sleepTimeout = data.display.sleep_timeout;
-    state.settings.touch.forceCalibration = data.touch.force_calibration;
-  } catch (error) {
-    console.error("Error fetching configuration:", error);
-  }
-};
-
 let toastInstance: bootstrap.Toast | null = null;
 const toastMessage = ref<string>("");
 const toastClass = ref<string>("");
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   try {
-    await schema.validate(state, { abortEarly: false });
     const updated = await updateConfig({
       version: "0.0.0",
       wifi: {
@@ -278,6 +215,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
           hash: state.settings.security.pin.hash || "",
           key: state.settings.security.pin.key || "",
         },
+        maxNumberOfWrongUnlockAttempts:
+          state.settings.security.maxNumberOfWrongUnlockAttempts || 3,
       },
       display: {
         sleepTimeout: state.settings.display.sleepTimeout || "",
@@ -298,8 +237,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 }
 
 onMounted(async () => {
-  await fetchConfig();
-
+  state.settings = await fetchConfig();
   // TODO: move toast to layout
   const toastElement = document.getElementById("submit-toast");
   if (toastElement) {
@@ -315,6 +253,6 @@ onMounted(async () => {
   position: fixed;
   top: 20px;
   right: 20px;
-  z-index: 1000; /* Ensure the toast is above other elements */
+  z-index: 1000;
 }
 </style>

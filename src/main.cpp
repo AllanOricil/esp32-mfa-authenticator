@@ -34,7 +34,7 @@ void setup()
   init_wifi(config);
 
   // SETUP MANAGER
-  init_manager(config);
+  init_manager();
 
   // SETUP CLOCK
   sync_time();
@@ -53,7 +53,7 @@ void setup()
   // TODO: create setup screen with steps for configuring WIFI, MQTT and calibrate touch
   // TODO: encapsulate this logic the UI controller
   bool displayPinScreen = !config.security.pin.hash.isEmpty() && !config.security.pin.key.isEmpty();
-  ui_init(displayPinScreen);
+  ui_init(displayPinScreen, config.security.maxNumberOfWrongUnlockAttempts);
 }
 
 void loop()
