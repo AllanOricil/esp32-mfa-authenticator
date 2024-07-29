@@ -21,6 +21,7 @@ String Configuration::serializeToJson(bool safe) const
 	JsonObject pinObj = securityObj.createNestedObject("pin");
 	pinObj["hash"] = safe ? "*********" : security.pin.hash;
 	pinObj["key"] = safe ? "*********" : security.pin.key;
+	securityObj["max_number_of_wrong_unlock_attempts"] = security.maxNumberOfWrongUnlockAttempts;
 
 	JsonObject displayObj = doc.createNestedObject("display");
 	displayObj["sleep_timeout"] = display.sleepTimeout;
@@ -35,6 +36,7 @@ String Configuration::serializeToJson(bool safe) const
 
 Configuration Configuration::load()
 {
+	Serial.println("Opening config.yml file");
 	File file = SD.open(CONFIG_FILE_PATH);
 	if (!file)
 	{
@@ -42,6 +44,7 @@ Configuration Configuration::load()
 		throw std::runtime_error("Error opening config file");
 	}
 
+	Serial.println("Reading config.yml file");
 	Configuration config;
 	YAMLNode root = YAMLNode::loadStream(file);
 	file.close();
@@ -77,18 +80,33 @@ Configuration Configuration::load()
 			config.mqtt.password = root.gettext("mqtt:password");
 	}
 
-	if (root["security"].isMap() && root["security"]["pin"].isMap())
+	if (root["security"].isMap())
 	{
-		if (!root["security"]["pin"]["hash"].isNull())
-			config.security.pin.hash = root.gettext("security:pin:hash");
+		if (!root["security"]["max_number_of_wrong_unlock_attempts"].isNull())
+		{
+			int maxNumberOfWrongUnlockAttempts = string2Int(root.gettext("security:max_number_of_wrong_unlock_attempts"));
+			config.security.maxNumberOfWrongUnlockAttempts = maxNumberOfWrongUnlockAttempts > 0 ? maxNumberOfWrongUnlockAttempts
+																								: MAX_NUMBER_OF_WRONG_UNLOCK_ATTEMPTS;
+		}
 
-		if (!root["security"]["pin"]["key"].isNull())
-			config.security.pin.key = root.gettext("security:pin:key");
+		if (root["security"]["pin"].isMap())
+		{
+			if (!root["security"]["pin"]["hash"].isNull())
+				config.security.pin.hash = root.gettext("security:pin:hash");
+
+			if (!root["security"]["pin"]["key"].isNull())
+				config.security.pin.key = root.gettext("security:pin:key");
+		}
 	}
 
 	if (root["display"].isMap())
 	{
-		config.display.sleepTimeout = string2Int(root.gettext("display:sleep_timeout"));
+		if (!root["display"]["sleep_timeout"].isNull())
+		{
+			int sleepTimeout = string2Int(root.gettext("display:sleep_timeout"));
+			config.display.sleepTimeout = sleepTimeout > 0 ? sleepTimeout
+														   : SLEEP_TIMEOUT;
+		}
 	}
 
 	if (root["touch"].isMap())
@@ -97,6 +115,7 @@ Configuration Configuration::load()
 		config.touch.forceCalibration = forceCalibration && (strcmp(forceCalibration, "true") == 0 || strcmp(forceCalibration, "1") == 0);
 	}
 
+	Serial.println("Config.yml file loaded successfully");
 	return config;
 }
 
@@ -133,6 +152,18 @@ Configuration Configuration::parse(const String &jsonString)
 
 	if (jsonDocument.containsKey("security"))
 	{
+
+		if (jsonDocument["security"].containsKey("maxNumberOfWrongUnlockAttempts"))
+		{
+			int maxNumberOfWrongUnlockAttempts = jsonDocument["security"]["maxNumberOfWrongUnlockAttempts"].as<int>();
+			config.security.maxNumberOfWrongUnlockAttempts = maxNumberOfWrongUnlockAttempts > 0 ? maxNumberOfWrongUnlockAttempts
+																								: MAX_NUMBER_OF_WRONG_UNLOCK_ATTEMPTS;
+		}
+		else
+		{
+			config.security.maxNumberOfWrongUnlockAttempts = MAX_NUMBER_OF_WRONG_UNLOCK_ATTEMPTS;
+		}
+
 		if (jsonDocument["security"].containsKey("pin"))
 		{
 			config.security.pin.hash = jsonDocument["security"]["pin"]["hash"].as<String>();
@@ -164,11 +195,11 @@ bool Configuration::save() const
 	}
 
 	String configJson = serializeToJson(false);
-	StringStream json_input_stream(configJson);
+	YAML::StringStream json_input_stream(configJson);
 	YAMLNode root = YAMLNode::loadStream(json_input_stream);
 	serializeYml(root.getDocument(), file, OUTPUT_YAML);
 	serializeYml(root.getDocument(), Serial, OUTPUT_YAML);
 	file.close();
-	Serial.println("Configuration saved to file successfully.");
+	Serial.printf("\nConfiguration saved to file successfully.\n");
 	return true;
 }

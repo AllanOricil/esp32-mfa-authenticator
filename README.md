@@ -120,6 +120,8 @@ mqtt:
   password: test
 
 security:
+  # [OPTIONAL] (number) [default 3] board is locked and requires a hard reset, after N number of wrong unlock attempts
+  max_number_of_wrong_unlock_attempts: 3
   pin:
     # [OPTIONAL] (text) pin code composed of numbers only and HMAC-SHA256 hashed
     hash: test
@@ -127,7 +129,7 @@ security:
     key: test
 
 display:
-  # [OPTIONAL] (number) if provided, the display will turn off after n seconds have passed
+  # [OPTIONAL] (number) [default 10] if provided, the display will turn off after n seconds have passed
   sleep_timeout: 10
 
 touch:

@@ -4,4 +4,4 @@
 #include "constants.h"
 #include "config.hpp"
 
-void init_manager(Configuration config);
+void init_manager();

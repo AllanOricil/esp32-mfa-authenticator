@@ -31,6 +31,7 @@ public:
 			String hash = "";
 			String key = "";
 		} pin;
+		int maxNumberOfWrongUnlockAttempts = MAX_NUMBER_OF_WRONG_UNLOCK_ATTEMPTS;
 	} security;
 	struct TouchSettings
 	{

@@ -15,17 +15,18 @@ extern "C"
 #include "ui_helpers.h"
 #include "ui_events.h"
 
-	// SCREEN: ui_TotpScreen
 	extern lv_obj_t *ui_totp_screen;
 	extern lv_obj_t *ui_pin_screen;
 	extern lv_obj_t *ui_load_screen;
 	extern lv_obj_t *ui_pin_textarea;
 	extern lv_obj_t *ui____initial_actions0;
+	extern int numberOfWrongUnlockAttempts;
+	extern int _maxNumberOfWrongUnlockAttempts;
 	void ui_event_totp_component_label(lv_event_t *e);
 	void ui_event_totp_component_bar(lv_event_t *e);
 	void ui_event_keyboard_button(lv_event_t *e);
 	void ui_event_pin_textarea(lv_event_t *e);
-	void ui_init(bool displayPinScreen);
+	void ui_init(bool displayPinScreen, int maxNumberOfWrongUnlockAttempts);
 	void ui_task_handler();
 	void refresh_totp_labels();
 	void refresh_counter_bars();

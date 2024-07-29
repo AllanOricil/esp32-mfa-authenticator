@@ -9,11 +9,20 @@ generate_random_number() {
     echo "$num"
 }
 
+execute_and_check() {
+    "$@"
+    if [ $? -ne 0 ]; then
+        echo "Command failed: $@"
+        exit 1
+    fi
+}
+
 base_dir=$(pwd)
 
 rm -rf $base_dir/data
 mkdir $base_dir/data
 cd $base_dir/site
+# NOTE: ignore pages that are not part of the esp32 manager
 nuxtignore="pages/*.vue
 public/tutorial
 public/manifest.json
@@ -39,9 +48,9 @@ cd $base_dir
 cp -r $base_dir/site/.output/public/* $base_dir/data
 
 
-platformio run --target clean
-platformio run --environment esp32-cyd
-platformio run --target buildfs --environment esp32-cyd
+execute_and_check platformio run --target clean
+execute_and_check platformio run --environment esp32-cyd
+execute_and_check platformio run --target buildfs --environment esp32-cyd
 
 
 output_dir=$base_dir/out

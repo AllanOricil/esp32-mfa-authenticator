@@ -18,6 +18,8 @@ lv_obj_t *ui_pin_screen;
 lv_obj_t *ui_load_screen;
 lv_obj_t *ui_pin_textarea;
 lv_obj_t *ui____initial_actions0;
+int numberOfWrongUnlockAttempts;
+int _maxNumberOfWrongUnlockAttempts;
 void ui_totp_screen_screen_init(void);
 void ui_pin_screen_screen_init(void);
 void ui_event_totp_component_label(lv_event_t *e);
@@ -71,7 +73,7 @@ void ui_event_pin_textarea(lv_event_t *e)
 
 ///////////////////// SCREENS ////////////////////
 
-void ui_init(bool displayPinScreen)
+void ui_init(bool displayPinScreen, int maxNumberOfWrongUnlockAttempts)
 {
     lv_disp_t *disp = lv_disp_get_default();
     lv_theme_t *theme = lv_theme_default_init(
@@ -85,6 +87,9 @@ void ui_init(bool displayPinScreen)
     ui_totp_screen_screen_init();
     ui____initial_actions0 = lv_obj_create(NULL);
 
+    // TODO: find a better way of sharing config props to avoid dups
+    numberOfWrongUnlockAttempts = maxNumberOfWrongUnlockAttempts;
+    _maxNumberOfWrongUnlockAttempts = maxNumberOfWrongUnlockAttempts;
     if (displayPinScreen)
     {
         ui_pin_screen_screen_init();

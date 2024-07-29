@@ -3,7 +3,6 @@
 #include "manager.hpp"
 
 AsyncWebServer server(80);
-Configuration _config;
 
 bool checkFileExists(const char *path)
 {
@@ -19,11 +18,9 @@ bool checkFileExists(const char *path)
 	}
 }
 
-void init_manager(Configuration config)
+void init_manager()
 {
 	Serial.println("Initializing manager server.");
-	_config = config;
-
 	if (!SPIFFS.begin(true))
 	{
 		Serial.println("Something went wrong while mounting SPIFFS.");
@@ -81,7 +78,8 @@ void init_manager(Configuration config)
 		HTTP_GET,
 		[](AsyncWebServerRequest *request)
 		{
-			request->send(200, "application/json", _config.serializeToJson(true));
+			Configuration config = Configuration::load();
+			request->send(200, "application/json", config.serializeToJson(true));
 		});
 
 	server.on(
@@ -97,6 +95,7 @@ void init_manager(Configuration config)
 				Configuration newConfig = Configuration::parse(dataJson);
 				if (newConfig.save())
 				{
+					Serial.println("Configuration updated successfully");
 					request->send(200, "application/json", "{\"message\":\"configuration updated\"}");
 				}
 			}
