@@ -2,6 +2,7 @@
 
 ![Build with PlatformIO](https://img.shields.io/badge/build%20with-PlatformIO-orange?logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB3aWR0aD0iMjUwMCIgaGVpZ2h0PSIyNTAwIiB2aWV3Qm94PSIwIDAgMjU2IDI1NiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCI+PHBhdGggZD0iTTEyOCAwQzkzLjgxIDAgNjEuNjY2IDEzLjMxNCAzNy40OSAzNy40OSAxMy4zMTQgNjEuNjY2IDAgOTMuODEgMCAxMjhjMCAzNC4xOSAxMy4zMTQgNjYuMzM0IDM3LjQ5IDkwLjUxQzYxLjY2NiAyNDIuNjg2IDkzLjgxIDI1NiAxMjggMjU2YzM0LjE5IDAgNjYuMzM0LTEzLjMxNCA5MC41MS0zNy40OUMyNDIuNjg2IDE5NC4zMzQgMjU2IDE2Mi4xOSAyNTYgMTI4YzAtMzQuMTktMTMuMzE0LTY2LjMzNC0zNy40OS05MC41MUMxOTQuMzM0IDEzLjMxNCAxNjIuMTkgMCAxMjggMCIgZmlsbD0iI0ZGN0YwMCIvPjxwYXRoIGQ9Ik0yNDkuMzg2IDEyOGMwIDY3LjA0LTU0LjM0NyAxMjEuMzg2LTEyMS4zODYgMTIxLjM4NkM2MC45NiAyNDkuMzg2IDYuNjEzIDE5NS4wNCA2LjYxMyAxMjggNi42MTMgNjAuOTYgNjAuOTYgNi42MTQgMTI4IDYuNjE0YzY3LjA0IDAgMTIxLjM4NiA1NC4zNDYgMTIxLjM4NiAxMjEuMzg2IiBmaWxsPSIjRkZGIi8+PHBhdGggZD0iTTE2MC44NjkgNzQuMDYybDUuMTQ1LTE4LjUzN2M1LjI2NC0uNDcgOS4zOTItNC44ODYgOS4zOTItMTAuMjczIDAtNS43LTQuNjItMTAuMzItMTAuMzItMTAuMzJzLTEwLjMyIDQuNjItMTAuMzIgMTAuMzJjMCAzLjc1NSAyLjAxMyA3LjAzIDUuMDEgOC44MzdsLTUuMDUgMTguMTk1Yy0xNC40MzctMy42Ny0yNi42MjUtMy4zOS0yNi42MjUtMy4zOWwtMi4yNTggMS4wMXYxNDAuODcybDIuMjU4Ljc1M2MxMy42MTQgMCA3My4xNzctNDEuMTMzIDczLjMyMy04NS4yNyAwLTMxLjYyNC0yMS4wMjMtNDUuODI1LTQwLjU1NS01Mi4xOTd6TTE0Ni41MyAxNjQuOGMtMTEuNjE3LTE4LjU1Ny02LjcwNi02MS43NTEgMjMuNjQzLTY3LjkyNSA4LjMyLTEuMzMzIDE4LjUwOSA0LjEzNCAyMS41MSAxNi4yNzkgNy41ODIgMjUuNzY2LTM3LjAxNSA2MS44NDUtNDUuMTUzIDUxLjY0NnptMTguMjE2LTM5Ljc1MmE5LjM5OSA5LjM5OSAwIDAgMC05LjM5OSA5LjM5OSA5LjM5OSA5LjM5OSAwIDAgMCA5LjQgOS4zOTkgOS4zOTkgOS4zOTkgMCAwIDAgOS4zOTgtOS40IDkuMzk5IDkuMzk5IDAgMCAwLTkuMzk5LTkuMzk4em0yLjgxIDguNjcyYTIuMzc0IDIuMzc0IDAgMSAxIDAtNC43NDkgMi4zNzQgMi4zNzQgMCAwIDEgMCA0Ljc0OXoiIGZpbGw9IiNFNTcyMDAiLz48cGF0aCBkPSJNMTAxLjM3MSA3Mi43MDlsLTUuMDIzLTE4LjkwMWMyLjg3NC0xLjgzMiA0Ljc4Ni01LjA0IDQuNzg2LTguNzAxIDAtNS43LTQuNjItMTAuMzItMTAuMzItMTAuMzItNS42OTkgMC0xMC4zMTkgNC42Mi0xMC4zMTkgMTAuMzIgMCA1LjY4MiA0LjU5MiAxMC4yODkgMTAuMjY3IDEwLjMxN0w5NS44IDc0LjM3OGMtMTkuNjA5IDYuNTEtNDAuODg1IDIwLjc0Mi00MC44ODUgNTEuODguNDM2IDQ1LjAxIDU5LjU3MiA4NS4yNjcgNzMuMTg2IDg1LjI2N1Y2OC44OTJzLTEyLjI1Mi0uMDYyLTI2LjcyOSAzLjgxN3ptMTAuMzk1IDkyLjA5Yy04LjEzOCAxMC4yLTUyLjczNS0yNS44OC00NS4xNTQtNTEuNjQ1IDMuMDAyLTEyLjE0NSAxMy4xOS0xNy42MTIgMjEuNTExLTE2LjI4IDMwLjM1IDYuMTc1IDM1LjI2IDQ5LjM2OSAyMy42NDMgNjcuOTI2em0tMTguODItMzkuNDZhOS4zOTkgOS4zOTkgMCAwIDAtOS4zOTkgOS4zOTggOS4zOTkgOS4zOTkgMCAwIDAgOS40IDkuNCA5LjM5OSA5LjM5OSAwIDAgMCA5LjM5OC05LjQgOS4zOTkgOS4zOTkgMCAwIDAtOS4zOTktOS4zOTl6bS0yLjgxIDguNjcxYTIuMzc0IDIuMzc0IDAgMSAxIDAtNC43NDggMi4zNzQgMi4zNzQgMCAwIDEgMCA0Ljc0OHoiIGZpbGw9IiNGRjdGMDAiLz48L3N2Zz4=) [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md) [![CI](https://github.com/AllanOricil/esp32-mfa-totp-generator/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/AllanOricil/esp32-mfa-totp-generator/actions/workflows/ci.yaml)
 
+
 <a href="https://www.buymeacoffee.com/allanoricil" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" style="height: 40px !important;width: 217px !important;" ></a>
 
 <img src="https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/bb904daf-c194-4e9f-8948-a0503e94bca1" height="400">
@@ -26,6 +27,18 @@ Other motives:
 - I wanted to learn how MFA works.
 - I wanted to learn how ESP32 works.
 
+## 🌐 Install
+
+You can flash your ESP32-CYD board with the latest build using this [site](https://allanoricil.github.io/esp32-mfa-authenticator).
+
+
+> [!IMPORTANT]
+> Read the site and the github workflows source codes to verify that the build artifact is, in fact, the one from the latest release published in this repository.
+
+> [!NOTE]
+> This site was based on https://esphome.github.io/esp-web-tools/
+
+
 ## 🎬 Demos
 
 <https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/166f6ea7-1046-4117-ae22-67991c8e6d8c>
@@ -36,12 +49,6 @@ Other motives:
 
 <https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/b610d1de-1bf9-47fe-9148-8973cb30205d>
 
-## 🌐 Installation Site
-
-You can flash your ESP32-CYD board with this code using this [site](https://allanoricil.github.io/esp32-mfa-authenticator)
-
-> [!NOTE]
-> This site was based on https://esphome.github.io/esp-web-tools/
 
 ## ⚙️ Parts
 
@@ -67,7 +74,7 @@ You can flash your ESP32-CYD board with this code using this [site](https://alla
 | Acrillic case         | 2.5 USD  |
 
 > [!NOTE]
-> Prices do not consider expenses with taxes and shipping.
+> The above list doesn't consider expenses with taxes and shipping.
 
 > [!NOTE]
 > Prices were taking in February 2024.
@@ -83,7 +90,7 @@ You can flash your ESP32-CYD board with this code using this [site](https://alla
 | platform.io ide vscode extension | >= v3.3   |
 | docker                           | >= v25.0  |
 
-> [!WARNING]
+> [!IMPORTANT]
 > Don't forget to install a [driver to allow your OS to recognize esp32](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers)
 
 > [!IMPORTANT]
@@ -136,12 +143,11 @@ touch:
   # [OPTIONAL] (bool=false|0) calibrate touch sensor if true or 1
   force_calibration: 0
 ```
+> [!IMPORTANT]
+> Upon the initial boot, it is imperative to undergo the calibration process at least once, as outlined in the `How to build` section below.
 
 > [!TIP]
 > Once the boot process is finished, remove the SD card from the board, and store it somewhere safe. Before rebooting, or if you want to add new secrets, remember to put it back in the board.
-
-> [!WARNING]
-> Upon the initial boot, it is imperative to undergo the calibration process at least once, as outlined in the `How to build` section below.
 
 ## 📖 Guides
 
@@ -173,14 +179,14 @@ Alternatively, if you prefer using CLIs, install PlatformIO's official CLI using
 5. Wait until the screen turns white, then proceed to follow the calibration instructions displayed in your terminal for the touch sensor.
    <img src="./images/touch-calibration-flow.png">
 
-> [!NOTE]
-> The calibration process occurs only once, immediately after flashing the board and during its initial boot.
-
-> [!WARNING]
+> [!IMPORTANT]
 > The pin screen won't work if you did not calibrate the touch sensor using the orientation described above in step 3.
 
 > [!IMPORTANT]
 > Remember to substitue `${DEVICE_PATH}` with the value you got in step 1.
+
+> [!NOTE]
+> The calibration process occurs only once, immediately after flashing the board and during its initial boot.
 
 ### 📚 How to add TOTP Secrets
 
@@ -199,10 +205,10 @@ aws-3,DSAJDHHAHASAUDOASNOTREALOADAKLDASAJFPOAIDONTEVENTRYOASFAIPO
 
 ```
 
-> [!WARNING]
+> [!IMPORTANT]
 > This file must end with a new line.
 
-> [!WARNING]
+> [!IMPORTANT]
 > Secrets must be unencrypted and based 32 encoded. In the future, my plan is to decrypt secrets using a secret stored in the board. With this approach, a stolen SD card won't work on a different board flashed with the same code unless the board has the same key.
 
 ### 📚 How to verify if TOTP codes are correct
@@ -232,7 +238,7 @@ touch:
 7. Remove the touch properties from `config.yml`, save it and put it back on the board.
 8. Press the `RST` button once more, and now verify that the calibration flow isn't triggered anymore.
 
-> [!WARNING]
+> [!IMPORTANT]
 > The pin screen won't work if you did not calibrate the touch sensor using the orientation described above in step 4.
 
 ### 📚 How to register TOTP Secrets without inserting the SD card into a computer
@@ -287,7 +293,7 @@ Ease the process of adding new services. With this feature I won't need to inser
 
 Users can manage their board settings using a browser. Once the board is connected to the local network, open a browser and type `{IP_ADDRESS}/esp32/settings`.
 
-> [!WARNING]
+> [!IMPORTANT]
 > At the moment, secrets must be re-entered before submiting the form. If you don't re-type the secrets, they will be stored as `*******` in the SD card, and this will break the boot.
 
 ### ✅ Display turns off automatically after N seconds without user interaction
@@ -311,7 +317,8 @@ When the ESP32-MFA-Authenticator extension is enabled, a new button called "regi
 10.The ESP32-MFA-Authenticator service notifies the ESP32-MFA-Authenticator extension about the result.
 ```
 
-> **INFO:** the above steps are summarizing my initial plan.
+> [!IMPORTANT]
+> The above steps summarize my initial plan.
 
 ### 🔜 Group TOTP Codes
 
