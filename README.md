@@ -285,8 +285,6 @@ echo -n "YOUR_PIN_NUMBER" | openssl dgst -sha256 -hmac "YOUR_32_CHARACTERS_LONG_
 
 3. Copy the generated hash. It must be 64 characters long.
 
-<img width="938" alt="image" src="https://github.com/user-attachments/assets/a0954dcf-25a1-46f5-84de-42de212d5970">
-
 4. In your config.yml
 
 - set `hash` with the generated hash you got in step 3
