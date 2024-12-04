@@ -238,40 +238,6 @@ touch:
 > [!IMPORTANT]
 > The pin screen won't work if you did not calibrate the touch sensor using the orientation described above in step 4.
 
-### 📚 How to register TOTP Secrets without inserting the SD card into a computer
-
-To enable saving secrets to ESP32 via a local network, this project uses [MQTT](https://mqtt.org/) as the messaging protocol, [Node-red](https://nodered.org/) as the postman (per say) and [Eclipse Mosquito](https://mosquitto.org/) as the MQTT broker. Both services can be started using docker compose using a docker-compose.yaml file located in the root of this project, in order to ease the setup. So, before continuing, install Docker on your computer following the guide found [here](https://www.docker.com/get-started/).
-
-After that, run the following script to start both node-red and the mqtt broker:
-
-```bash
-./scripts/start-node-red.sh
-```
-
-Open node-red at `http://localhost:1880`, and then load the flow from `./node-red/insert-secret.json`. For now you must manually setup the node input with the secret you want to send to your ESP32, but in the future I plan to have a small app and a chrome extension as clients using the local node-red services to ease the process of storing secrets on the board.
-
-> [!IMPORTANT]
-> Make sure to have the following ports free before running `./scripts/start-node-red.sh`: 1880 (node-red), 1883 (eclipse/mosquitto), 9001 (eclipse/mosquito).
-
-You should see the following containers in the docker app.
-
-<img src="./images/docker-compose-totp-service-running.png" width="800">
-
-<img src="./images/docker-node-red-start.png" width="800">
-
-<img src="./images/docker-mosquitto-start.png" width="800">
-
-> [!IMPORTANT]
-> Remember to assign static IPs to the host running the MQTT service, as weel as for the esp32, in your router. This is a suggestion to avoid having to update the `MQTT_SERVER` constant with a new ip every time your router decides to change the ip of your host.
-
-> [!TIP]
-> If your host can't receive messages from other devices on the same network, it could be a firewall problem. Configure the firewall in the host to enable it to receive requests from other devices on your local network.
-
-After all services have initialized, open node-red at `localhost:1880`, and import `./node-red/insert-secret.json` flow. Use this [tutorial](https://nodered.org/docs/user-guide/editor/workspace/import-export) to guide you to import flows into node-red.
-
-> [!IMPORTANT]
-> Remember to put the SD card again in the board, if you want the secret to be stored. If you don't do it, after a reset the TOTP code for that secret won't appear because the secret wasn't written to disk.
-
 ### 📚 How to setup PIN number
 
 #### Option 1
@@ -345,10 +311,6 @@ People often use multiple services that require MFA TOTP codes with high frequen
 ### ✅ Unlock with PIN Code
 
 It is not secure to have unencrypted secrets stored without protection
-
-### ✅ Add secrets via a local network, using a secure channel
-
-Ease the process of adding new services. With this feature I won't need to insert the SD card on my computer. If there is no SD card on the board, the channel to register new services is going to be closed. I also plan to require fingerprint/pin/password before opening this channel.
 
 ### ✅ Manage board settings using a browser
 
