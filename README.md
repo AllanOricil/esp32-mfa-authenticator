@@ -272,6 +272,70 @@ After all services have initialized, open node-red at `localhost:1880`, and impo
 > [!IMPORTANT]
 > Remember to put the SD card again in the board, if you want the secret to be stored. If you don't do it, after a reset the TOTP code for that secret won't appear because the secret wasn't written to disk.
 
+### 📚 How to setup PIN number
+
+#### Option 1
+
+1. Use this [website](https://acte.ltd/utils/randomkeygen) to create a strong secret that is exactly 32 characters long. Copy the value from `Encryption key 256`, which has exactly 32 characters
+
+<img width="708" alt="image" src="https://github.com/user-attachments/assets/571bc5f9-1c80-49a1-b1c7-61cb7974d8b2">
+
+2. Open this [website](https://www.devglan.com/online-tools/hmac-sha256-online) to hash your pin number. Add you pin number as plain text, in the first input. You must use numbers only because the UI doesn't support anything else yet.
+
+3. Copy the generated hash. It must be 64 characters long.
+
+<img width="938" alt="image" src="https://github.com/user-attachments/assets/a0954dcf-25a1-46f5-84de-42de212d5970">
+
+4. In your config.yml
+
+- set `hash` with the generated hash you got in step 3
+- set `key` with the secret you got in step 1
+
+```yml
+...
+security: 
+  pin: 
+    hash: 7dbd45736c57090dd62a7e1c8db1a08c353b4a836f2c6b43fd1dd3f1e747ea59
+    key: TUwNzIxF5lJncAJVMkmb4EiSP9vm0OyF
+  max_number_of_wrong_unlock_attempts: 3
+...
+```
+
+
+#### Option 2
+
+1. Use this [website](https://acte.ltd/utils/randomkeygen) to create a strong secret that is exactly 32 characters long. Copy the value from `Encryption key 256`, which has exactly 32 characters
+
+<img width="708" alt="image" src="https://github.com/user-attachments/assets/571bc5f9-1c80-49a1-b1c7-61cb7974d8b2">
+
+2. Open a terminal and run the following comand to hash your pin number. Don't forget to substitute `"YOUR_PIN_NUMBER"` and `"YOUR_32_CHARACTERS_LONG_SECRET"`
+
+```bash
+echo -n "YOUR_PIN_NUMBER" | openssl dgst -sha256 -hmac "YOUR_32_CHARACTERS_LONG_SECRET" | awk '{print $2}'
+```
+
+<img width="988" alt="image" src="https://github.com/user-attachments/assets/503a01de-0a4f-4bf8-95a3-d5ed660bfcee">
+
+
+3. Copy the generated hash. It must be 64 characters long.
+
+<img width="938" alt="image" src="https://github.com/user-attachments/assets/a0954dcf-25a1-46f5-84de-42de212d5970">
+
+4. In your config.yml
+
+- set `hash` with the generated hash you got in step 3
+- set `key` with the secret you got in step 1
+
+```yml
+...
+security: 
+  pin: 
+    hash: 7dbd45736c57090dd62a7e1c8db1a08c353b4a836f2c6b43fd1dd3f1e747ea59
+    key: TUwNzIxF5lJncAJVMkmb4EiSP9vm0OyF
+  max_number_of_wrong_unlock_attempts: 3
+...
+```
+
 ## 🎯 Roadmap
 
 ### ✅ Display multiple TOTP codes
