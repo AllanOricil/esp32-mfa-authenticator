@@ -240,13 +240,15 @@ touch:
 
 ### 📚 How to setup PIN number
 
+
+
 #### Option 1
 
 1. Use this [website](https://acte.ltd/utils/randomkeygen) to create a strong secret that is exactly 32 characters long. Copy the value from `Encryption key 256`, which has exactly 32 characters
 
 <img width="708" alt="image" src="https://github.com/user-attachments/assets/571bc5f9-1c80-49a1-b1c7-61cb7974d8b2">
 
-2. Open this [website](https://www.devglan.com/online-tools/hmac-sha256-online) to hash your pin number. Add you pin number as plain text, in the first input. You must use numbers only because the UI doesn't support anything else yet.
+2. Open this [website](https://www.devglan.com/online-tools/hmac-sha256-online) to hash your pin number. Add you pin number as plain text, in the first input. You must use numbers only because the UI doesn't support letters or symbols, and it must contain at least 6 digits.
 
 3. Copy the generated hash. It must be 64 characters long.
 
@@ -274,7 +276,7 @@ security:
 
 <img width="708" alt="image" src="https://github.com/user-attachments/assets/571bc5f9-1c80-49a1-b1c7-61cb7974d8b2">
 
-2. Open a terminal and run the following comand to hash your pin number. Don't forget to substitute `"YOUR_PIN_NUMBER"` and `"YOUR_32_CHARACTERS_LONG_SECRET"`
+2. Open a terminal and run the following comand to hash your pin number. Don't forget to substitute `"YOUR_PIN_NUMBER"` and `"YOUR_32_CHARACTERS_LONG_SECRET"`. The PIN number must contain only digits, and be at least 6 digits long.
 
 ```bash
 echo -n "YOUR_PIN_NUMBER" | openssl dgst -sha256 -hmac "YOUR_32_CHARACTERS_LONG_SECRET" | awk '{print $2}'
