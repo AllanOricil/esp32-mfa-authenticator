@@ -276,10 +276,10 @@ security:
 
 <img width="708" alt="image" src="https://github.com/user-attachments/assets/571bc5f9-1c80-49a1-b1c7-61cb7974d8b2">
 
-2. Open a terminal and run the following comand to hash your pin number. Don't forget to substitute `"YOUR_PIN_NUMBER"` and `"YOUR_32_CHARACTERS_LONG_SECRET"`. The PIN number must contain only digits, and be at least 6 digits long.
+2. Open a terminal and run the following comand to hash your pin number. Don't forget to substitute `"YOUR_6_DIGITS_PIN_NUMBER"` and `"YOUR_32_CHARACTERS_LONG_SECRET"`. The PIN number must contain only digits, and be at least 6 digits long.
 
 ```bash
-echo -n "YOUR_PIN_NUMBER" | openssl dgst -sha256 -hmac "YOUR_32_CHARACTERS_LONG_SECRET" | awk '{print $2}'
+echo -n "YOUR_6_DIGITS_PIN_NUMBER" | openssl dgst -sha256 -hmac "YOUR_32_CHARACTERS_LONG_SECRET" | awk '{print $2}'
 ```
 
 <img width="988" alt="image" src="https://github.com/user-attachments/assets/503a01de-0a4f-4bf8-95a3-d5ed660bfcee">
