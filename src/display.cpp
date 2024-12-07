@@ -6,11 +6,13 @@
 #include "constants.h"
 #include "config.hpp"
 #include "touch.hpp"
+#include "./ui/ui.h"
 
 TFT_eSPI tft = TFT_eSPI();
 static lv_disp_drv_t disp_drv;
 unsigned long sleepTimeout = 0;
 unsigned long lastActivityTime = 0;
+bool displayPinScreen = false;
 bool displayIsOn = false;
 
 void turn_off_display()
@@ -18,10 +20,22 @@ void turn_off_display()
     ledcWrite(PWM_CHANNEL_BCKL, 0);
     displayIsOn = false;
     Serial.println("Display turned off.");
+
+    // NOTE: The PIN screen is loaded immediately after the display turns off. This prevents users from briefly seeing the TOTP screen when the display is turned back on.
+    if (displayPinScreen)
+    {
+        lv_textarea_set_text(ui_pin_textarea, "");
+        lv_disp_load_scr(ui_pin_screen);
+    }
 }
 
 void turn_on_display()
 {
+    // NOTE: number could be accidentally be pressed when awaking the display with a touch in the keys area. So, this will ensure the text area is reset
+    if (displayPinScreen)
+    {
+        lv_textarea_set_text(ui_pin_textarea, "");
+    }
     ledcWrite(PWM_CHANNEL_BCKL, 0.5 * PWM_MAX_BCKL);
     displayIsOn = true;
     Serial.println("Display turned on.");
@@ -102,6 +116,7 @@ void init_display(Configuration config)
     Serial.println("Initializing display.");
 
     sleepTimeout = config.display.sleepTimeout * 1000;
+    displayPinScreen = !config.security.pin.hash.isEmpty() && !config.security.pin.key.isEmpty();
 
     Serial.println("Initializing backlight.");
     pinMode(TFT_BCKL, OUTPUT);
