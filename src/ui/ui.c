@@ -84,7 +84,9 @@ void ui_init(bool displayPinScreen, int maxNumberOfWrongUnlockAttempts)
         LV_FONT_DEFAULT);
     LV_EVENT_SETUP_COMPLETE = lv_event_register_id();
     lv_disp_set_theme(disp, theme);
+    // NOTE: initialize screens
     ui_totp_screen_screen_init();
+    ui_pin_screen_screen_init();
     ui____initial_actions0 = lv_obj_create(NULL);
 
     // TODO: find a better way of sharing config props to avoid dups
@@ -92,7 +94,6 @@ void ui_init(bool displayPinScreen, int maxNumberOfWrongUnlockAttempts)
     _maxNumberOfWrongUnlockAttempts = maxNumberOfWrongUnlockAttempts;
     if (displayPinScreen)
     {
-        ui_pin_screen_screen_init();
         lv_disp_load_scr(ui_pin_screen);
     }
     else
