@@ -1,3 +1,10 @@
+# [0.12.0](https://github.com/AllanOricil/esp32-mfa-authenticator/compare/v0.11.0...v0.12.0) (2024-12-07)
+
+
+### Features
+
+* display PIN screen immediately upon screen wake-up ([e548745](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/e548745726adc1a1f8dac2cbf39fb3cd10ebe775))
+
 # [0.11.0](https://github.com/AllanOricil/esp32-mfa-authenticator/compare/v0.10.1...v0.11.0) (2024-07-29)
 
 
