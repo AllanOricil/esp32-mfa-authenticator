@@ -21,39 +21,18 @@ void setup()
 {
   Serial.begin(115200);
 
-  // SETUP SD CARD
   init_sd_card_reader();
 
-  // SETUP CONFIG
   Configuration config = Configuration::load();
 
-  // SETUP PIN
   init_pin(config.security.pin.hash.c_str(), config.security.pin.key.c_str());
-
-  // SETUP TIME
   init_wifi(config);
-
-  // SETUP MANAGER
   init_manager();
-
-  // SETUP CLOCK
   sync_time();
-
-  // SETUP MFA
   load_mfa_totp_keys();
   generate_totps();
-
-  // SETUP MQTT
   init_mqtt(config);
-
-  // SETUP TOUCH SCREEN
   init_touch_screen(config);
-
-  // SETUP UI
-  // TODO: create setup screen with steps for configuring WIFI, MQTT and calibrate touch
-  // TODO: encapsulate this logic the UI controller
-  bool displayPinScreen = !config.security.pin.hash.isEmpty() && !config.security.pin.key.isEmpty();
-  ui_init(displayPinScreen, config.security.maxNumberOfWrongUnlockAttempts);
 }
 
 void loop()
