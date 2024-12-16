@@ -1,12 +1,5 @@
-#include <Arduino.h>
-#include <lvgl.h>
-#include <TFT_eSPI.h>
-#include <SPI.h>
-#include <string.h>
-#include "constants.h"
-#include "config.hpp"
-#include "touch.hpp"
-#include "./ui/ui.h"
+
+#include "display.h"
 
 TFT_eSPI tft = TFT_eSPI();
 static lv_disp_drv_t disp_drv;
@@ -116,11 +109,12 @@ void init_display(Configuration config)
     Serial.println("Initializing display.");
 
     sleepTimeout = config.display.sleepTimeout * 1000;
-    displayPinScreen = !config.security.pin.hash.isEmpty() && !config.security.pin.key.isEmpty();
+    displayPinScreen = config.is_secure();
 
     Serial.println("Initializing backlight.");
     pinMode(TFT_BCKL, OUTPUT);
     digitalWrite(TFT_BCKL, HIGH);
+
     Serial.println("Backlight initialized.");
 
     Serial.println("Initializing lvgl.");
@@ -134,10 +128,12 @@ void init_display(Configuration config)
     Serial.println("TFT initialized.");
 
     displayIsOn = true;
+    display_register();
+
     Serial.println("Display initialized.");
 }
 
-lv_disp_t *register_display()
+void display_register()
 {
     Serial.println("Registering display in lvgl.");
     lv_disp_drv_init(&disp_drv);
@@ -153,6 +149,6 @@ lv_disp_t *register_display()
     ledcSetup(PWM_CHANNEL_BCKL, PWM_FREQ_BCKL, PWM_BITS_BCKL);
     ledcAttachPin(21, PWM_CHANNEL_BCKL);
     ledcWrite(PWM_CHANNEL_BCKL, 0.5 * PWM_MAX_BCKL);
+    reset_display_off_timer();
     Serial.println("Display registered.");
-    return disp;
 }

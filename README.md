@@ -1,7 +1,5 @@
 ![Build with PlatformIO](https://img.shields.io/badge/build%20with-PlatformIO-orange?logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB3aWR0aD0iMjUwMCIgaGVpZ2h0PSIyNTAwIiB2aWV3Qm94PSIwIDAgMjU2IDI1NiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCI+PHBhdGggZD0iTTEyOCAwQzkzLjgxIDAgNjEuNjY2IDEzLjMxNCAzNy40OSAzNy40OSAxMy4zMTQgNjEuNjY2IDAgOTMuODEgMCAxMjhjMCAzNC4xOSAxMy4zMTQgNjYuMzM0IDM3LjQ5IDkwLjUxQzYxLjY2NiAyNDIuNjg2IDkzLjgxIDI1NiAxMjggMjU2YzM0LjE5IDAgNjYuMzM0LTEzLjMxNCA5MC41MS0zNy40OUMyNDIuNjg2IDE5NC4zMzQgMjU2IDE2Mi4xOSAyNTYgMTI4YzAtMzQuMTktMTMuMzE0LTY2LjMzNC0zNy40OS05MC41MUMxOTQuMzM0IDEzLjMxNCAxNjIuMTkgMCAxMjggMCIgZmlsbD0iI0ZGN0YwMCIvPjxwYXRoIGQ9Ik0yNDkuMzg2IDEyOGMwIDY3LjA0LTU0LjM0NyAxMjEuMzg2LTEyMS4zODYgMTIxLjM4NkM2MC45NiAyNDkuMzg2IDYuNjEzIDE5NS4wNCA2LjYxMyAxMjggNi42MTMgNjAuOTYgNjAuOTYgNi42MTQgMTI4IDYuNjE0YzY3LjA0IDAgMTIxLjM4NiA1NC4zNDYgMTIxLjM4NiAxMjEuMzg2IiBmaWxsPSIjRkZGIi8+PHBhdGggZD0iTTE2MC44NjkgNzQuMDYybDUuMTQ1LTE4LjUzN2M1LjI2NC0uNDcgOS4zOTItNC44ODYgOS4zOTItMTAuMjczIDAtNS43LTQuNjItMTAuMzItMTAuMzItMTAuMzJzLTEwLjMyIDQuNjItMTAuMzIgMTAuMzJjMCAzLjc1NSAyLjAxMyA3LjAzIDUuMDEgOC44MzdsLTUuMDUgMTguMTk1Yy0xNC40MzctMy42Ny0yNi42MjUtMy4zOS0yNi42MjUtMy4zOWwtMi4yNTggMS4wMXYxNDAuODcybDIuMjU4Ljc1M2MxMy42MTQgMCA3My4xNzctNDEuMTMzIDczLjMyMy04NS4yNyAwLTMxLjYyNC0yMS4wMjMtNDUuODI1LTQwLjU1NS01Mi4xOTd6TTE0Ni41MyAxNjQuOGMtMTEuNjE3LTE4LjU1Ny02LjcwNi02MS43NTEgMjMuNjQzLTY3LjkyNSA4LjMyLTEuMzMzIDE4LjUwOSA0LjEzNCAyMS41MSAxNi4yNzkgNy41ODIgMjUuNzY2LTM3LjAxNSA2MS44NDUtNDUuMTUzIDUxLjY0NnptMTguMjE2LTM5Ljc1MmE5LjM5OSA5LjM5OSAwIDAgMC05LjM5OSA5LjM5OSA5LjM5OSA5LjM5OSAwIDAgMCA5LjQgOS4zOTkgOS4zOTkgOS4zOTkgMCAwIDAgOS4zOTgtOS40IDkuMzk5IDkuMzk5IDAgMCAwLTkuMzk5LTkuMzk4em0yLjgxIDguNjcyYTIuMzc0IDIuMzc0IDAgMSAxIDAtNC43NDkgMi4zNzQgMi4zNzQgMCAwIDEgMCA0Ljc0OXoiIGZpbGw9IiNFNTcyMDAiLz48cGF0aCBkPSJNMTAxLjM3MSA3Mi43MDlsLTUuMDIzLTE4LjkwMWMyLjg3NC0xLjgzMiA0Ljc4Ni01LjA0IDQuNzg2LTguNzAxIDAtNS43LTQuNjItMTAuMzItMTAuMzItMTAuMzItNS42OTkgMC0xMC4zMTkgNC42Mi0xMC4zMTkgMTAuMzIgMCA1LjY4MiA0LjU5MiAxMC4yODkgMTAuMjY3IDEwLjMxN0w5NS44IDc0LjM3OGMtMTkuNjA5IDYuNTEtNDAuODg1IDIwLjc0Mi00MC44ODUgNTEuODguNDM2IDQ1LjAxIDU5LjU3MiA4NS4yNjcgNzMuMTg2IDg1LjI2N1Y2OC44OTJzLTEyLjI1Mi0uMDYyLTI2LjcyOSAzLjgxN3ptMTAuMzk1IDkyLjA5Yy04LjEzOCAxMC4yLTUyLjczNS0yNS44OC00NS4xNTQtNTEuNjQ1IDMuMDAyLTEyLjE0NSAxMy4xOS0xNy42MTIgMjEuNTExLTE2LjI4IDMwLjM1IDYuMTc1IDM1LjI2IDQ5LjM2OSAyMy42NDMgNjcuOTI2em0tMTguODItMzkuNDZhOS4zOTkgOS4zOTkgMCAwIDAtOS4zOTkgOS4zOTggOS4zOTkgOS4zOTkgMCAwIDAgOS40IDkuNCA5LjM5OSA5LjM5OSAwIDAgMCA5LjM5OC05LjQgOS4zOTkgOS4zOTkgMCAwIDAtOS4zOTktOS4zOTl6bS0yLjgxIDguNjcxYTIuMzc0IDIuMzc0IDAgMSAxIDAtNC43NDggMi4zNzQgMi4zNzQgMCAwIDEgMCA0Ljc0OHoiIGZpbGw9IiNGRjdGMDAiLz48L3N2Zz4=) [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md) [![CI](https://github.com/AllanOricil/esp32-mfa-totp-generator/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/AllanOricil/esp32-mfa-totp-generator/actions/workflows/ci.yaml)
 
-
-
 # ESP32 MFA Authenticator
 
 <img src="https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/bb904daf-c194-4e9f-8948-a0503e94bca1" height="400">
@@ -28,13 +26,11 @@ Other motives:
 
 You can flash your ESP32-CYD board with the latest build using this [site](https://allanoricil.github.io/esp32-mfa-authenticator).
 
-
 > [!IMPORTANT]
 > Read the site and the github workflows source codes to verify that the build artifact is, in fact, the one from the latest release published in this repository.
 
 > [!NOTE]
 > This site was based on https://esphome.github.io/esp-web-tools/
-
 
 ## 🎬 Demos
 
@@ -45,7 +41,6 @@ You can flash your ESP32-CYD board with the latest build using this [site](https
 <https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/a398b55b-a415-4d21-8f28-91df153bac9f>
 
 <https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/b610d1de-1bf9-47fe-9148-8973cb30205d>
-
 
 ## ⚙️ Parts
 
@@ -140,6 +135,7 @@ touch:
   # [OPTIONAL] (bool=false|0) calibrate touch sensor if true or 1
   force_calibration: 0
 ```
+
 > [!IMPORTANT]
 > Upon the initial boot, it is imperative to undergo the calibration process at least once, as outlined in the `How to build` section below.
 
@@ -150,40 +146,17 @@ touch:
 
 ### 📚 How to build
 
-#### 📚 Using Platform IO IDE in VS Code
+Install PlatformIO's official CLI using this [tutorial](https://platformio.org/install/cli), and then follow the next steps:
 
-1. Install Platform IO IDE extension in VS Code.
-2. Open this project in a new vscode workspace, and wait for Platform.IO to finish its automatic setup.
-3. Open `platformio.ini` and edit
-4. Connect your board to your computer. If you installed the right drivers, the next steps should work just fine.
-5. Click on the Platform.IO button, in VS Code's sidebar.
-6. Then click on `esp32-cyd -> General -> Build` and wait until the build is finished with success.
-7. Orient the board horizontally, placing the USB port(s) on the right side and positioning the screen towards you. This step is important for when calibrating the touch sensor.
-8. Finally, click on `esp32-cyd -> General -> Upload ad Monitor` to flash the code into your board, and verify its outputs using a terminal.
-
-#### 📚 Using Platform IO CLI
-
-Alternatively, if you prefer using CLIs, install PlatformIO's official CLI using this [tutorial](https://platformio.org/install/cli), and then follow the next steps:
-
-1. Run `platformio device list` and annotate the device path of your board.
+1. Run `platformio device list` and annotate the device port of your board.
 
 > [!TIP]
-> You can discover which path belongs to your board by comparing the outputs of this command when your board is connected and not.
+> You can discover which port belongs to your board by comparing the outputs of this command when your board is connected and when it is not.
 
-2. Run `platformio run --environment esp32-cyd` to build the application
-3. Orient the board horizontally, placing the USB port(s) on the right side and positioning the screen towards you. This step is important for when calibrating the touch sensor.
-4. Upload the code to your board using `platformio run --target upload --upload-port ${DEVICE_PATH} --target monitor --environment esp32-cyd`.
-5. Wait until the screen turns white, then proceed to follow the calibration instructions displayed in your terminal for the touch sensor.
-   <img src="./images/touch-calibration-flow.png">
+2. Run `./scripts/dev.sh --port ${DEVICE_PORT}` to build and flash the code into your board
 
 > [!IMPORTANT]
-> The pin screen won't work if you did not calibrate the touch sensor using the orientation described above in step 3.
-
-> [!IMPORTANT]
-> Remember to substitue `${DEVICE_PATH}` with the value you got in step 1.
-
-> [!NOTE]
-> The calibration process occurs only once, immediately after flashing the board and during its initial boot.
+> Remember to substitue `${DEVICE_PORT}` with the value you got in step 1.
 
 ### 📚 How to add TOTP Secrets
 
@@ -215,44 +188,51 @@ aws-3,DSAJDHHAHASAUDOASNOTREALOADAKLDASAJFPOAIDONTEVENTRYOASFAIPO
 
 ### 📚 How to recalibrate the touch sensor
 
-1. Add the following property to the root of your `config.yml` and save it.
+1. Open your `config.yml` file.
+2. Add the following property at the root level:
 
 ```yml
 touch:
   force_calibration: true
 ```
 
-> [!NOTE]
-> The calibration process will initiate upon the initial boot of the board, regardless of the content stored in `config.yml`.
+3. Insert the SD card with the updated `config.yml` into your board.
+4. Press the `RST` button on the board to reboot it.
+5. Wait for the calibration screen to appear, as shown below:
 
-2. Connect the board to your computer.
-3. Open a terminal, and run `platformio device monitor --baud 115200` to monitor the board's serial port.
-   ![monitor-serial-port](./images/monitor-serial-port.png)
-4. Orient the board horizontally, placing the USB port(s) on the right side and positioning the screen towards you.
-5. Ensure the SD card containing `config.yml` is on the board.
-6. Press the `RST` button on the board and wait until the screen becomes pure white, and follow the instructions as shown below.
-   <img src="./images/touch-calibration-flow.png">
-7. Remove the touch properties from `config.yml`, save it and put it back on the board.
-8. Press the `RST` button once more, and now verify that the calibration flow isn't triggered anymore.
+<img src="./images/touch-calibration-flow-1.png" width="250px">
+
+6. Follow the on-screen instructions to complete the calibration process.
+7. Once the calibration is finished, update `config.yml` again:
+
+```yml
+touch:
+  force_calibration: false
+```
+
+8. Save the file, insert the SD card back into the board, and reboot by pressing the `RST` button.
+9. Confirm that the calibration screen no longer appears.
+10. Your touchscreen is now calibrated and ready to use! 🎉
+
+> [!NOTE]
+> The calibration state will initiate upon the initial boot of the board, regardless of the content stored in `config.yml`, if no calibration is found in [SPIFFS](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/storage/spiffs.html).
 
 > [!IMPORTANT]
-> The pin screen won't work if you did not calibrate the touch sensor using the orientation described above in step 4.
+> The pin screen won't work if you did not calibrate the touch sensor.
 
 ### 📚 How to setup PIN number
-
-
 
 #### Option 1
 
 1. Use this [website](https://acte.ltd/utils/randomkeygen) to create a strong secret that is exactly 32 characters long. Copy the value from `Encryption key 256`, which has exactly 32 characters
 
-<img width="708" alt="image" src="https://github.com/user-attachments/assets/571bc5f9-1c80-49a1-b1c7-61cb7974d8b2">
+<img width="500" alt="image" src="https://github.com/user-attachments/assets/571bc5f9-1c80-49a1-b1c7-61cb7974d8b2">
 
 2. Open this [website](https://www.devglan.com/online-tools/hmac-sha256-online) to hash your pin number. Add you pin number as plain text, in the first input. You must use numbers only because the UI doesn't support letters or symbols, and it must contain at least 6 digits and no more than 20 digits.
 
 3. Copy the generated hash. It must be 64 characters long.
 
-<img width="938" alt="image" src="https://github.com/user-attachments/assets/a0954dcf-25a1-46f5-84de-42de212d5970">
+<img width="500" alt="image" src="https://github.com/user-attachments/assets/a0954dcf-25a1-46f5-84de-42de212d5970">
 
 4. In your config.yml
 
@@ -260,21 +240,19 @@ touch:
 - set `key` with the secret you got in step 1
 
 ```yml
-...
-security: 
-  pin: 
+---
+security:
+  pin:
     hash: 7dbd45736c57090dd62a7e1c8db1a08c353b4a836f2c6b43fd1dd3f1e747ea59
     key: TUwNzIxF5lJncAJVMkmb4EiSP9vm0OyF
   max_number_of_wrong_unlock_attempts: 3
-...
 ```
-
 
 #### Option 2
 
 1. Use this [website](https://acte.ltd/utils/randomkeygen) to create a strong secret that is exactly 32 characters long. Copy the value from `Encryption key 256`, which has exactly 32 characters
 
-<img width="708" alt="image" src="https://github.com/user-attachments/assets/571bc5f9-1c80-49a1-b1c7-61cb7974d8b2">
+<img width="500" alt="image" src="https://github.com/user-attachments/assets/571bc5f9-1c80-49a1-b1c7-61cb7974d8b2">
 
 2. Open a terminal and run the following comand to hash your pin number. Don't forget to substitute `"YOUR_PIN_NUMBER"` and `"YOUR_32_CHARACTERS_LONG_SECRET"`. The PIN must consist only of digits and must be between 6 and 20 digits in length.
 
@@ -284,7 +262,6 @@ echo -n "YOUR_PIN_NUMBER" | openssl dgst -sha256 -hmac "YOUR_32_CHARACTERS_LONG_
 
 <img width="988" alt="image" src="https://github.com/user-attachments/assets/503a01de-0a4f-4bf8-95a3-d5ed660bfcee">
 
-
 3. Copy the generated hash. It must be 64 characters long.
 
 4. In your config.yml
@@ -293,13 +270,12 @@ echo -n "YOUR_PIN_NUMBER" | openssl dgst -sha256 -hmac "YOUR_32_CHARACTERS_LONG_
 - set `key` with the secret you got in step 1
 
 ```yml
-...
-security: 
-  pin: 
+---
+security:
+  pin:
     hash: 7dbd45736c57090dd62a7e1c8db1a08c353b4a836f2c6b43fd1dd3f1e747ea59
     key: TUwNzIxF5lJncAJVMkmb4EiSP9vm0OyF
   max_number_of_wrong_unlock_attempts: 3
-...
 ```
 
 ## 🎯 Roadmap
@@ -331,14 +307,13 @@ When the ESP32-MFA-Authenticator extension is enabled, a new button called "regi
 
 I work with a customer that has multiple AWS accounts, and each has its own MFA Virtual device. To help me to easily find the MFA TOTP codes for a group of accounts that belongs to the same customer, I decided to create a way to group TOTP codes together on its own separate view. Each group of TOTP secrets will result in a page on the TOTP Screen. The User can select the page by swiping to the right or left. With this feature, Users will be able to manage multiple virtual MFA devices for multiple customers using the same device. To further secure TOTPs for a group, the User will be able to set a PIN code for a group. If PIN code is set for that group, a PIN Screen appears before the group of TOTPs can be rendered. There will also still exist the Global PIN code, which protects all TOTPs.
 
-### ✅  Lock board after N wrong unlock attempts
+### ✅ Lock board after N wrong unlock attempts
 
 Improve the validation function to block access to the board after few wrong attempts happened. With this enhancement, brute forcing all possible combinations won't be possible.
 
 ### 🔜 Unlock with fingerprint
 
 Instead of typing a pin code, it will be possible to unlock the board using a fingerprint. The goal is to ease the access to the TOTP codes, while maintaining them secure. It will also work globally or by group.
-
 
 ## 💖 Become a Sponsor
 
@@ -350,4 +325,3 @@ If this device has made your life easier, consider supporting its development by
       alt="Buy Me A Coffee"
       style="width: 217px;" />
 </a>
-
