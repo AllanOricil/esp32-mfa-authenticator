@@ -6,6 +6,8 @@
 #include "ui.h"
 #include "ui_helpers.h"
 #include <string.h>
+#include "display.h"
+#include "touch.h"
 
 // CUSTOM EVENTS
 uint32_t LV_EVENT_SETUP_COMPLETE;
@@ -13,15 +15,20 @@ uint32_t LV_EVENT_SETUP_COMPLETE;
 ///////////////////// VARIABLES ////////////////////
 
 // SCREEN: ui_totp_screen
+
 lv_obj_t *ui_totp_screen;
 lv_obj_t *ui_pin_screen;
-lv_obj_t *ui_load_screen;
+lv_obj_t *ui_touch_calibration_screen;
 lv_obj_t *ui_pin_textarea;
+lv_obj_t *circle1;
+lv_obj_t *circle2;
+lv_obj_t *success_label;
 lv_obj_t *ui____initial_actions0;
 int numberOfWrongUnlockAttempts;
 int _maxNumberOfWrongUnlockAttempts;
 void ui_totp_screen_screen_init(void);
 void ui_pin_screen_screen_init(void);
+void ui_touch_calibration_screen_init(void);
 void ui_event_totp_component_label(lv_event_t *e);
 void ui_event_totp_component_bar(lv_event_t *e);
 void ui_event_keyboard_button(lv_event_t *e);
@@ -72,10 +79,14 @@ void ui_event_pin_textarea(lv_event_t *e)
 }
 
 ///////////////////// SCREENS ////////////////////
-
-void ui_init(bool displayPinScreen, int maxNumberOfWrongUnlockAttempts)
+void init_ui(
+    bool is_secure,
+    int maxNumberOfWrongUnlockAttempts)
 {
+    display_register();
     lv_disp_t *disp = lv_disp_get_default();
+    touch_register(disp);
+
     lv_theme_t *theme = lv_theme_default_init(
         disp,
         lv_palette_main(LV_PALETTE_BLUE),
@@ -85,6 +96,7 @@ void ui_init(bool displayPinScreen, int maxNumberOfWrongUnlockAttempts)
     LV_EVENT_SETUP_COMPLETE = lv_event_register_id();
     lv_disp_set_theme(disp, theme);
     // NOTE: initialize screens
+    ui_touch_calibration_screen_init();
     ui_totp_screen_screen_init();
     ui_pin_screen_screen_init();
     ui____initial_actions0 = lv_obj_create(NULL);
@@ -92,13 +104,32 @@ void ui_init(bool displayPinScreen, int maxNumberOfWrongUnlockAttempts)
     // TODO: find a better way of sharing config props to avoid dups
     numberOfWrongUnlockAttempts = maxNumberOfWrongUnlockAttempts;
     _maxNumberOfWrongUnlockAttempts = maxNumberOfWrongUnlockAttempts;
-    if (displayPinScreen)
+
+    const calibrate = is_touch_calibrated();
+    if (true)
     {
-        lv_disp_load_scr(ui_pin_screen);
+        LV_LOG_INFO("CALIBRATING TOUCH");
+        lv_disp_load_scr(ui_touch_calibration_screen);
+        display_first_calibration_point();
+        touch_calibrate_min();
+        change_first_calibration_point_green();
+        display_second_calibration_point();
+        touch_calibrate_max();
+        change_second_calibration_point_green();
+        touch_save_calibration();
+        display_success_message();
     }
     else
     {
-        lv_disp_load_scr(ui_totp_screen);
+        LV_LOG_INFO("SKIPING TOUCH CALIBRATION");
+        if (is_secure)
+        {
+            lv_disp_load_scr(ui_pin_screen);
+        }
+        else
+        {
+            lv_disp_load_scr(ui_totp_screen);
+        }
     }
 }
 

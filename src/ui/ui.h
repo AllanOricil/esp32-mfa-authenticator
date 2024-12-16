@@ -17,8 +17,11 @@ extern "C"
 
 	extern lv_obj_t *ui_totp_screen;
 	extern lv_obj_t *ui_pin_screen;
-	extern lv_obj_t *ui_load_screen;
+	extern lv_obj_t *ui_touch_calibration_screen;
 	extern lv_obj_t *ui_pin_textarea;
+	extern lv_obj_t *circle1;
+	extern lv_obj_t *circle2;
+	extern lv_obj_t *success_label;
 	extern lv_obj_t *ui____initial_actions0;
 	extern int numberOfWrongUnlockAttempts;
 	extern int _maxNumberOfWrongUnlockAttempts;
@@ -26,13 +29,23 @@ extern "C"
 	void ui_event_totp_component_bar(lv_event_t *e);
 	void ui_event_keyboard_button(lv_event_t *e);
 	void ui_event_pin_textarea(lv_event_t *e);
-	void ui_init(bool displayPinScreen, int maxNumberOfWrongUnlockAttempts);
+	void init_ui(bool is_secure,
+				 int maxNumberOfWrongUnlockAttempts);
 	void ui_task_handler();
 	void refresh_totp_labels();
 	void refresh_counter_bars();
+	void display_first_calibration_point();
+	void change_first_calibration_point_green();
+	void display_second_calibration_point();
+	void change_second_calibration_point_green();
+	void display_success_message();
 
 #ifdef __cplusplus
 } /*extern "C"*/
+#endif
+
+#ifdef __cplusplus
+#include "touch.h"
 #endif
 
 #endif

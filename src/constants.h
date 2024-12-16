@@ -30,6 +30,7 @@
 // UI
 #define PIN_SCREEN_NAME "pin"
 #define TOTP_SCREEN_NAME "totp"
+#define TOUCH_CALIBRATION_SCREEN_NAME "touch-calibration"
 
 // TOUCH
 #define TOUCH_DOUBLE_TOUCH_INTERVAL 300
