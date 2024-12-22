@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PIN_H
+#define PIN_H
 
 #include <mbedtls/platform.h>
 #include <mbedtls/md.h>
@@ -17,3 +18,5 @@ extern "C"
 #ifdef __cplusplus
 }
 #endif
+
+#endif // PIN_H

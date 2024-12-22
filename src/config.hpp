@@ -46,6 +46,7 @@ public:
 	static Configuration load();
 	static Configuration parse(const String &jsonString);
 	bool save() const;
+	bool is_secure();
 };
 
-#endif
+#endif // CONFIGURATION_H

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MFA_H
+#define MFA_H
+
 // Library Includes
 #include <TOTP.h>
 #include <TimeLib.h>
@@ -14,4 +16,6 @@
 
 void generate_totps();
 void load_mfa_totp_keys();
-void add_new_secret(volatile byte* payload, unsigned int length);
+void add_new_secret(volatile byte *payload, unsigned int length);
+
+#endif // MFA_H

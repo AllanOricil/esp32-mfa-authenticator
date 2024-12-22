@@ -184,6 +184,11 @@ Configuration Configuration::parse(const String &jsonString)
 	return config;
 }
 
+bool Configuration::is_secure()
+{
+	return !security.pin.hash.isEmpty() && !security.pin.key.isEmpty();
+}
+
 bool Configuration::save() const
 {
 	Serial.println("saving to file");

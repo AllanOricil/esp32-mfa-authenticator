@@ -1,14 +1,14 @@
 #include "config.hpp"
-#include "display.hpp"
-#include "touch.hpp"
+#include "display.h"
+#include "touch.h"
 
-void handle_single_touch_event()
+void single_touch_handler()
 {
 	Serial.println("SINGLE TOUCH");
 	display_handle_single_touch();
 }
 
-void handle_double_touch_event()
+void double_touch_handler()
 {
 	Serial.println("DOUBLE TOUCH");
 	display_handle_double_touch();
@@ -16,19 +16,15 @@ void handle_double_touch_event()
 
 void init_touch_screen(Configuration config)
 {
-	Serial.printf("Initializing touch screen.");
-
-	init_touch(config, handle_single_touch_event, handle_double_touch_event);
+	Serial.println("Initializing touch screen.");
 
 	init_display(config);
+	init_touch(
+		config.touch.forceCalibration,
+		single_touch_handler,
+		double_touch_handler);
 
-	lv_disp_t *disp = register_display();
-
-	register_touch(disp);
-
-	reset_display_off_timer();
-
-	Serial.printf("Touch screen initialized.");
+	Serial.println("Touch screen initialized.");
 }
 
 void display_timeout_handler()

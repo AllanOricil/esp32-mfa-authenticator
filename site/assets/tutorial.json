@@ -33,6 +33,6 @@
   },
   {
     "image": "/tutorial/step-9.png",
-    "description": "Calibrate the touch sensor when prompted. If the calibration phase has already passed when you opened the logs screen, click on the Reset(RST) button on the board"
+    "description": "Calibrate the touch sensor when prompted. If you missed the calibration phase, read this <a href='https://github.com/AllanOricil/esp32-mfa-authenticator#-how-to-recalibrate-the-touch-sensor'>tutorial</a> to learn how you can recalibrate."
   }
 ]

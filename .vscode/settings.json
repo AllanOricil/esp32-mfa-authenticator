@@ -1,6 +1,8 @@
 {
   "C_Cpp.errorSquiggles": "disabled",
   "files.associations": {
+    "*.ndjson": "jsonl",
+    "*.dbclient-js": "javascript",
     "*.page-template": "vue",
     "*.layout-template": "vue",
     "*.vue": "vue",
@@ -68,6 +70,7 @@
     "tft-touch.hpp": "c",
     "condition_variable": "cpp",
     "regex": "cpp",
-    "mutex": "cpp"
+    "mutex": "cpp",
+    "constants.h": "c"
   }
 }

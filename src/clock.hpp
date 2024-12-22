@@ -1,5 +1,5 @@
-#ifndef SYNCTIME_H
-#define SYNCTIME_H
+#ifndef CLOCK_H
+#define CLOCK_H
 
 #include <time.h>
 #include <ESP32Time.h>
@@ -7,4 +7,4 @@
 extern ESP32Time rtc;
 void sync_time();
 
-#endif //SYNCTIME_H
+#endif // CLOCK_H

@@ -10,50 +10,46 @@
 #include "mfa.hpp"
 #include "file.hpp"
 #include "wifi.hpp"
-#include "mqtt.hpp"
 #include "touch-screen.hpp"
 #include "manager.hpp"
 
-extern bool isWorkingWithSD;
-extern volatile bool processMqttMessage;
+enum ApplicationState
+{
+  TOUCH_CALIBRATION_START,
+  TOUCH_CALIBRATION_MIN,
+  TOUCH_CALIBRATION_MAX,
+  TOUCH_CALIBRATION_UPDATE,
+  TOUCH_CALIBRATION_COMPLETE,
+  TOTPS_UPDATE
+};
+
+ApplicationState application_state = TOUCH_CALIBRATION_START;
 
 void setup()
 {
   Serial.begin(115200);
 
-  // SETUP SD CARD
   init_sd_card_reader();
 
-  // SETUP CONFIG
   Configuration config = Configuration::load();
-
-  // SETUP PIN
   init_pin(config.security.pin.hash.c_str(), config.security.pin.key.c_str());
 
-  // SETUP TIME
-  init_wifi(config);
-
-  // SETUP MANAGER
-  init_manager();
-
-  // SETUP CLOCK
-  sync_time();
-
-  // SETUP MFA
-  load_mfa_totp_keys();
-  generate_totps();
-
-  // SETUP MQTT
-  init_mqtt(config);
-
-  // SETUP TOUCH SCREEN
   init_touch_screen(config);
 
-  // SETUP UI
-  // TODO: create setup screen with steps for configuring WIFI, MQTT and calibrate touch
-  // TODO: encapsulate this logic the UI controller
-  bool displayPinScreen = !config.security.pin.hash.isEmpty() && !config.security.pin.key.isEmpty();
-  ui_init(displayPinScreen, config.security.maxNumberOfWrongUnlockAttempts);
+  if (touch_is_calibrated())
+  {
+    application_state = TOUCH_CALIBRATION_COMPLETE;
+  }
+
+  init_wifi(config);
+  sync_time();
+  load_mfa_totp_keys();
+  generate_totps();
+  init_manager();
+
+  init_ui(
+      config.is_secure(),
+      config.security.maxNumberOfWrongUnlockAttempts);
 }
 
 void loop()
@@ -61,41 +57,73 @@ void loop()
   // NOTE: display available free memory
   print_free_memory();
 
-  display_timeout_handler();
-
-  // NOTE: connect to mqtt broker and subscribe to topics
-  connect_to_mqtt();
-
-  // NOTE: ensures totps are generated exactly every 30 seconds. For example: 00:00:00, 00:00:30, 00:01:00, 00:01:30...
-  unsigned long now = ((rtc.getMinute() * 60) + rtc.getSecond());
-  static unsigned long nextTrigger = 0;
-  if (now % TOTP_PERIOD == 0 && now != nextTrigger)
+  switch (application_state)
   {
-    generate_totps();
-    refresh_totp_labels();
-    nextTrigger = now;
-  }
+  case TOUCH_CALIBRATION_START:
+    static unsigned long lastStateChangeTime = 0;
+    lv_scr_load(ui_touch_calibration_screen);
+    application_state = TOUCH_CALIBRATION_MIN;
+    lastStateChangeTime = millis();
+    break;
 
-  // NOTE: ensures the counter is updated on every second, instead of after 1 second
-  static unsigned long previousSecond = 0;
-  unsigned long currentSecond = rtc.getSecond();
-  if (currentSecond != previousSecond)
-  {
-    refresh_counter_bars();
-    previousSecond = currentSecond;
-  }
-
-  // NOTE: semaphore to notify that there is a mqtt message waiting to be processed
-  if (processMqttMessage)
-  {
-    processMqttMessage = false;
-    // NOTE: semaphore to allow a single processes to work with the sd card
-    if (!isWorkingWithSD)
+  case TOUCH_CALIBRATION_MIN:
+    if (millis() - lastStateChangeTime > 5000)
     {
-      isWorkingWithSD = true;
-      add_new_secret(globalPayload.payload, globalPayload.length);
-      isWorkingWithSD = false;
+      touch_calibrate_min();
+      ui_touch_calibration_screen_step_2();
+      application_state = TOUCH_CALIBRATION_MAX;
+      lastStateChangeTime = millis();
     }
+    break;
+
+  case TOUCH_CALIBRATION_MAX:
+    if (millis() - lastStateChangeTime > 5000)
+    {
+      touch_calibrate_max();
+      application_state = TOUCH_CALIBRATION_UPDATE;
+    }
+    break;
+
+  case TOUCH_CALIBRATION_UPDATE:
+    touch_save_calibration();
+    touch_register();
+    touch_set_calibrated();
+    ui_touch_calibration_screen_step_3();
+    application_state = TOUCH_CALIBRATION_COMPLETE;
+    lastStateChangeTime = millis();
+    break;
+
+  case TOUCH_CALIBRATION_COMPLETE:
+    if (millis() - lastStateChangeTime > 2000)
+    {
+      lv_obj_clean(lv_scr_act());
+      load_first_screen();
+      reset_display_off_timer();
+      application_state = TOTPS_UPDATE;
+    }
+    break;
+  case TOTPS_UPDATE:
+    display_timeout_handler();
+
+    // NOTE: ensures totps are generated exactly every 30 seconds. For example: 00:00:00, 00:00:30, 00:01:00, 00:01:30...
+    unsigned long now = ((rtc.getMinute() * 60) + rtc.getSecond());
+    static unsigned long nextTrigger = 0;
+    if (now % TOTP_PERIOD == 0 && now != nextTrigger)
+    {
+      generate_totps();
+      refresh_totp_labels();
+      nextTrigger = now;
+    }
+
+    // NOTE: ensures the counter is updated on every second, instead of after 1 second
+    static unsigned long previousSecond = 0;
+    unsigned long currentSecond = rtc.getSecond();
+    if (currentSecond != previousSecond)
+    {
+      refresh_totp_countdowns();
+      previousSecond = currentSecond;
+    }
+    break;
   }
 
   ui_task_handler();
