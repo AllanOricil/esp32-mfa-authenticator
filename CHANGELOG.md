@@ -1,3 +1,10 @@
+# [0.13.0](https://github.com/AllanOricil/esp32-mfa-authenticator/compare/v0.12.0...v0.13.0) (2024-12-22)
+
+
+### Features
+
+* add screen to configure touch sensor ([75485d3](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/75485d3fb14257d6f925de2422cf1fe0d7a92410))
+
 # [0.12.0](https://github.com/AllanOricil/esp32-mfa-authenticator/compare/v0.11.0...v0.12.0) (2024-12-07)
 
 
