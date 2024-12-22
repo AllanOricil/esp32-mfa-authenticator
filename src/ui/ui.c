@@ -3,10 +3,7 @@
 #include "display.h"
 #include "touch.h"
 
-// CUSTOM EVENTS
 uint32_t LV_EVENT_SETUP_COMPLETE;
-
-///////////////////// VARIABLES ////////////////////
 lv_obj_t *ui_totp_screen;
 lv_obj_t *ui_pin_screen;
 lv_obj_t *ui_touch_calibration_screen;
@@ -15,9 +12,7 @@ lv_obj_t *ui____initial_actions0;
 lv_obj_t *ui_touch_calibration_screen_label;
 lv_obj_t *ui_touch_calibration_screen_dot_top_left;
 lv_obj_t *ui_touch_calibration_screen_dot_bottom_right;
-int _number_of_wrong_unlock_attempts;
-int _max_number_of_wrong_unlock_attempts;
-bool _display_pin_screen;
+Config config;
 void ui_totp_screen_screen_init(void);
 void ui_pin_screen_screen_init(void);
 void ui_touch_calibration_screen_init(void);
@@ -27,15 +22,12 @@ void ui_event_keyboard_button(lv_event_t *e);
 void ui_event_pin_textarea(lv_event_t *e);
 void ui_touch_calibration_screen_step_2();
 void ui_touch_calibration_screen_step_3();
+void ui_touch_calibration_screen_destroy();
 
-///////////////////// TEST LVGL SETTINGS ////////////////////
 #if LV_COLOR_DEPTH != 16
 #error "LV_COLOR_DEPTH should be 16bit to match SquareLine Studio's settings"
 #endif
 
-///////////////////// ANIMATIONS ////////////////////
-
-///////////////////// FUNCTIONS ////////////////////
 void ui_event_totp_component_label(lv_event_t *e)
 {
     lv_event_code_t event_code = lv_event_get_code(e);
@@ -77,11 +69,9 @@ void init_ui(
     bool display_pin_screen,
     int max_number_of_wrong_unlock_attempts)
 {
-
-    // TODO: find a better way of sharing config props to avoid dups
-    _number_of_wrong_unlock_attempts = max_number_of_wrong_unlock_attempts;
-    _max_number_of_wrong_unlock_attempts = max_number_of_wrong_unlock_attempts;
-    _display_pin_screen = display_pin_screen;
+    config.display_pin_screen = display_pin_screen;
+    config.number_of_wrong_unlock_attempts = max_number_of_wrong_unlock_attempts;
+    config.max_number_of_wrong_unlock_attempts = max_number_of_wrong_unlock_attempts;
 
     lv_disp_t *disp = lv_disp_get_default();
     lv_theme_t *theme = lv_theme_default_init(
@@ -101,7 +91,7 @@ void init_ui(
 
 void load_first_screen()
 {
-    if (_display_pin_screen)
+    if (config.display_pin_screen)
     {
         lv_scr_load(ui_pin_screen);
     }

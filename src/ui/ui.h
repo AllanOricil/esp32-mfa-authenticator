@@ -9,6 +9,13 @@ extern "C"
 #include "lvgl.h"
 #include "ui_events.h"
 
+	typedef struct
+	{
+		int number_of_wrong_unlock_attempts;
+		int max_number_of_wrong_unlock_attempts;
+		bool display_pin_screen;
+	} Config;
+
 	extern lv_obj_t *ui_totp_screen;
 	extern lv_obj_t *ui_pin_screen;
 	extern lv_obj_t *ui_touch_calibration_screen;
@@ -17,9 +24,7 @@ extern "C"
 	extern lv_obj_t *ui_touch_calibration_screen_label;
 	extern lv_obj_t *ui_touch_calibration_screen_dot_top_left;
 	extern lv_obj_t *ui_touch_calibration_screen_dot_bottom_right;
-	extern int _number_of_wrong_unlock_attempts;
-	extern int _max_number_of_wrong_unlock_attempts;
-	extern bool _display_pin_screen;
+	extern Config config;
 	void ui_event_totp_component_label(lv_event_t *e);
 	void ui_event_totp_component_bar(lv_event_t *e);
 	void ui_event_keyboard_button(lv_event_t *e);
@@ -32,6 +37,7 @@ extern "C"
 	void refresh_totp_countdowns();
 	void ui_touch_calibration_screen_step_2();
 	void ui_touch_calibration_screen_step_3();
+	void ui_touch_calibration_screen_destroy();
 
 #ifdef __cplusplus
 } /*extern "C"*/
