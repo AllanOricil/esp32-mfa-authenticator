@@ -102,10 +102,15 @@ void touch_calibrate_max()
 
 bool touch_load_calibration()
 {
-    File calFile = SPIFFS.open("/calxpt2040.txt", "r");
-    if (!calFile)
+    if (!SPIFFS.exists(TOUCH_CALIBRATION_SPIFFS_FILE_PATH))
     {
-        Serial.println("there is no calibration");
+        Serial.println("Calibration file not found on SPIFFS!");
+        return false;
+    }
+    File calFile = SPIFFS.open(TOUCH_CALIBRATION_SPIFFS_FILE_PATH, "r");
+    if (!calFile || calFile.size() == 0)
+    {
+        Serial.println("File is empty or failed to open!");
         return false;
     }
     Serial.println("loading calibration");
@@ -113,6 +118,10 @@ bool touch_load_calibration()
     cal.yMin = calFile.parseInt();
     cal.xMax = calFile.parseInt();
     cal.yMax = calFile.parseInt();
+    Serial.printf("xMin %d\n", cal.xMin);
+    Serial.printf("yMin %d\n", cal.yMin);
+    Serial.printf("xMax %d\n", cal.xMax);
+    Serial.printf("yMax %d\n", cal.yMax);
     calFile.close();
     Serial.println("calibration loaded");
     return true;
@@ -120,9 +129,10 @@ bool touch_load_calibration()
 
 void touch_save_calibration()
 {
-    File calFile = SPIFFS.open("/calxpt2040.txt", "w");
+    File calFile = SPIFFS.open(TOUCH_CALIBRATION_SPIFFS_FILE_PATH, "w");
     if (!calFile)
     {
+        Serial.println("File is empty or failed to open!");
         return;
     }
     calFile.println(cal.xMin);
@@ -131,7 +141,7 @@ void touch_save_calibration()
     calFile.println(cal.yMax);
     calFile.flush();
     calFile.close();
-    LV_LOG_INFO("CALIBRATION SAVED");
+    Serial.println("calibration saved");
 }
 
 struct Point touch_get_touch()

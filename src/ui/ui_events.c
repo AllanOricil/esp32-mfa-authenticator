@@ -69,21 +69,21 @@ void on_validate_pin(lv_event_t *e)
 
     if (!validate_pin(pin))
     {
-        _number_of_wrong_unlock_attempts--;
+        config.number_of_wrong_unlock_attempts--;
 
-        if (!_number_of_wrong_unlock_attempts)
+        if (!config.number_of_wrong_unlock_attempts)
         {
             lv_obj_center(lv_msgbox_create(NULL, "ERROR", "BOARD LOCKED", NULL, false));
             return;
         }
 
         char message[128];
-        sprintf(message, "Wrong PIN\nAttempts left: %d", _number_of_wrong_unlock_attempts);
+        sprintf(message, "Wrong PIN\nAttempts left: %d", config.number_of_wrong_unlock_attempts);
         lv_obj_center(lv_msgbox_create(NULL, "ERROR", message, NULL, true));
         return;
     }
 
-    _number_of_wrong_unlock_attempts = _max_number_of_wrong_unlock_attempts;
+    config.number_of_wrong_unlock_attempts = config.max_number_of_wrong_unlock_attempts;
 
     lv_scr_load(ui_totp_screen);
 }

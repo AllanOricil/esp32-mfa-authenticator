@@ -99,6 +99,7 @@ void loop()
       lv_obj_clean(lv_scr_act());
       load_first_screen();
       reset_display_off_timer();
+      ui_touch_calibration_screen_destroy();
       application_state = TOTPS_UPDATE;
     }
     break;

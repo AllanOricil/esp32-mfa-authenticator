@@ -53,3 +53,12 @@ void ui_touch_calibration_screen_step_3()
 
     lv_label_set_text(ui_touch_calibration_screen_label, "Touch calibration complete!");
 }
+
+void ui_touch_calibration_screen_destroy()
+{
+    if (ui_touch_calibration_screen != NULL)
+    {
+        lv_obj_del(ui_touch_calibration_screen);
+        ui_touch_calibration_screen = NULL;
+    }
+}
