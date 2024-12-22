@@ -1,3 +1,11 @@
+## [0.13.1](https://github.com/AllanOricil/esp32-mfa-authenticator/compare/v0.13.0...v0.13.1) (2024-12-22)
+
+
+### Bug Fixes
+
+* destroy touch config screen when no longer needed to release mem ([e01f8de](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/e01f8de92122669768c12217466f9205008f7709))
+* min==max delta due to calibration values being all 0 ([ebf7deb](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/ebf7debe9053b95f746b9d4eb5883b2fa135bf46))
+
 # [0.13.0](https://github.com/AllanOricil/esp32-mfa-authenticator/compare/v0.12.0...v0.13.0) (2024-12-22)
 
 
