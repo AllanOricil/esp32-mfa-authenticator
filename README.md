@@ -4,21 +4,17 @@
 
 <img src="https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/bb904daf-c194-4e9f-8948-a0503e94bca1" height="400">
 
-This is a personal project that creates MFA TOTP codes. I created it to help me to get TOTPs without interacting with my phone. Before creating it, every time I needed a new TOTP, I had to:
-
-- find my phone
-- if it is not charged, charge it, and then wait a few minutes until it is fully operational
-- if it is charged, unlock it
-- find a Virtual MFA App
-- unlock it
-- find the TOTP for the service I need, which sometimes requires a lot of vertical scrolling.
+This is a personal project that creates MFA TOTP codes. I created it to help me to get TOTPs without using my phone.
 
 Other motives:
 
-- when using my personal phone to get mfa totp codes, I get distracted by notifications and a lot of other things.
-- not safe to store secrets on a device that you use when going out. If the device is lost, and there is no security layer to protect unintended access to the virtual MFA App, there is a high chance someone can impersonate your identity.
+- it is not safe to store both the password and the MFA secret in the same place, like in a password manager. It creates a single point of failure.
+- it is not safe to store secrets on a device that you use when going out.
+- it is not safe to store MFA secrets for my personal and professional life in the same place.
+- if my phone is stolen, broken or lost, I would have to re-register MFA for all services. And because the source of truth for the list of services is also gone, I could end up missing a few.
 - secrets are decoupled from the device, and this allows me to easily switch to another one when necessary. I just need to insert the SD card containing my services onto another device flashed with the same code.
 - not all services that I use support fido keys or passkeys.
+- yubikey is expensive where I live, and I would need a lot.
 - I wanted to learn how MFA works.
 - I wanted to learn how ESP32 works.
 
