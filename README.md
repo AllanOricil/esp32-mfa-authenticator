@@ -220,6 +220,19 @@ touch:
 > [!IMPORTANT]
 > The pin screen won't work if you did not calibrate the touch sensor.
 
+### 📚 How to update `config.yml` from a browser
+
+When the board is connected to your local network, a settings page, similarly to the one found in routers, can be used to update the `config.yml` in the SD card without the need of inserting it on a different computer. You can access this settings page at `http://${LOCAL_NETWORK_DEVICE_IP}/esp32/settings`. 
+
+<img width="700" alt="image" src="https://github.com/user-attachments/assets/9da1271e-d3a6-41fa-bef5-bef930022761" />
+
+> [!IMPORTANT]
+> At the moment, all secrets in this form must be set before submiting it. If you fail to do it, all secrets in your `config.yml` will be overwritten by `*****`.
+
+> [!IMPORTANT]
+> For security purposes, none of the secrets are exposed by the board's webserver. If you inspect the page using your browser dev tools, you will noticed that all secrets are fetched as `*****`. In the future, after implementing HTTPS, you will be to manage those secrets from the browser, but only after providing a PIN number of using your fingerprint.
+
+
 ### 📚 How to setup PIN number
 
 #### Option 1
