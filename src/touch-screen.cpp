@@ -1,6 +1,4 @@
-#include "config.hpp"
-#include "display.h"
-#include "touch.h"
+#include "touch-screen.hpp"
 
 void single_touch_handler()
 {

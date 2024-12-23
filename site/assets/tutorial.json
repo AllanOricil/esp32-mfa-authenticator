@@ -25,14 +25,6 @@
   },
   {
     "image": "/tutorial/step-7.png",
-    "description": "Click on the <b>Next</b> button when the instalation is complete"
-  },
-  {
-    "image": "/tutorial/step-8.png",
-    "description": "Select <b>Logs & Console</b>"
-  },
-  {
-    "image": "/tutorial/step-9.png",
-    "description": "Calibrate the touch sensor when prompted. If you missed the calibration phase, read this <a href='https://github.com/AllanOricil/esp32-mfa-authenticator#-how-to-recalibrate-the-touch-sensor'>tutorial</a> to learn how you can recalibrate."
+    "description": "Once the installation is complete, insert the SD card into your ESP32-CYD and press the <b>RST</b> button"
   }
 ]

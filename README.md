@@ -154,28 +154,69 @@ Install PlatformIO's official CLI using this [tutorial](https://platformio.org/i
 > [!IMPORTANT]
 > Remember to substitue `${DEVICE_PORT}` with the value you got in step 1.
 
-### 📚 How to add TOTP Secrets
+### 📚 How to listen to the serial port using PlatformIO CLI
 
-The secrets used to compute TOTP codes must be stored in a file called `keys.txt`, and be placed in the root of an SD card. It must follow the format shown below:
+To listen to the serial port using PlatformIO CLI you can use the following commnad:
 
 ```bash
-service_id,encoded_base_32_secret
+platformio device monitor --environment esp32-cyd
 ```
 
-Each service must be added on a new line. For example:
+### 📚 How to add register a Service
 
-```bash
-aws-1,DSAJDHHAHASAUDOASNOTREALOADAKLDASAJFPOAIDONTEVENTRYOASFAIPO
-aws-2,DSAJDHHAHASAUDOASNOTREALOADAKLDASAJFPOAIDONTEVENTRYOASFAIPO
-aws-3,DSAJDHHAHASAUDOASNOTREALOADAKLDASAJFPOAIDONTEVENTRYOASFAIPO
+Services are registered in a file called `services.yml` that must be located in the root of an SD card. It must follow the schema shown below:
 
+```yml
+services: list
+  - name: text[60]
+    secret: text
+    group: number
+```
+
+For example:
+
+```yml
+services:
+  - name: aws:root:allanoricil@company-1.com
+    secret: encoded-secret
+    group: 0
+  - name: aws:staging:allanoricil@company-1.com
+    secret: encoded-secret
+    group: 0
+  - name: aws:production:allanoricil@company-1.com
+    secret: encoded-secret
+    group: 0
+  - name: aws:1234565:allanoricil@company-2.com
+    secret: encoded-secret
+    group: 1
+  - name: aws:6785910:allanoricil@company-2.com
+    secret: encoded-secret
+    group: 1
+  - name: aws:7815795:allanoricil@company-2.com
+    secret: encoded-secret
+    group: 1
+  - name: github
+    secret: encoded-secret
+    group: 2
+  - name: docker
+    secret: encoded-secret
+    group: 2
+  - name: npm
+    secret: encoded-secret
+    group: 2
 ```
 
 > [!IMPORTANT]
-> This file must end with a new line.
+> The service name must not exceed 60 characters.
 
 > [!IMPORTANT]
-> Secrets must be unencrypted and based 32 encoded. In the future, my plan is to decrypt secrets using a secret stored in the board. With this approach, a stolen SD card won't work on a different board flashed with the same code unless the board has the same key.
+> Secrets must be stored unencrypted and encoded using Base32. All MFA services I tried already provide secrets in Base32 encoding. If you find one that does not, ensure the secret is Base32 encoded before adding it to the file.
+
+> [!IMPORTANT]
+> If you don't set the "group" property, it will default to 0.
+
+> [!IMPORTANT]
+> The service name acts as a unique key within a group. If two services share the same key within the same group, the last one listed in the file will be the one used.
 
 ### 📚 How to verify if TOTP codes are correct
 
@@ -218,7 +259,7 @@ touch:
 
 ### 📚 How to update `config.yml` from a browser
 
-When the board is connected to your local network, a settings page, similarly to the one found in routers, can be used to update the `config.yml` in the SD card without the need of inserting it on a different computer. You can access this settings page at `http://${LOCAL_NETWORK_DEVICE_IP}/esp32/settings`. 
+When the board is connected to your local network, a settings page, similarly to the one found in routers, can be used to update the `config.yml` in the SD card without the need of inserting it on a different computer. You can access this settings page at `http://${LOCAL_NETWORK_DEVICE_IP}/esp32/settings`.
 
 <img width="700" alt="image" src="https://github.com/user-attachments/assets/9da1271e-d3a6-41fa-bef5-bef930022761" />
 
@@ -227,7 +268,6 @@ When the board is connected to your local network, a settings page, similarly to
 
 > [!IMPORTANT]
 > For security purposes, none of the secrets are exposed by the board's webserver. If you inspect the page using your browser dev tools, you will noticed that all secrets are fetched as `*****`. In the future, after implementing HTTPS, you will be to manage those secrets from the browser, but only after providing a PIN number of using your fingerprint.
-
 
 ### 📚 How to setup PIN number
 

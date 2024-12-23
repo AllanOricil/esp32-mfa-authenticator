@@ -1,6 +1,4 @@
 #include "config.hpp"
-#include "constants.h"
-#include "utils.hpp"
 
 String Configuration::serializeToJson(bool safe) const
 {
@@ -13,7 +11,7 @@ String Configuration::serializeToJson(bool safe) const
 
 	JsonObject mqttObj = doc.createNestedObject("mqtt");
 	mqttObj["server"] = mqtt.server;
-	mqttObj["port"] = string2Int(mqtt.port.c_str());
+	mqttObj["port"] = string_2_int(mqtt.port.c_str());
 	mqttObj["username"] = mqtt.username;
 	mqttObj["password"] = safe ? "*********" : mqtt.password;
 
@@ -52,17 +50,17 @@ Configuration Configuration::load()
 	if (root.isNull())
 	{
 		Serial.println("Invalid config file format");
-		throw "Invalid config file format";
+		throw std::runtime_error("Invalid config file format");
 	}
 
 	if (root["wifi"].isMap())
 	{
 		if (root["wifi"]["ssid"].isNull())
-			throw "Wifi ssid must be defined";
+			throw std::runtime_error("Wifi ssid must be defined");
 		config.wifi.ssid = root.gettext("wifi:ssid");
 
 		if (root["wifi"]["password"].isNull())
-			throw "Wifi password must be defined";
+			throw std::runtime_error("Wifi password must be defined");
 		config.wifi.password = root.gettext("wifi:password");
 	}
 
@@ -84,7 +82,7 @@ Configuration Configuration::load()
 	{
 		if (!root["security"]["max_number_of_wrong_unlock_attempts"].isNull())
 		{
-			int maxNumberOfWrongUnlockAttempts = string2Int(root.gettext("security:max_number_of_wrong_unlock_attempts"));
+			int maxNumberOfWrongUnlockAttempts = string_2_int(root.gettext("security:max_number_of_wrong_unlock_attempts"));
 			config.security.maxNumberOfWrongUnlockAttempts = maxNumberOfWrongUnlockAttempts > 0 ? maxNumberOfWrongUnlockAttempts
 																								: MAX_NUMBER_OF_WRONG_UNLOCK_ATTEMPTS;
 		}
@@ -103,7 +101,7 @@ Configuration Configuration::load()
 	{
 		if (!root["display"]["sleep_timeout"].isNull())
 		{
-			int sleepTimeout = string2Int(root.gettext("display:sleep_timeout"));
+			int sleepTimeout = string_2_int(root.gettext("display:sleep_timeout"));
 			config.display.sleepTimeout = sleepTimeout > 0 ? sleepTimeout
 														   : SLEEP_TIMEOUT;
 		}
@@ -187,6 +185,16 @@ Configuration Configuration::parse(const String &jsonString)
 bool Configuration::is_secure()
 {
 	return !security.pin.hash.isEmpty() && !security.pin.key.isEmpty();
+}
+
+bool Configuration::is_mqtt_server_settings_configured()
+{
+	return !mqtt.server.isEmpty() && !mqtt.port.isEmpty();
+}
+
+bool Configuration::is_mqtt_topic_credentials_configured()
+{
+	return !mqtt.username.isEmpty() && !mqtt.password.isEmpty();
 }
 
 bool Configuration::save() const

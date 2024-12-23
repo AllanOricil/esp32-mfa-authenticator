@@ -1,5 +1,5 @@
 #define CONFIG_FILE_PATH "/config.yml"
-#define KEYS_FILE_PATH "/keys.txt"
+#define SERVICES_FILE_PATH "/services.yml"
 
 // NOTE: NTP server variables
 #define NTP_SERVER_URL "pool.ntp.org"
@@ -8,10 +8,13 @@
 
 // NOTE: all totps must have a period of 30 seconds, for now
 #define TOTP_PERIOD 30
+// NOTE: max number of groups of services. At the moment, it can only parse 5 groups of 10 services
+#define MAX_NUMBER_OF_GROUPS 5
 // NOTE: due to mem limits there has to exist a max number of services we can generate TOTPs for
 #define MAX_NUMBER_OF_SERVICES 10
 // NOTE: 60 digits + 1 for the null-terminating character
 #define MAX_SERVICE_NAME_LENGTH 61
+
 // NOTE: 6 digits + 1 for the null-terminating character
 #define MAX_TOTP_LENGTH 7
 
@@ -35,6 +38,8 @@
 // TOUCH
 #define TOUCH_DOUBLE_TOUCH_INTERVAL 300
 #define TOUCH_CALIBRATION_SPIFFS_FILE_PATH "/calibration.txt"
+#define TOUCH_TIME_TO_CALIBRATE_EACH_POINT 5000
+#define TOUCH_TIME_DISPLAYING_SUCCESS_CALIBRATION_MESSAGE 2000
 
 // DISPLAY
 #define LVGL_TICK_PERIOD_MS 1

@@ -5,8 +5,6 @@
 #include "SD.h"
 #include "SPI.h"
 
-extern bool isWorkingWithSD;
-
 void list_dir(fs::FS &fs, const char *dirname, uint8_t levels);
 void create_dir(fs::FS &fs, const char *path);
 void remove_dir(fs::FS &fs, const char *path);

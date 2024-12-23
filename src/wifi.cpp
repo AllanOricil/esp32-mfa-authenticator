@@ -1,5 +1,4 @@
-#include <WiFi.h>
-#include "config.hpp"
+#include "wifi.hpp"
 
 void init_wifi(Configuration config)
 {
@@ -10,7 +9,7 @@ void init_wifi(Configuration config)
     delay(500);
     Serial.print(".");
   }
-  Serial.println("WiFi connected.");
+  Serial.println("\nWi-Fi initialized");
   Serial.print("IP Address: ");
   Serial.println(WiFi.localIP());
 }
