@@ -11,7 +11,7 @@ Other motives:
 - it is not safe to store both the password and the MFA secret in the same place, like in a password manager. It creates a single point of failure.
 - it is not safe to store secrets on a device that you use when going out.
 - it is not safe to store MFA secrets for my personal and professional life in the same place.
-- if my phone is stolen, broken or lost, I would have to re-register MFA for all services. And because the source of truth for the list of services is also gone, I could end up missing a few.
+- if my phone is stolen or lost, I would have to re-register MFA for all services.
 - secrets are decoupled from the device, and this allows me to easily switch to another one when necessary. I just need to insert the SD card containing my services onto another device flashed with the same code.
 - not all services that I use support fido keys or passkeys.
 - yubikey is expensive where I live, and I would need a lot.
