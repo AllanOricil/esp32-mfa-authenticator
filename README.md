@@ -4,7 +4,7 @@
 
 <img src="https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/bb904daf-c194-4e9f-8948-a0503e94bca1" height="400">
 
-This is a personal project that creates MFA TOTP codes. I created it to help me to get TOTPs without using my phone.
+This is a personal project that I created to help me to get MFA TOTPs without using my phone.
 
 Other motives:
 
