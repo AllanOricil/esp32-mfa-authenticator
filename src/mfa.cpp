@@ -34,7 +34,6 @@ void load_services()
   Serial.println("Reading the services file");
 
   YAMLNode root = YAMLNode::loadStream(file);
-  file.close();
 
   if (root.isNull())
   {
@@ -51,7 +50,7 @@ void load_services()
 
   if (services.isSequence())
   {
-    for (int i = 0; i < services.size(); i++)
+    for (int i = 0; i < services.size(); ++i)
     {
       YAMLNode service = services[i];
 
@@ -72,22 +71,18 @@ void load_services()
       if (!service["group"].isNull())
       {
         service_group = string_2_int(service.gettext("group"));
+        if (service_group < 0 || service_group > (MAX_NUMBER_OF_GROUPS - 1))
+        {
+          service_group = 0;
+        }
       }
 
       upsert_service_in_group_by_name(service_group, name, new_secret.length, new_secret.value);
     }
   }
-
+  file.close();
   print_all_services_groups();
   Serial.println("all services were loaded");
-}
-
-void init_mfa()
-{
-  Serial.println("Initializing mfa");
-  load_services();
-  update_totps();
-  Serial.println("MFA initialized");
 }
 
 void add_new_service(volatile uint8_t *payload, unsigned int length)

@@ -169,10 +169,14 @@ platformio device monitor --environment esp32-cyd
 Services are registered in a file called `services.yml` that must be located in the root of an SD card. It must follow the schema shown below:
 
 ```yml
-services: list
-  - name: text[60] Max number of characters is 60. An exception is raised when not set.
-    secret: text Length is dynamic. An exception is raised when not set.
-    group: integer [0~4] It accepts integers from 0 to 4. Default to 0 when not set, > 4 or < 0. An exception is raised when not an integer.
+# [REQUIRED] (list) stores a list of services
+services:
+  # [REQUIRED] (text) unique name for a service in a group. It must not exceed 60 characters.
+  - name: abc
+    # [REQUIRED] (text) Base32 encoded secret for the service.
+    secret: abc
+    # [OPTIONAL] (number) [default 0] it also defaults to 0 if < 0 or > 9
+    group: 0
 ```
 
 For example:
@@ -209,17 +213,19 @@ services:
 ```
 
 > [!IMPORTANT]
+> At present, you can create up to 10 groups, with each group containing up to 10 services.
+
+> [!IMPORTANT]
 > The service name must not exceed 60 characters.
 
 > [!IMPORTANT]
 > Secrets must be stored unencrypted and encoded using Base32. All MFA services I tried already provide secrets in Base32 encoding. If you find one that does not, ensure the secret is Base32 encoded before adding it to the file.
 
 > [!IMPORTANT]
-> If you don't set the "group" property, it will default to 0.
+> If you don't set the "group" property for a service, it will default to 0. Additionally, if the "group" property is less than 0 or greater than 9, it will also default to 0.
 
 > [!IMPORTANT]
 > The service name acts as a unique key within a group. If two services share the same key within the same group, the last one listed in the file will be the one used.
-
 
 ### 📚 How to verify if TOTP codes are correct
 
@@ -366,7 +372,6 @@ Instead of typing a pin code, it will be possible to unlock the board using a fi
 ### 🔜 Create chrome extension to ease registering TOTP secrets
 
 When the ESP32-MFA-Authenticator extension is enabled, a new button called "register secret" appears, in the browser's context menu, when right clicking over a QR code. When selecting this button, the registration flow starts.
-
 
 ## 💖 Become a Sponsor
 
