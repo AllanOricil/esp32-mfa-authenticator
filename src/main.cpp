@@ -15,6 +15,7 @@
 
 enum ApplicationState
 {
+  START,
   TOUCH_CALIBRATION_START,
   TOUCH_CALIBRATION_MIN,
   TOUCH_CALIBRATION_MAX,
@@ -23,23 +24,18 @@ enum ApplicationState
   TOTPS_UPDATE
 };
 
-ApplicationState application_state = TOUCH_CALIBRATION_START;
-
 void setup()
 {
   Serial.begin(115200);
   init_sd_card_reader();
+  load_services();
   Configuration config = Configuration::load();
+
   init_pin(config.security.pin.hash.c_str(), config.security.pin.key.c_str());
   lv_init();
   init_touch_screen(config);
-  if (touch_is_calibrated())
-  {
-    application_state = TOUCH_CALIBRATION_COMPLETE;
-  }
   init_wifi(config);
   init_clock();
-  init_mfa();
   init_manager();
   init_ui(
       config.is_secure(),
@@ -50,9 +46,20 @@ void loop()
 {
   // NOTE: display available free memory
   print_free_memory();
-
+  static ApplicationState application_state = START;
   switch (application_state)
   {
+  case START:
+    if (touch_is_calibrated())
+    {
+      application_state = TOUCH_CALIBRATION_COMPLETE;
+    }
+    else
+    {
+      application_state = TOUCH_CALIBRATION_START;
+    }
+    break;
+
   case TOUCH_CALIBRATION_START:
     static unsigned long state_change_time = 0;
     lv_scr_load(ui_touch_calibration_screen);

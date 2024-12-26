@@ -21,7 +21,7 @@ extern "C"
 #include "file.hpp"
 #include "clock.hpp"
 #include "utils.hpp"
-void init_mfa();
+
 void add_new_service(volatile uint8_t *payload, unsigned int length);
 void load_services();
 
