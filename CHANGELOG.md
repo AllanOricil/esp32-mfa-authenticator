@@ -1,3 +1,10 @@
+# [0.14.0](https://github.com/AllanOricil/esp32-mfa-authenticator/compare/v0.13.1...v0.14.0) (2024-12-26)
+
+
+### Features
+
+* enable grouping services by group ([6d290af](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/6d290afc429f61b9274dc8fd17faad007cfee5de))
+
 ## [0.13.1](https://github.com/AllanOricil/esp32-mfa-authenticator/compare/v0.13.0...v0.13.1) (2024-12-22)
 
 
