@@ -1,23 +1,22 @@
+#include "display.hpp"
 
-#include "display.h"
-
-TFT_eSPI tft = TFT_eSPI();
+TFT_eSPI tft = TFT_eSPI(DISPLAY_WIDTH, DISPLAY_HEIGHT);
 static lv_disp_drv_t disp_drv;
-unsigned long sleepTimeout = 0;
-unsigned long lastActivityTime = 0;
-bool displayPinScreen = false;
-bool displayIsOn = false;
+unsigned long sleep_timeout = 0;
+unsigned long time_display_turned_off = 0;
+bool show_pin_screen = false;
+bool display_is_active = false;
 
 void turn_off_display()
 {
     ledcWrite(PWM_CHANNEL_BCKL, 0);
-    displayIsOn = false;
+    display_is_active = false;
     Serial.println("Display turned off.");
 
     // NOTE: The PIN screen is loaded immediately after the display turns off. This prevents users from briefly seeing the TOTP screen when the display is turned back on.
-    if (displayPinScreen)
+    if (show_pin_screen)
     {
-        lv_textarea_set_text(ui_pin_textarea, "");
+        lv_textarea_set_text(ui_pin_screen_textarea, "");
         lv_disp_load_scr(ui_pin_screen);
     }
 }
@@ -25,19 +24,19 @@ void turn_off_display()
 void turn_on_display()
 {
     // NOTE: number could be accidentally be pressed when awaking the display with a touch in the keys area. So, this will ensure the text area is reset
-    if (displayPinScreen)
+    if (show_pin_screen)
     {
-        lv_textarea_set_text(ui_pin_textarea, "");
+        lv_textarea_set_text(ui_pin_screen_textarea, "");
     }
     ledcWrite(PWM_CHANNEL_BCKL, 0.5 * PWM_MAX_BCKL);
-    displayIsOn = true;
+    display_is_active = true;
     Serial.println("Display turned on.");
 }
 
 void reset_display_off_timer()
 {
-    lastActivityTime = millis();
-    if (!displayIsOn)
+    time_display_turned_off = millis();
+    if (!display_is_active)
     {
         turn_on_display();
     }
@@ -46,14 +45,14 @@ void reset_display_off_timer()
 
 void check_display_timeout()
 {
-    if (sleepTimeout)
+    if (sleep_timeout)
     {
-        unsigned long elapsedTime = millis() - lastActivityTime;
-        if (elapsedTime >= sleepTimeout && displayIsOn)
+        unsigned long elapsed_time = millis() - time_display_turned_off;
+        if (elapsed_time >= sleep_timeout && display_is_active)
         {
             Serial.print("Display timeout reached.");
             turn_off_display();
-            lastActivityTime = millis();
+            time_display_turned_off = millis();
         }
     }
 }
@@ -65,12 +64,12 @@ void display_handle_single_touch()
 
 void display_handle_double_touch()
 {
-    lv_obj_t *activeDisplay = lv_scr_act();
-    const char *activeDisplayName = (const char *)lv_obj_get_user_data(activeDisplay);
-    if (strcmp(activeDisplayName, TOTP_SCREEN_NAME) == 0)
+    lv_obj_t *active_screen = lv_scr_act();
+    const char *active_screen_name = (const char *)lv_obj_get_user_data(active_screen);
+    if (strcmp(active_screen_name, TOTP_SCREEN_NAME) == 0)
     {
 
-        if (displayIsOn)
+        if (display_is_active)
         {
             turn_off_display();
         }
@@ -108,26 +107,23 @@ void init_display(Configuration config)
 {
     Serial.println("Initializing display.");
 
-    sleepTimeout = config.display.sleepTimeout * 1000;
-    displayPinScreen = config.is_secure();
+    sleep_timeout = config.display.sleepTimeout * 1000;
+    show_pin_screen = config.is_secure();
 
     Serial.println("Initializing backlight.");
     pinMode(TFT_BCKL, OUTPUT);
     digitalWrite(TFT_BCKL, HIGH);
-
     Serial.println("Backlight initialized.");
-
-    Serial.println("Initializing lvgl.");
-    lv_init();
-    Serial.println("LVGL initialized.");
 
     Serial.println("Initializing tft.");
     tft.begin();
     tft.setSwapBytes(true);
-    tft.setRotation(2); /* Landscape orientation */
+    tft.fillScreen(ILI9341_PINK);
+    // NOTE: Landscape orientation
+    tft.setRotation(2);
     Serial.println("TFT initialized.");
 
-    displayIsOn = true;
+    display_is_active = true;
     display_register();
 
     Serial.println("Display initialized.");
@@ -142,8 +138,8 @@ void display_register()
     disp_drv.flush_cb = on_display_change;
     disp_drv.draw_buf = (lv_disp_draw_buf_t *)malloc(sizeof(lv_disp_draw_buf_t));
     disp_drv.antialiasing = 1;
-    void *drawBuffer = heap_caps_malloc(sizeof(lv_color_t) * LVGL_BUFFER_PIXELS, LVGL_BUFFER_MALLOC_FLAGS);
-    lv_disp_draw_buf_init(disp_drv.draw_buf, drawBuffer, NULL, LVGL_BUFFER_PIXELS);
+    void *draw_buffer = heap_caps_malloc(sizeof(lv_color_t) * LVGL_BUFFER_PIXELS, LVGL_BUFFER_MALLOC_FLAGS);
+    lv_disp_draw_buf_init(disp_drv.draw_buf, draw_buffer, NULL, LVGL_BUFFER_PIXELS);
     lv_disp_t *disp = lv_disp_drv_register(&disp_drv);
     lv_obj_clean(lv_scr_act());
     ledcSetup(PWM_CHANNEL_BCKL, PWM_FREQ_BCKL, PWM_BITS_BCKL);

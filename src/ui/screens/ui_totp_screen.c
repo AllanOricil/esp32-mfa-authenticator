@@ -1,19 +1,13 @@
 #include "../ui.h"
-#include "totp-map.h"
+#include "services.h"
 #include "constants.h"
-
-extern char keys[MAX_NUMBER_OF_SERVICES][MAX_SERVICE_NAME_LENGTH];
-extern char totps[MAX_NUMBER_OF_SERVICES][MAX_TOTP_LENGTH];
-extern int size;
 
 #define LV_LABEL_SCROLL_SPEED (15)
 
 lv_obj_t *create_totp_component(
     lv_obj_t *parent,
     const char *service,
-    const char *totp,
-    int barMax,
-    int barValue)
+    const char *totp)
 {
     lv_obj_t *container = lv_obj_create(parent);
     lv_obj_set_width(container, 150);
@@ -41,23 +35,23 @@ lv_obj_t *create_totp_component(
     lv_obj_set_style_text_align(totp_label, LV_TEXT_ALIGN_LEFT, 0);
     lv_obj_set_style_text_font(totp_label, &lv_font_montserrat_22, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    lv_obj_t *totp_counter = lv_bar_create(container);
-    lv_bar_set_range(totp_counter, 0, barMax);
-    lv_bar_set_value(totp_counter, barValue, LV_ANIM_OFF);
-    lv_bar_set_start_value(totp_counter, 0, LV_ANIM_OFF);
-    lv_obj_set_width(totp_counter, LV_PCT(100));
-    lv_obj_set_height(totp_counter, 5);
-    lv_obj_set_style_pad_top(totp_counter, 2, 0);
-    lv_obj_set_style_bg_color(totp_counter, lv_color_make(37, 50, 76), LV_PART_MAIN);
-    lv_obj_set_style_bg_color(totp_counter, lv_color_make(37, 196, 244), LV_PART_INDICATOR);
+    lv_obj_t *totp_countdown = lv_bar_create(container);
+    lv_bar_set_range(totp_countdown, 0, 30);
+    lv_bar_set_value(totp_countdown, 30, LV_ANIM_OFF);
+    lv_bar_set_start_value(totp_countdown, 0, LV_ANIM_OFF);
+    lv_obj_set_width(totp_countdown, LV_PCT(100));
+    lv_obj_set_height(totp_countdown, 5);
+    lv_obj_set_style_pad_top(totp_countdown, 2, 0);
+    lv_obj_set_style_bg_color(totp_countdown, lv_color_make(37, 50, 76), LV_PART_MAIN);
+    lv_obj_set_style_bg_color(totp_countdown, lv_color_make(37, 196, 244), LV_PART_INDICATOR);
 
     lv_obj_add_event_cb(totp_label, ui_event_totp_component_label, LV_EVENT_ALL, NULL);
-    lv_obj_add_event_cb(totp_counter, ui_event_totp_component_bar, LV_EVENT_ALL, NULL);
+    lv_obj_add_event_cb(totp_countdown, ui_event_totp_component_countdown, LV_EVENT_ALL, NULL);
 
     return container;
 }
 
-void ui_totp_screen_screen_init(void)
+void ui_totp_screen_init(void)
 {
     ui_totp_screen = lv_obj_create(NULL);
     const char *name = TOTP_SCREEN_NAME;
@@ -73,9 +67,47 @@ void ui_totp_screen_screen_init(void)
     lv_obj_set_flex_align(ui_totp_screen, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_START);
     lv_obj_set_layout(ui_totp_screen, LV_LAYOUT_FLEX);
 
-    // NOTE: create 1 component for each TOTP
-    for (int i = 0; i < size; i++)
+    ui_totp_screen_render_totp_components();
+
+    lv_obj_add_event_cb(ui_totp_screen, ui_event_totp_screen, LV_EVENT_ALL, NULL);
+}
+
+void ui_totp_screen_render_totp_components(void)
+{
+    lv_obj_clean(ui_totp_screen);
+    for (int i = 0; i < get_active_services_group_length(); i++)
     {
-        create_totp_component(ui_totp_screen, keys[i], totps[i], 30, 30);
+        Service service = get_active_services_group()[i];
+        create_totp_component(ui_totp_screen, service.name, service.totp);
+    }
+}
+
+void ui_totp_screen_update_totp_labels()
+{
+    int index = 0;
+    lv_obj_t *totp_component = lv_obj_get_child(ui_totp_screen, index);
+    while (totp_component)
+    {
+        lv_obj_t *totp_label = lv_obj_get_child(totp_component, 1);
+        TotpValueChangeEvent event;
+        event.index = index;
+        lv_event_send(totp_label, LV_EVENT_VALUE_CHANGED, &event);
+        index++;
+        totp_component = lv_obj_get_child(ui_totp_screen, index);
+    }
+}
+
+void ui_totp_screen_update_totp_countdowns()
+{
+    int index = 0;
+    lv_obj_t *totp_component = lv_obj_get_child(ui_totp_screen, index);
+    while (totp_component)
+    {
+        lv_obj_t *totp_countdown = lv_obj_get_child(totp_component, 2);
+        TotpValueChangeEvent event;
+        event.index = index;
+        lv_event_send(totp_countdown, LV_EVENT_VALUE_CHANGED, &event);
+        index++;
+        totp_component = lv_obj_get_child(ui_totp_screen, index);
     }
 }

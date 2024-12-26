@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <ArduinoJson.h>
 #include "constants.h"
+#include "utils.hpp"
 
 class Configuration
 {
@@ -47,6 +48,8 @@ public:
 	static Configuration parse(const String &jsonString);
 	bool save() const;
 	bool is_secure();
+	bool is_mqtt_server_settings_configured();
+	bool is_mqtt_topic_credentials_configured();
 };
 
 #endif // CONFIGURATION_H

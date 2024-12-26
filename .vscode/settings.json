@@ -71,6 +71,14 @@
     "condition_variable": "cpp",
     "regex": "cpp",
     "mutex": "cpp",
-    "constants.h": "c"
+    "constants.h": "c",
+    "variant": "c",
+    "services.h": "c",
+    "string.h": "c",
+    "future": "cpp",
+    "stdbool.h": "c",
+    "stdio.h": "c",
+    "touch.h": "c",
+    "pin.h": "c"
   }
 }

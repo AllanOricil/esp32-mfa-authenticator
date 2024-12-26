@@ -1,50 +1,50 @@
-#include <Base32.h>
-#include "totp-map.h"
+#include "utils.hpp"
 
-DecodedBase32Secret decode_encoded_base32_secret(char *secret) {
-  Serial.printf("decoding %s\n", secret);
+Secret decode_encoded_base32_secret(const char *encoded_secret)
+{
+  Serial.printf("decoding %s\n", encoded_secret);
 
-  byte* tempDecoded = NULL;
-  Base32 base32;
-
-  int secretLength = strlen(secret);
-  byte *secretBytes = new byte[secretLength];
-  
-  for (int i = 0; i < secretLength; i++) {
-    secretBytes[i] = secret[i];
+  int encoded_secret_length = strlen(encoded_secret);
+  uint8_t *encoded_secret_bytes = new uint8_t[encoded_secret_length];
+  for (int i = 0; i < encoded_secret_length; i++)
+  {
+    encoded_secret_bytes[i] = encoded_secret[i];
   }
-  
-  int keyLength = base32.fromBase32(secretBytes, secretLength, (byte*&)tempDecoded);
 
-  Serial.println("decoded base 32 secret");
-  for (int i = 0; i < keyLength; i++) {
-      Serial.print(tempDecoded[i], HEX);
-      Serial.print(" ");
+  uint8_t *decoded_secret_value = NULL;
+  Base32 base32;
+  int secret_length = base32.fromBase32(encoded_secret_bytes, encoded_secret_length, (uint8_t *&)decoded_secret_value);
+
+  Serial.println("decoded base 32 encoded_secret");
+  for (int i = 0; i < secret_length; i++)
+  {
+    Serial.print(decoded_secret_value[i], HEX);
+    Serial.print(" ");
   }
   Serial.println();
-  Serial.printf("length: %d\n", keyLength);
+  Serial.printf("length: %d\n", secret_length);
 
-  DecodedBase32Secret decodedBase32Secret;
-  decodedBase32Secret.length = keyLength;
-  decodedBase32Secret.value = tempDecoded;
+  Secret decoded_secret = {
+      .length = secret_length,
+      .value = decoded_secret_value};
 
-  delete[] secretBytes;
-
-  return decodedBase32Secret; 
+  delete[] encoded_secret_bytes;
+  return decoded_secret;
 }
 
-long lastPrint = 0;
-void print_free_memory(){
-  unsigned long currentMillis = millis();
-  if(currentMillis - lastPrint >= 5000) {
-    lastPrint = currentMillis;
-    Serial.print("Free Memory: ");
-    Serial.println(xPortGetFreeHeapSize());
+long last_time_it_outputed_free_memory = 0;
+void print_free_memory()
+{
+  unsigned long current_millis = millis();
+  if (current_millis - last_time_it_outputed_free_memory >= 5000)
+  {
+    Serial.printf("Free Memory: %u\n", xPortGetFreeHeapSize());
+    last_time_it_outputed_free_memory = current_millis;
   }
 }
 
-int string2Int(const char *input)
+int string_2_int(const char *input)
 {
-  int parsedInput = atoi(input);
-  return parsedInput >= 0 ? parsedInput : 0;
+  int parsed_input = atoi(input);
+  return parsed_input >= 0 ? parsed_input : 0;
 }

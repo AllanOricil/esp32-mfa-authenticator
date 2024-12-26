@@ -7,7 +7,6 @@ void ui_touch_calibration_screen_init(void)
     lv_obj_set_size(ui_touch_calibration_screen, LV_HOR_RES, LV_VER_RES);
     lv_obj_set_style_bg_color(ui_touch_calibration_screen, lv_color_white(), LV_PART_MAIN);
     lv_obj_set_style_bg_opa(ui_touch_calibration_screen, LV_OPA_COVER, LV_PART_MAIN);
-    lv_scr_load(ui_touch_calibration_screen);
 
     ui_touch_calibration_screen_label = lv_label_create(ui_touch_calibration_screen);
     lv_label_set_text(ui_touch_calibration_screen_label, "Touch and hold\nthe top-left corner\nuntil the next instruction appears.");

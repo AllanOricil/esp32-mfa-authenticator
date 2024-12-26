@@ -1,10 +1,8 @@
-#include "constants.h"
-#include "config.hpp"
 #include "manager.hpp"
 
 AsyncWebServer server(80);
 
-bool checkFileExists(const char *path)
+bool validate_file_exists(const char *path)
 {
 	if (SPIFFS.exists(path))
 	{
@@ -28,10 +26,10 @@ void init_manager()
 	}
 
 	if (
-		!checkFileExists("/index.html") ||
-		!checkFileExists("/200.html") ||
-		!checkFileExists("/404.html") ||
-		!checkFileExists("/favicon.ico"))
+		!validate_file_exists("/index.html") ||
+		!validate_file_exists("/200.html") ||
+		!validate_file_exists("/404.html") ||
+		!validate_file_exists("/favicon.ico"))
 	{
 		Serial.println("One or more required files are missing. Server initialization aborted.");
 		return;
@@ -91,9 +89,9 @@ void init_manager()
 		{
 			try
 			{
-				String dataJson = String((char *)data);
-				Configuration newConfig = Configuration::parse(dataJson);
-				if (newConfig.save())
+				String data_json = String((char *)data);
+				Configuration new_config = Configuration::parse(data_json);
+				if (new_config.save())
 				{
 					Serial.println("Configuration updated successfully");
 					request->send(200, "application/json", "{\"message\":\"configuration updated\"}");

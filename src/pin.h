@@ -1,10 +1,13 @@
 #ifndef PIN_H
 #define PIN_H
 
+#include <Arduino.h>
 #include <mbedtls/platform.h>
 #include <mbedtls/md.h>
 #include <string.h>
 #include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include "constants.h"
 
 #ifdef __cplusplus

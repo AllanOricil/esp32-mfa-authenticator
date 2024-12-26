@@ -2,10 +2,16 @@
 #define UTILS_H
 
 #include "Base32.h"
-#include "totp-map.h"
+#include "services.h"
 
-DecodedBase32Secret decode_encoded_base32_secret(char *secret);
+typedef struct
+{
+	int length;
+	uint8_t *value;
+} Secret;
+
+Secret decode_encoded_base32_secret(const char *secret);
 void print_free_memory();
-int string2Int(const char *input);
+int string_2_int(const char *input);
 
 #endif // UTILS_H

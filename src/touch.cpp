@@ -1,19 +1,17 @@
-#include "touch.h"
+#include "touch.hpp"
 
-static lv_indev_drv_t touchDriver;
+static lv_indev_drv_t touch_driver;
 TouchCallback _single_touch_handler;
 TouchCallback _double_touch_handler;
-static uint32_t first_touch_time = 0;
-static bool is_double_touch = false;
-static bool is_touched = false;
-static int touch_counter = 0;
 static bool is_calibrated = false;
-
+static bool count_touch_releases = false;
+static int number_touch_releases = 0;
+static uint32_t first_touch_release_time = 0;
 struct Calibration cal = {
-    .xMin = 0,
-    .xMax = 0,
-    .yMin = 0,
-    .yMax = 0};
+    .x_min = 0,
+    .x_max = 0,
+    .y_min = 0,
+    .y_max = 0};
 
 void init_touch(
     bool force_calibration,
@@ -57,7 +55,7 @@ void touch_set_calibrated()
     is_calibrated = true;
 }
 
-int read_SPI(byte command)
+int read_SPI(uint8_t command)
 {
     int result = 0;
 
@@ -86,8 +84,8 @@ void touch_calibrate_min()
 {
     Serial.println("Touch the top-left corner, hold it down until the next message...");
     digitalWrite(TOUCH_CS, LOW);
-    cal.xMin = read_SPI(CMD_READ_X);
-    cal.yMin = read_SPI(CMD_READ_Y);
+    cal.x_min = read_SPI(CMD_READ_X);
+    cal.y_min = read_SPI(CMD_READ_Y);
     digitalWrite(TOUCH_CS, HIGH);
 }
 
@@ -95,8 +93,8 @@ void touch_calibrate_max()
 {
     Serial.println("Touch the bottom-right corner, hold it down until the next message...");
     digitalWrite(TOUCH_CS, LOW);
-    cal.xMax = read_SPI(CMD_READ_X);
-    cal.yMax = read_SPI(CMD_READ_Y);
+    cal.x_max = read_SPI(CMD_READ_X);
+    cal.y_max = read_SPI(CMD_READ_Y);
     digitalWrite(TOUCH_CS, HIGH);
 }
 
@@ -107,40 +105,40 @@ bool touch_load_calibration()
         Serial.println("Calibration file not found on SPIFFS!");
         return false;
     }
-    File calFile = SPIFFS.open(TOUCH_CALIBRATION_SPIFFS_FILE_PATH, "r");
-    if (!calFile || calFile.size() == 0)
+    File calibration_file = SPIFFS.open(TOUCH_CALIBRATION_SPIFFS_FILE_PATH, FILE_READ);
+    if (!calibration_file || calibration_file.size() == 0)
     {
         Serial.println("File is empty or failed to open!");
         return false;
     }
     Serial.println("loading calibration");
-    cal.xMin = calFile.parseInt();
-    cal.yMin = calFile.parseInt();
-    cal.xMax = calFile.parseInt();
-    cal.yMax = calFile.parseInt();
-    Serial.printf("xMin %d\n", cal.xMin);
-    Serial.printf("yMin %d\n", cal.yMin);
-    Serial.printf("xMax %d\n", cal.xMax);
-    Serial.printf("yMax %d\n", cal.yMax);
-    calFile.close();
+    cal.x_min = calibration_file.parseInt();
+    cal.y_min = calibration_file.parseInt();
+    cal.x_max = calibration_file.parseInt();
+    cal.y_max = calibration_file.parseInt();
+    Serial.printf("x_min %d\n", cal.x_min);
+    Serial.printf("y_min %d\n", cal.y_min);
+    Serial.printf("x_max %d\n", cal.x_max);
+    Serial.printf("y_max %d\n", cal.y_max);
+    calibration_file.close();
     Serial.println("calibration loaded");
     return true;
 }
 
 void touch_save_calibration()
 {
-    File calFile = SPIFFS.open(TOUCH_CALIBRATION_SPIFFS_FILE_PATH, "w");
-    if (!calFile)
+    File calibration_file = SPIFFS.open(TOUCH_CALIBRATION_SPIFFS_FILE_PATH, FILE_WRITE);
+    if (!calibration_file)
     {
         Serial.println("File is empty or failed to open!");
         return;
     }
-    calFile.println(cal.xMin);
-    calFile.println(cal.yMin);
-    calFile.println(cal.xMax);
-    calFile.println(cal.yMax);
-    calFile.flush();
-    calFile.close();
+    calibration_file.println(cal.x_min);
+    calibration_file.println(cal.y_min);
+    calibration_file.println(cal.x_max);
+    calibration_file.println(cal.y_max);
+    calibration_file.flush();
+    calibration_file.close();
     Serial.println("calibration saved");
 }
 
@@ -151,19 +149,19 @@ struct Point touch_get_touch()
     int y = read_SPI(CMD_READ_Y);
     digitalWrite(TOUCH_CS, HIGH);
     // NOTE: TFT_HEIGHT and TFT_WIDTH are inverted because the touch sensor is oriented in the vertical position
-    x = map(x, cal.xMin, cal.xMax, 0, TFT_HEIGHT);
-    y = map(y, cal.yMin, cal.yMax, 0, TFT_WIDTH);
-    if (x > TFT_HEIGHT)
+    x = map(x, cal.x_min, cal.x_max, 0, DISPLAY_HEIGHT);
+    y = map(y, cal.y_min, cal.y_max, 0, DISPLAY_WIDTH);
+    if (x > DISPLAY_HEIGHT)
     {
-        x = TFT_HEIGHT;
+        x = DISPLAY_HEIGHT;
     }
     if (x < 0)
     {
         x = 0;
     }
-    if (y > TFT_WIDTH)
+    if (y > DISPLAY_WIDTH)
     {
-        y = TFT_WIDTH;
+        y = DISPLAY_WIDTH;
     }
     if (y < 0)
     {
@@ -172,66 +170,53 @@ struct Point touch_get_touch()
     return Point{x, y};
 }
 
-void touch_change_handler(lv_indev_drv_t *touchDriver, lv_indev_data_t *touchData)
+void touch_change_handler(lv_indev_drv_t *touch_driver, lv_indev_data_t *touch_data)
 {
-    Point touchPoint = touch_get_touch();
-    int16_t tmpTouchPointX = touchPoint.x;
-    int16_t tmpTouchPointY = touchPoint.y;
+    Point touched_point = touch_get_touch();
+    int16_t tmp_touched_point_x = touched_point.x;
+    int16_t tmp_touched_point_y = touched_point.y;
 
-    // NOTE: swapping due to the rotation
-    touchPoint.x = tmpTouchPointY;
-    touchPoint.y = tmpTouchPointX;
-
-    if (touchPoint.x >= 0 && touchPoint.x < DISPLAY_WIDTH && touchPoint.y >= 0 && touchPoint.y < DISPLAY_HEIGHT)
+    // NOTE: swapping because the TFT is rotated
+    touched_point.x = tmp_touched_point_y;
+    touched_point.y = tmp_touched_point_x;
+    if (touched_point.x >= 0 && touched_point.x < DISPLAY_WIDTH && touched_point.y >= 0 && touched_point.y < DISPLAY_HEIGHT)
     {
-        is_touched = true;
-        touchData->state = LV_INDEV_STATE_PRESSED;
-        touchData->point.x = touchPoint.x;
-        touchData->point.y = touchPoint.y;
+        count_touch_releases = true;
+        touch_data->state = LV_INDEV_STATE_PRESSED;
+        touch_data->point.x = touched_point.x;
+        touch_data->point.y = touched_point.y;
     }
     else
     {
-        touchData->state = LV_INDEV_STATE_RELEASED;
-        if (is_touched)
+        touch_data->state = LV_INDEV_STATE_RELEASED;
+        if (count_touch_releases)
         {
-            uint32_t capturedTouchReleaseTime = millis();
-
-            if (touch_counter == 1)
+            count_touch_releases = false;
+            uint32_t touch_release_time = millis();
+            if (!first_touch_release_time)
             {
-                if (capturedTouchReleaseTime - first_touch_time <= TOUCH_DOUBLE_TOUCH_INTERVAL)
-                {
-                    is_double_touch = true;
-                }
-                else
-                {
-                    touch_counter--;
-                }
+
+                first_touch_release_time = touch_release_time;
             }
 
-            Serial.println("RELEASED");
-            touch_counter++;
-            Serial.printf("TOUCH COUNTER: %d\n", touch_counter);
-
-            if (touch_counter == 1)
-            {
-                first_touch_time = capturedTouchReleaseTime;
-            }
-
-            is_touched = false;
+            number_touch_releases++;
         }
     }
 
-    if (touch_counter == 1 && millis() - first_touch_time > TOUCH_DOUBLE_TOUCH_INTERVAL)
+    if (millis() - first_touch_release_time > TOUCH_DOUBLE_TOUCH_INTERVAL)
     {
-        _single_touch_handler();
-        touch_counter = 0;
-    }
+        if (number_touch_releases == 2)
+        {
+            _double_touch_handler();
+        }
 
-    if (is_double_touch)
-    {
-        _double_touch_handler();
-        is_double_touch = false;
-        touch_counter = 0;
+        if (number_touch_releases == 1)
+        {
+            _single_touch_handler();
+        }
+
+        number_touch_releases = 0;
+        first_touch_release_time = 0;
     }
 }
 
@@ -244,11 +229,11 @@ void touch_register()
         Serial.println("Error: Default display is NULL.");
         return;
     }
-    lv_indev_drv_init(&touchDriver);
-    touchDriver.disp = disp;
-    touchDriver.type = LV_INDEV_TYPE_POINTER;
-    touchDriver.read_cb = touch_change_handler;
-    lv_indev_t *indev = lv_indev_drv_register(&touchDriver);
+    lv_indev_drv_init(&touch_driver);
+    touch_driver.disp = disp;
+    touch_driver.type = LV_INDEV_TYPE_POINTER;
+    touch_driver.read_cb = touch_change_handler;
+    lv_indev_t *indev = lv_indev_drv_register(&touch_driver);
     if (!indev)
     {
         Serial.println("Error: Failed to register input driver.");
