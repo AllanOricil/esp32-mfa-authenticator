@@ -1,3 +1,15 @@
+# [0.15.0](https://github.com/AllanOricil/esp32-mfa-authenticator/compare/v0.14.0...v0.15.0) (2024-12-26)
+
+
+### Bug Fixes
+
+* ensure group default to 0 when not in bounds ([630f406](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/630f406e0cded11ac004b60712d06908482e2ca7))
+
+
+### Features
+
+* increase MAX_NUMBER_OF_GROUPS to 10 ([c440976](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/c44097698aa72f91d42e89b8e8d2dd5b963b2655))
+
 # [0.14.0](https://github.com/AllanOricil/esp32-mfa-authenticator/compare/v0.13.1...v0.14.0) (2024-12-26)
 
 
