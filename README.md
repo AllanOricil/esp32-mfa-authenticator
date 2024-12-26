@@ -298,7 +298,6 @@ When the board is connected to your local network, a settings page, similarly to
 - set `key` with the secret you got in step 1
 
 ```yml
----
 security:
   pin:
     hash: 7dbd45736c57090dd62a7e1c8db1a08c353b4a836f2c6b43fd1dd3f1e747ea59
@@ -328,7 +327,6 @@ echo -n "YOUR_PIN_NUMBER" | openssl dgst -sha256 -hmac "YOUR_32_CHARACTERS_LONG_
 - set `key` with the secret you got in step 1
 
 ```yml
----
 security:
   pin:
     hash: 7dbd45736c57090dd62a7e1c8db1a08c353b4a836f2c6b43fd1dd3f1e747ea59
