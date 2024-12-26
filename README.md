@@ -38,6 +38,8 @@ You can flash your ESP32-CYD board with the latest build using this [site](https
 
 <https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/b610d1de-1bf9-47fe-9148-8973cb30205d>
 
+<https://github.com/user-attachments/assets/d8a83c77-8a3f-4243-86a1-fa44efb72904>
+
 ## ⚙️ Parts
 
 - `ESP32-2432S028`
@@ -348,13 +350,9 @@ Users can manage their board settings using a browser. Once the board is connect
 
 After booting, the display turns off automatically if it doesn't receive touch events after N seconds. N is a configurable in the `config.yml`.
 
-### 🔜 Create chrome extension to ease registering TOTP secrets
+### ✅ Organize Services into Groups
 
-When the ESP32-MFA-Authenticator extension is enabled, a new button called "register secret" appears, in the browser's context menu, when right clicking over a QR code. When selecting this button, the registration flow starts.
-
-### 🔜 Group TOTP Codes
-
-I work with a customer that has multiple AWS accounts, and each has its own MFA Virtual device. To help me to easily find the MFA TOTP codes for a group of accounts that belongs to the same customer, I decided to create a way to group TOTP codes together on its own separate view. Each group of TOTP secrets will result in a page on the TOTP Screen. The User can select the page by swiping to the right or left. With this feature, Users will be able to manage multiple virtual MFA devices for multiple customers using the same device. To further secure TOTPs for a group, the User will be able to set a PIN code for a group. If PIN code is set for that group, a PIN Screen appears before the group of TOTPs can be rendered. There will also still exist the Global PIN code, which protects all TOTPs.
+Services can be organized into groups.
 
 ### ✅ Lock board after N wrong unlock attempts
 
@@ -363,6 +361,11 @@ Improve the validation function to block access to the board after few wrong att
 ### 🔜 Unlock with fingerprint
 
 Instead of typing a pin code, it will be possible to unlock the board using a fingerprint. The goal is to ease the access to the TOTP codes, while maintaining them secure. It will also work globally or by group.
+
+### 🔜 Create chrome extension to ease registering TOTP secrets
+
+When the ESP32-MFA-Authenticator extension is enabled, a new button called "register secret" appears, in the browser's context menu, when right clicking over a QR code. When selecting this button, the registration flow starts.
+
 
 ## 💖 Become a Sponsor
 
