@@ -170,9 +170,9 @@ Services are registered in a file called `services.yml` that must be located in 
 
 ```yml
 services: list
-  - name: text[60]
-    secret: text
-    group: number
+  - name: text[60] Max number of characters is 60. An exception is raised when not set.
+    secret: text Length is dynamic. An exception is raised when not set.
+    group: integer [0~4] It accepts integers from 0 to 5. Default to 0 when not set, > 5 or < 0. An exception is raised when not an integer.
 ```
 
 For example:
@@ -219,6 +219,7 @@ services:
 
 > [!IMPORTANT]
 > The service name acts as a unique key within a group. If two services share the same key within the same group, the last one listed in the file will be the one used.
+
 
 ### 📚 How to verify if TOTP codes are correct
 
