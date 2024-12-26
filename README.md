@@ -172,7 +172,7 @@ Services are registered in a file called `services.yml` that must be located in 
 services: list
   - name: text[60] Max number of characters is 60. An exception is raised when not set.
     secret: text Length is dynamic. An exception is raised when not set.
-    group: integer [0~4] It accepts integers from 0 to 5. Default to 0 when not set, > 5 or < 0. An exception is raised when not an integer.
+    group: integer [0~4] It accepts integers from 0 to 4. Default to 0 when not set, > 4 or < 0. An exception is raised when not an integer.
 ```
 
 For example:
