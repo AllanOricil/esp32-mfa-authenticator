@@ -162,7 +162,7 @@ To listen to the serial port using PlatformIO CLI you can use the following comm
 platformio device monitor --environment esp32-cyd
 ```
 
-### 📚 How to add register a Service
+### 📚 How to register a Service
 
 Services are registered in a file called `services.yml` that must be located in the root of an SD card. It must follow the schema shown below:
 
