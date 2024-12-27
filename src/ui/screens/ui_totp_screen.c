@@ -1,6 +1,7 @@
 #include "../ui.h"
 #include "services.h"
 #include "constants.h"
+#include "clock.hpp"
 
 #define LV_LABEL_SCROLL_SPEED (15)
 
@@ -45,9 +46,6 @@ lv_obj_t *create_totp_component(
     lv_obj_set_style_bg_color(totp_countdown, lv_color_make(37, 50, 76), LV_PART_MAIN);
     lv_obj_set_style_bg_color(totp_countdown, lv_color_make(37, 196, 244), LV_PART_INDICATOR);
 
-    lv_obj_add_event_cb(totp_label, ui_event_totp_component_label, LV_EVENT_ALL, NULL);
-    lv_obj_add_event_cb(totp_countdown, ui_event_totp_component_countdown, LV_EVENT_ALL, NULL);
-
     return container;
 }
 
@@ -75,11 +73,48 @@ void ui_totp_screen_init(void)
 void ui_totp_screen_render_totp_components(void)
 {
     lv_obj_clean(ui_totp_screen);
-    for (int i = 0; i < get_active_services_group_length(); i++)
+    for (int i = 0; i < get_active_services_group_length(); ++i)
     {
         Service service = get_active_services_group()[i];
         create_totp_component(ui_totp_screen, service.name, service.totp);
     }
+}
+
+// void fade_out_task(lv_timer_t *timer)
+// {
+//     lv_obj_t *label = (lv_obj_t *)timer->user_data;
+//     lv_anim_t fade_out;
+//     lv_anim_init(&fade_out);
+//     lv_anim_set_var(&fade_out, label);
+//     lv_anim_set_time(&fade_out, 1000);
+//     lv_anim_set_values(&fade_out, LV_OPA_100, LV_OPA_0);
+//     lv_anim_set_exec_cb(&fade_out, (lv_anim_exec_xcb_t)lv_obj_set_style_text_opa);
+//     lv_anim_start(&fade_out);
+//     lv_timer_del(timer);
+// }
+
+void ui_totp_screen_render_active_group_index()
+{
+    lv_obj_clean(ui_totp_screen);
+
+    lv_obj_t *card = lv_obj_create(ui_totp_screen);
+    lv_obj_set_style_bg_color(card, lv_color_make(3, 6, 10), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(card, LV_OPA_100, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(card, 5, 0);
+    lv_obj_set_style_border_opa(card, LV_OPA_TRANSP, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_scrollbar_mode(card, LV_SCROLLBAR_MODE_OFF);
+    lv_obj_set_size(card, lv_obj_get_width(ui_totp_screen) - 10, lv_obj_get_height(ui_totp_screen) - 10);
+    lv_obj_align(card, LV_ALIGN_CENTER, 0, 0);
+
+    int active_group = get_active_group();
+    lv_obj_t *group_label = lv_label_create(card);
+    lv_label_set_text_fmt(group_label, "Group %d", active_group);
+    lv_obj_set_style_text_color(group_label, lv_color_white(), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(group_label, &lv_font_montserrat_22, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(group_label, LV_OPA_100, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_align(group_label, LV_ALIGN_CENTER, 0, 0);
+
+    // lv_timer_create(fade_out_task, 1500, group_label);
 }
 
 void ui_totp_screen_update_totp_labels()
@@ -88,10 +123,9 @@ void ui_totp_screen_update_totp_labels()
     lv_obj_t *totp_component = lv_obj_get_child(ui_totp_screen, index);
     while (totp_component)
     {
+        Service service = get_active_services_group()[index];
         lv_obj_t *totp_label = lv_obj_get_child(totp_component, 1);
-        TotpValueChangeEvent event;
-        event.index = index;
-        lv_event_send(totp_label, LV_EVENT_VALUE_CHANGED, &event);
+        lv_label_set_text(totp_label, service.totp);
         index++;
         totp_component = lv_obj_get_child(ui_totp_screen, index);
     }
@@ -101,12 +135,11 @@ void ui_totp_screen_update_totp_countdowns()
 {
     int index = 0;
     lv_obj_t *totp_component = lv_obj_get_child(ui_totp_screen, index);
+    int second = get_second();
     while (totp_component)
     {
         lv_obj_t *totp_countdown = lv_obj_get_child(totp_component, 2);
-        TotpValueChangeEvent event;
-        event.index = index;
-        lv_event_send(totp_countdown, LV_EVENT_VALUE_CHANGED, &event);
+        lv_bar_set_value(totp_countdown, TOTP_PERIOD - second % TOTP_PERIOD, LV_ANIM_OFF);
         index++;
         totp_component = lv_obj_get_child(ui_totp_screen, index);
     }

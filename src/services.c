@@ -128,6 +128,11 @@ void set_active_group(int group)
     active_group = group;
 }
 
+int get_active_group()
+{
+    return active_group;
+}
+
 bool change_active_group_left()
 {
     if (active_group > 0)

@@ -11,11 +11,9 @@ extern "C"
         int index;
     } TotpValueChangeEvent;
 
-    void on_totp_component_label_value_changed(lv_event_t *e);
-    void on_totp_component_countdown_value_changed(lv_event_t *e);
     void on_totp_screen_gesture(lv_event_t *e);
-    void on_keyboard_button_clicked(lv_event_t *e);
-    void on_pin_submit(lv_event_t *e);
+    void on_screen_keyboard_button_clicked(lv_event_t *e);
+    void on_pin_screen_form_submit(lv_event_t *e);
 
 #ifdef __cplusplus
 } /*extern "C"*/

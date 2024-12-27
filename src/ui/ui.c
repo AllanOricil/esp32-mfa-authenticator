@@ -12,14 +12,13 @@ lv_obj_t *ui_touch_calibration_screen_dot_bottom_right;
 Config config;
 void ui_totp_screen_init(void);
 void ui_pin_screen_init(void);
-void ui_event_totp_component_label(lv_event_t *e);
-void ui_event_totp_component_countdown(lv_event_t *e);
 void ui_event_totp_screen(lv_event_t *e);
-void ui_event_pin_keyboard_button(lv_event_t *e);
-void ui_event_pin_textarea(lv_event_t *e);
+void ui_event_pin_screen_keyboard_button(lv_event_t *e);
+void ui_event_pin_screen_textarea(lv_event_t *e);
 void ui_totp_screen_update_totp_labels();
 void ui_totp_screen_update_totp_countdowns();
 void ui_totp_screen_render_totp_components();
+void ui_totp_screen_render_active_group_index();
 void ui_touch_calibration_screen_init(void);
 void ui_touch_calibration_screen_step_2();
 void ui_touch_calibration_screen_step_3();
@@ -28,24 +27,6 @@ void ui_touch_calibration_screen_destroy();
 #if LV_COLOR_DEPTH != 16
 #error "LV_COLOR_DEPTH should be 16bit to match SquareLine Studio's settings"
 #endif
-
-void ui_event_totp_component_label(lv_event_t *e)
-{
-    lv_event_code_t event_code = lv_event_get_code(e);
-    if (event_code == LV_EVENT_VALUE_CHANGED)
-    {
-        on_totp_component_label_value_changed(e);
-    }
-}
-
-void ui_event_totp_component_countdown(lv_event_t *e)
-{
-    lv_event_code_t event_code = lv_event_get_code(e);
-    if (event_code == LV_EVENT_VALUE_CHANGED)
-    {
-        on_totp_component_countdown_value_changed(e);
-    }
-}
 
 void ui_event_totp_screen(lv_event_t *e)
 {
@@ -56,21 +37,21 @@ void ui_event_totp_screen(lv_event_t *e)
     }
 }
 
-void ui_event_pin_keyboard_button(lv_event_t *e)
+void ui_event_pin_screen_keyboard_button(lv_event_t *e)
 {
     lv_event_code_t event_code = lv_event_get_code(e);
     if (event_code == LV_EVENT_VALUE_CHANGED)
     {
-        on_pin_keyboard_button_clicked(e);
+        on_pin_screen_keyboard_button_clicked(e);
     }
 }
 
-void ui_event_pin_textarea(lv_event_t *e)
+void ui_event_pin_screen_textarea(lv_event_t *e)
 {
     lv_event_code_t event_code = lv_event_get_code(e);
     if (event_code == LV_EVENT_READY)
     {
-        on_pin_submit(e);
+        on_pin_screen_form_submit(e);
     }
 }
 
