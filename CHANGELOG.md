@@ -1,3 +1,15 @@
+# [0.16.0](https://github.com/AllanOricil/esp32-mfa-authenticator/compare/v0.15.0...v0.16.0) (2024-12-27)
+
+
+### Bug Fixes
+
+* align pin screen theme with totp screen for consistency ([f2c59b5](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/f2c59b51e4bddb5efcc805b34affe06104474fcb))
+
+
+### Features
+
+* group index is rendered when a group does not have services ([cd945c3](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/cd945c3c9e83af9ae1a9e865eb1a78456d9a1e23))
+
 # [0.15.0](https://github.com/AllanOricil/esp32-mfa-authenticator/compare/v0.14.0...v0.15.0) (2024-12-26)
 
 
