@@ -140,6 +140,9 @@ touch:
 > [!TIP]
 > Once the boot process is finished, remove the SD card from the board, and store it somewhere safe. Before rebooting, or if you want to add new secrets, remember to put it back in the board.
 
+> [!NOTE]
+> A pink screen appears to indicate that both `config.yml` and `services.yml` have been parsed and loaded into memory.
+
 ## 📖 Guides
 
 ### 📚 How to navigate and control the board
