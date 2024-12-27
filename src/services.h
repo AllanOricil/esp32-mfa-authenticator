@@ -34,6 +34,7 @@ extern "C"
     void clear_all_services_groups();
     void clear_all_services_in_group(int group);
     void set_active_group(int group);
+    int get_active_group();
     bool change_active_group_left();
     bool change_active_group_right();
     void print_service_group(int group);

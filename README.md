@@ -142,6 +142,12 @@ touch:
 
 ## 📖 Guides
 
+### 📚 How to navigate and control the board
+
+- <b>Change groups:</b> Swipe left or right to navigate between different groups.
+- <b>Lock Screen:</b> Tap twice to lock the screen.
+- <b>Wake up:</b> Tap once to wake up the board.
+
 ### 📚 How to build
 
 Install PlatformIO's official CLI using this [tutorial](https://platformio.org/install/cli), and then follow the next steps:

@@ -2,33 +2,9 @@
 #include <string.h>
 #include "ui.h"
 #include "services.h"
-#include "esp_log.h"
 #include "constants.h"
 #include "pin.h"
 #include "mfa.h"
-
-void on_totp_component_label_value_changed(lv_event_t *e)
-{
-    LV_LOG_TRACE("on_totp_component_label_value_changed");
-    lv_obj_t *label = lv_event_get_target(e);
-    TotpValueChangeEvent *data = (TotpValueChangeEvent *)lv_event_get_param(e);
-    Service service = get_active_services_group()[data->index];
-
-    LV_LOG_TRACE("totp: %s index: %d", service.totp, data->index);
-    lv_label_set_text(label, service.totp);
-}
-
-void on_totp_component_countdown_value_changed(lv_event_t *e)
-{
-    LV_LOG_TRACE("on_totp_component_bar_value_changed");
-    lv_obj_t *bar = lv_event_get_target(e);
-    struct tm *timeinfo;
-    time_t now;
-    time(&now);
-    timeinfo = localtime(&now);
-    int val = TOTP_PERIOD - timeinfo->tm_sec % TOTP_PERIOD;
-    lv_bar_set_value(bar, val, LV_ANIM_OFF);
-}
 
 void on_totp_screen_gesture(lv_event_t *e)
 {
@@ -48,14 +24,22 @@ void on_totp_screen_gesture(lv_event_t *e)
 
     if (group_changed)
     {
-        update_totps();
-        ui_totp_screen_render_totp_components();
-        ui_totp_screen_update_totp_labels();
-        ui_totp_screen_update_totp_countdowns();
+        int active_group_length = get_active_services_group_length();
+        if (!active_group_length)
+        {
+            ui_totp_screen_render_active_group_index();
+        }
+        else
+        {
+            update_totps();
+            ui_totp_screen_render_totp_components();
+            ui_totp_screen_update_totp_labels();
+            ui_totp_screen_update_totp_countdowns();
+        }
     }
 }
 
-void on_pin_keyboard_button_clicked(lv_event_t *e)
+void on_pin_screen_keyboard_button_clicked(lv_event_t *e)
 {
     lv_obj_t *keyboard = lv_event_get_target(e);
     uint32_t btn_id = lv_btnmatrix_get_selected_btn(keyboard);
@@ -76,7 +60,7 @@ void on_pin_keyboard_button_clicked(lv_event_t *e)
     }
 }
 
-void on_pin_submit(lv_event_t *e)
+void on_pin_screen_form_submit(lv_event_t *e)
 {
     lv_obj_t *textarea = lv_event_get_target(e);
     const char *pin = lv_textarea_get_text(textarea);
