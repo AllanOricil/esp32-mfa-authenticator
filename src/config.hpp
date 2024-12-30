@@ -1,13 +1,13 @@
 #ifndef CONFIGURATION_H
 #define CONFIGURATION_H
 
-#include <FS.h>
-#include <SD.h>
 #include <YAMLDuino.h>
 #include <cstdlib>
 #include <ArduinoJson.h>
-#include "constants.h"
+#include <esp_log.h>
+#include "storage.hpp"
 #include "utils.hpp"
+#include "constants.h"
 
 class Configuration
 {

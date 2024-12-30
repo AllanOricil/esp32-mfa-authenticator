@@ -151,7 +151,7 @@ touch:
 - <b>Lock Screen:</b> Tap twice to lock the screen.
 - <b>Wake up:</b> Tap once to wake up the board.
 
-### 📚 How to build
+### 📚 How to build using PlatformIO CLI
 
 Install PlatformIO's official CLI using this [tutorial](https://platformio.org/install/cli), and then follow the next steps:
 
@@ -160,17 +160,20 @@ Install PlatformIO's official CLI using this [tutorial](https://platformio.org/i
 > [!TIP]
 > You can discover which port belongs to your board by comparing the outputs of this command when your board is connected and when it is not.
 
-2. Run `./scripts/dev.sh --port ${DEVICE_PORT}` to build and flash the code into your board
+2. Run `./scripts/dev.sh --port ${DEVICE_PORT} --env ${ENV}` to build and flash the code into your board
 
 > [!IMPORTANT]
 > Remember to substitue `${DEVICE_PORT}` with the value you got in step 1.
+
+> [!IMPORTANT]
+> Remember to substitute `${ENV}` by `prod` or `dev`. The only difference between both environments is the log level. In `prod` logs are disabled, while in `dev` all logs are visible.
 
 ### 📚 How to listen to the serial port using PlatformIO CLI
 
 To listen to the serial port using PlatformIO CLI you can use the following commnad:
 
 ```bash
-platformio device monitor --environment esp32-cyd
+platformio device monitor
 ```
 
 ### 📚 How to register a Service

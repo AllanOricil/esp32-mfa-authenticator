@@ -2,6 +2,7 @@
 #define WIFI_H
 
 #include <WiFi.h>
+#include <esp_log.h>
 #include "config.hpp"
 
 void init_wifi(Configuration config);

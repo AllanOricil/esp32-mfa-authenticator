@@ -2,9 +2,10 @@
 #define TOUCH_H
 
 #include <Arduino.h>
-#include <SPIFFS.h>
 #include <lvgl.h>
 #include <string.h>
+#include <esp_log.h>
+#include "storage.hpp"
 #include "constants.h"
 
 #define CMD_READ_Y 0x90 // Command for XPT2046 to read Y position

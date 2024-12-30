@@ -100,7 +100,7 @@ jobs:
       # TODO: run tests
 
       - name: Build
-        run: ./scripts/build.sh
+        run: ./scripts/build.sh --env prod
         env:
           USE_RELEASE_TAG: ${{ github.event_name == 'release' && github.event.action == 'published' }}
         shell: bash

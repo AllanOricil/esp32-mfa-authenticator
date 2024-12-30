@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <esp_log.h>
 #include "constants.h"
 
 #ifdef __cplusplus

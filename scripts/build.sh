@@ -1,5 +1,24 @@
 #!/bin/bash
 
+env="dev"
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --env)
+      env=$2
+      shift 2
+      ;;
+    *)
+      echo "Unknown option: $1"
+      exit 1
+      ;;
+  esac
+done
+
+if [[ "$env" != "dev" && "$env" != "prod" ]]; then
+  echo "Error: Invalid environment specified. Allowed values are 'dev' or 'prod'."
+  exit 1
+fi
+
 generate_random_number() {
     local length="$1"
     local num=""
@@ -49,12 +68,12 @@ cp -r $base_dir/site/.output/public/* $base_dir/data
 
 
 execute_and_check platformio run --target clean
-execute_and_check platformio run --environment esp32-cyd
-execute_and_check platformio run --target buildfs --environment esp32-cyd
+execute_and_check platformio run --environment "$env"
+execute_and_check platformio run --target buildfs --environment "$env"
 
 
 output_dir=$base_dir/out
-platformio_build_dir=$base_dir/.pio/build/esp32-cyd
+platformio_build_dir=$base_dir/.pio/build/"$env"
 rm -rf $output_dir
 mkdir -p $output_dir
 cp $platformio_build_dir/bootloader.bin $output_dir/bootloader.bin

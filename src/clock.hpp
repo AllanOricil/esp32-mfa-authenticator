@@ -2,6 +2,7 @@
 #define CLOCK_H
 
 #include <time.h>
+#include <esp_log.h>
 #include "constants.h"
 
 #ifdef __cplusplus

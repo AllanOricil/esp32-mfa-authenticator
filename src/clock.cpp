@@ -2,6 +2,8 @@
 
 ESP32Time rtc;
 
+static const char *TAG = "clock";
+
 void init_clock()
 {
   // NOTE: retrieve time from the NTP server and setting the system time with it
@@ -13,7 +15,7 @@ void init_clock()
 
   while ((now = time(nullptr)) < 24 * 3600)
   {
-    Serial.println("Waiting for time to be set...");
+    ESP_LOGI(TAG, "waiting for time to be set...");
     delay(500);
   }
 
@@ -21,7 +23,7 @@ void init_clock()
 
   // NOTE: set RTC time with the time from the NTP server
   rtc.setTimeStruct(time_info);
-  Serial.println(rtc.getDateTime());
+  ESP_LOGI(TAG, "time is: %s", rtc.getDateTime().c_str());
 }
 
 unsigned long get_elapsed_number_of_time_steps()

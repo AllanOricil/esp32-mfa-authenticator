@@ -1,5 +1,7 @@
 #include "touch.hpp"
 
+static const char *TAG = "touch";
+
 static lv_indev_drv_t touch_driver;
 TouchCallback _single_touch_handler;
 TouchCallback _double_touch_handler;
@@ -18,7 +20,7 @@ void init_touch(
     TouchCallback single_touch_handler,
     TouchCallback double_touch_handler)
 {
-    Serial.println("Initializing touch.");
+    ESP_LOGI(TAG, "initializing touch");
 
     _single_touch_handler = single_touch_handler;
     _double_touch_handler = double_touch_handler;
@@ -32,17 +34,17 @@ void init_touch(
 
     if ((!SPIFFS.begin(true)) || (!touch_load_calibration() || (force_calibration)))
     {
-        Serial.println("Touch must be calibrated");
+        ESP_LOGI(TAG, "touch must be calibrated");
         is_calibrated = false;
     }
     else
     {
-        Serial.println("Touch is calibrated");
+        ESP_LOGI(TAG, "touch is calibrated");
         touch_register();
         is_calibrated = true;
     }
 
-    Serial.println("Touch initialized.");
+    ESP_LOGI(TAG, "touch initialized");
 }
 
 bool touch_is_calibrated()
@@ -82,64 +84,68 @@ int read_SPI(uint8_t command)
 
 void touch_calibrate_min()
 {
-    Serial.println("Touch the top-left corner, hold it down until the next message...");
+    ESP_LOGI(TAG, "reading first calibration point");
     digitalWrite(TOUCH_CS, LOW);
     cal.x_min = read_SPI(CMD_READ_X);
     cal.y_min = read_SPI(CMD_READ_Y);
     digitalWrite(TOUCH_CS, HIGH);
+    ESP_LOGI(TAG, "first calibration point read");
 }
 
 void touch_calibrate_max()
 {
-    Serial.println("Touch the bottom-right corner, hold it down until the next message...");
+    ESP_LOGI(TAG, "reading second calibration point");
     digitalWrite(TOUCH_CS, LOW);
     cal.x_max = read_SPI(CMD_READ_X);
     cal.y_max = read_SPI(CMD_READ_Y);
     digitalWrite(TOUCH_CS, HIGH);
+    ESP_LOGI(TAG, "second calibration point read");
 }
 
 bool touch_load_calibration()
 {
+    ESP_LOGD(TAG, "loading calibration data");
     if (!SPIFFS.exists(TOUCH_CALIBRATION_SPIFFS_FILE_PATH))
     {
-        Serial.println("Calibration file not found on SPIFFS!");
+        ESP_LOGE(TAG, "calibration file %s not found in SPIFFS", TOUCH_CALIBRATION_SPIFFS_FILE_PATH);
         return false;
     }
-    File calibration_file = SPIFFS.open(TOUCH_CALIBRATION_SPIFFS_FILE_PATH, FILE_READ);
-    if (!calibration_file || calibration_file.size() == 0)
+    File file = SPIFFS.open(TOUCH_CALIBRATION_SPIFFS_FILE_PATH, FILE_READ);
+    if (!file || file.size() == 0)
     {
-        Serial.println("File is empty or failed to open!");
+        ESP_LOGE(TAG, "calibration file %s is empty of failed to open", TOUCH_CALIBRATION_SPIFFS_FILE_PATH);
         return false;
     }
-    Serial.println("loading calibration");
-    cal.x_min = calibration_file.parseInt();
-    cal.y_min = calibration_file.parseInt();
-    cal.x_max = calibration_file.parseInt();
-    cal.y_max = calibration_file.parseInt();
-    Serial.printf("x_min %d\n", cal.x_min);
-    Serial.printf("y_min %d\n", cal.y_min);
-    Serial.printf("x_max %d\n", cal.x_max);
-    Serial.printf("y_max %d\n", cal.y_max);
-    calibration_file.close();
-    Serial.println("calibration loaded");
+    cal.x_min = file.parseInt();
+    cal.y_min = file.parseInt();
+    cal.x_max = file.parseInt();
+    cal.y_max = file.parseInt();
+    ESP_LOGV(TAG, "calibration data:");
+    ESP_LOGV(TAG, "x_min %d", cal.x_min);
+    ESP_LOGV(TAG, "y_min %d", cal.y_min);
+    ESP_LOGV(TAG, "x_max %d", cal.x_max);
+    ESP_LOGV(TAG, "y_max %d", cal.y_max);
+    file.close();
+    ESP_LOGD(TAG, "calibration data loaded");
     return true;
 }
 
 void touch_save_calibration()
 {
-    File calibration_file = SPIFFS.open(TOUCH_CALIBRATION_SPIFFS_FILE_PATH, FILE_WRITE);
-    if (!calibration_file)
+    ESP_LOGI(TAG, "saving calibration data");
+    File file = SPIFFS.open(TOUCH_CALIBRATION_SPIFFS_FILE_PATH, FILE_WRITE);
+    if (!file)
     {
-        Serial.println("File is empty or failed to open!");
+        ESP_LOGE(TAG, "calibration file %s could not be opened", TOUCH_CALIBRATION_SPIFFS_FILE_PATH);
         return;
     }
-    calibration_file.println(cal.x_min);
-    calibration_file.println(cal.y_min);
-    calibration_file.println(cal.x_max);
-    calibration_file.println(cal.y_max);
-    calibration_file.flush();
-    calibration_file.close();
-    Serial.println("calibration saved");
+    file.println(cal.x_min);
+    file.println(cal.y_min);
+    file.println(cal.x_max);
+    file.println(cal.y_max);
+    file.flush();
+    file.close();
+    ESP_LOGI(TAG, "calibration data saved");
 }
 
 struct Point touch_get_touch()
@@ -222,11 +228,11 @@ void touch_change_handler(lv_indev_drv_t *touch_driver, lv_indev_data_t *touch_d
 
 void touch_register()
 {
-    Serial.println("Registering touch in lvgl.");
+    ESP_LOGD(TAG, "registering touch in lvgl");
     lv_disp_t *disp = lv_disp_get_default();
     if (!disp)
     {
-        Serial.println("Error: Default display is NULL.");
+        ESP_LOGE(TAG, "default display can not be null");
         return;
     }
     lv_indev_drv_init(&touch_driver);
@@ -236,8 +242,8 @@ void touch_register()
     lv_indev_t *indev = lv_indev_drv_register(&touch_driver);
     if (!indev)
     {
-        Serial.println("Error: Failed to register input driver.");
+        ESP_LOGE(TAG, "failed to register touch in lvgl");
         return;
     }
-    Serial.println("Touch registered.");
+    ESP_LOGD(TAG, "touch registered in lvgl");
 }

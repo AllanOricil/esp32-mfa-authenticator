@@ -1,5 +1,7 @@
 #include "pin.h"
 
+static const char *TAG = "pin";
+
 static char *pin_hash = NULL;
 static char *pin_key = NULL;
 
@@ -31,9 +33,8 @@ void print_hash(unsigned char *hash, size_t length)
 {
 	for (size_t i = 0; i < length; i++)
 	{
-		printf("%02x", hash[i]);
+		ESP_LOGD(TAG, "%02x", hash[i]);
 	}
-	printf("\n");
 }
 
 bool validate_pin(const char *pin)

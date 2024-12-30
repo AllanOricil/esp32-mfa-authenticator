@@ -1,20 +1,24 @@
 #include "touch-screen.hpp"
 
+static const char *TAG = "touch-screen";
+
 void single_touch_handler()
 {
-	Serial.println("SINGLE TOUCH");
+	ESP_LOGV(TAG, "calling single touch handler");
 	display_handle_single_touch();
+	ESP_LOGV(TAG, "single touch handler executed");
 }
 
 void double_touch_handler()
 {
-	Serial.println("DOUBLE TOUCH");
+	ESP_LOGV(TAG, "calling double touch handler");
 	display_handle_double_touch();
+	ESP_LOGV(TAG, "double touch handler executed");
 }
 
 void init_touch_screen(Configuration config)
 {
-	Serial.println("Initializing touch screen.");
+	ESP_LOGI(TAG, "initializing touch screen");
 
 	init_display(config);
 	init_touch(
@@ -22,10 +26,12 @@ void init_touch_screen(Configuration config)
 		single_touch_handler,
 		double_touch_handler);
 
-	Serial.println("Touch screen initialized.");
+	ESP_LOGI(TAG, "touch screen initialized");
 }
 
 void display_timeout_handler()
 {
+	ESP_LOGV(TAG, "calling display timeout handler");
 	check_display_timeout();
+	ESP_LOGV(TAG, "display timeout handler called");
 }

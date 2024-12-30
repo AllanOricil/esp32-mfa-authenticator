@@ -1,7 +1,8 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include "Base32.h"
+#include <esp_log.h>
+#include <Base32.h>
 #include "services.h"
 
 typedef struct

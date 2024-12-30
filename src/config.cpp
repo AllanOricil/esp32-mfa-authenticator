@@ -1,5 +1,7 @@
 #include "config.hpp"
 
+static const char *TAG = "clock";
+
 String Configuration::serializeToJson(bool safe) const
 {
 	StaticJsonDocument<512> doc;
@@ -34,22 +36,22 @@ String Configuration::serializeToJson(bool safe) const
 
 Configuration Configuration::load()
 {
-	Serial.println("Opening config.yml file");
+	ESP_LOGI(TAG, "opening config.yml file");
 	File file = SD.open(CONFIG_FILE_PATH);
 	if (!file)
 	{
-		Serial.println("Error opening config file");
+		ESP_LOGE(TAG, "error while opening config.yml file");
 		throw std::runtime_error("Error opening config file");
 	}
 
-	Serial.println("Reading config.yml file");
+	ESP_LOGI(TAG, "reading config.yml file");
 	Configuration config;
 	YAMLNode root = YAMLNode::loadStream(file);
 	file.close();
 
 	if (root.isNull())
 	{
-		Serial.println("Invalid config file format");
+		ESP_LOGE(TAG, "config.yml file is empty or has invalid format");
 		throw std::runtime_error("Invalid config file format");
 	}
 
@@ -113,7 +115,7 @@ Configuration Configuration::load()
 		config.touch.forceCalibration = forceCalibration && (strcmp(forceCalibration, "true") == 0 || strcmp(forceCalibration, "1") == 0);
 	}
 
-	Serial.println("Config.yml file loaded successfully");
+	ESP_LOGI(TAG, "config loaded successfully");
 	return config;
 }
 
@@ -124,8 +126,7 @@ Configuration Configuration::parse(const String &jsonString)
 	DeserializationError error = deserializeJson(jsonDocument, jsonString);
 	if (error)
 	{
-		Serial.print("Failed to parse JSON.");
-		Serial.println(error.c_str());
+		ESP_LOGE(TAG, "failed to parse json %s", error.c_str());
 		throw std::runtime_error("Failed to parse JSON.");
 	}
 
@@ -199,11 +200,11 @@ bool Configuration::is_mqtt_topic_credentials_configured()
 
 bool Configuration::save() const
 {
-	Serial.println("saving to file");
+	ESP_LOGI(TAG, "saving config to file");
 	File file = SD.open(CONFIG_FILE_PATH, FILE_WRITE);
 	if (!file)
 	{
-		Serial.println("Error opening config file for writing.");
+		ESP_LOGE(TAG, "error opening config.yml file for writting");
 		return false;
 	}
 
@@ -211,8 +212,7 @@ bool Configuration::save() const
 	YAML::StringStream json_input_stream(configJson);
 	YAMLNode root = YAMLNode::loadStream(json_input_stream);
 	serializeYml(root.getDocument(), file, OUTPUT_YAML);
-	serializeYml(root.getDocument(), Serial, OUTPUT_YAML);
 	file.close();
-	Serial.printf("\nConfiguration saved to file successfully.\n");
+	ESP_LOGI(TAG, "config stored successfully");
 	return true;
 }
