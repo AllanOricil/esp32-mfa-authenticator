@@ -379,10 +379,6 @@ Improve the validation function to block access to the board after few wrong att
 
 Instead of typing a pin code, it will be possible to unlock the board using a fingerprint. The goal is to ease the access to the TOTP codes, while maintaining them secure. It will also work globally or by group.
 
-### 🔜 Create chrome extension to ease registering TOTP secrets
-
-When the ESP32-MFA-Authenticator extension is enabled, a new button called "register secret" appears, in the browser's context menu, when right clicking over a QR code. When selecting this button, the registration flow starts.
-
 ## 💖 Become a Sponsor
 
 If this device has made your life easier, consider supporting its development by clicking the button below.
