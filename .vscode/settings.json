@@ -79,6 +79,9 @@
     "stdbool.h": "c",
     "stdio.h": "c",
     "touch.h": "c",
-    "pin.h": "c"
+    "pin.h": "c",
+    "config.h": "c",
+    "platform.h": "c",
+    "md.h": "c"
   }
 }

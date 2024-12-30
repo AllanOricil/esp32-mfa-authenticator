@@ -65,7 +65,7 @@ void remove_dir(fs::FS &fs, const char *path)
   }
 }
 
-void read_file(fs::FS &fs, const char *path)
+String read_file(fs::FS &fs, const char *path)
 {
   Serial.printf("Reading file: %s\n", path);
 
@@ -73,15 +73,13 @@ void read_file(fs::FS &fs, const char *path)
   if (!file)
   {
     Serial.println("Failed to open file for reading");
-    return;
+    return String();
   }
 
-  Serial.print("Read from file: ");
-  while (file.available())
-  {
-    Serial.write(file.read());
-  }
+  String file_content = file.readString();
   file.close();
+
+  return file_content;
 }
 
 void write_file(fs::FS &fs, const char *path, const char *message)
@@ -153,6 +151,20 @@ void delete_file(fs::FS &fs, const char *path)
   }
 }
 
+bool file_exists(fs::FS &fs, const char *path)
+{
+  if (fs.exists(path))
+  {
+    Serial.printf("File %s exists.\n", path);
+    return true;
+  }
+  else
+  {
+    Serial.printf("File %s does not exist!\n", path);
+    return false;
+  }
+}
+
 void test_file_io(fs::FS &fs, const char *path)
 {
   File file = fs.open(path);
@@ -202,7 +214,7 @@ void test_file_io(fs::FS &fs, const char *path)
   file.close();
 }
 
-void init_sd_card_reader()
+void init_external_storage()
 {
   if (!SD.begin(TF_CS))
   {
@@ -237,4 +249,13 @@ void init_sd_card_reader()
   Serial.printf("SD Card Size: %lluMB\n", SD.cardSize() / (1024 * 1024));
   Serial.printf("Total space: %lluMB\n", SD.totalBytes() / (1024 * 1024));
   Serial.printf("Used space: %lluMB\n", SD.usedBytes() / (1024 * 1024));
+}
+
+void init_internal_storage()
+{
+  if (!SPIFFS.begin(true))
+  {
+    Serial.printf("Failed to mount SPIFFS.\n");
+    return;
+  }
 }

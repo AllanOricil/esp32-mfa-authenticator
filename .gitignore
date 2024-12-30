@@ -12,3 +12,4 @@ config.yml
 **/.nuxtignore
 out
 data
+*.pem
