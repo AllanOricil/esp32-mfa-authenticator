@@ -18,13 +18,14 @@ void load_services()
 {
   clear_all_services_groups();
   Serial.println("Loading services");
+
   if (!SD.exists(SERVICES_FILE_PATH))
   {
     Serial.println("Error the services file does not exist");
     throw std::runtime_error("Error the services file does not exist");
   }
 
-  File file = SD.open(SERVICES_FILE_PATH);
+  File file = SD.open(SERVICES_FILE_PATH, FILE_READ);
   if (!file)
   {
     Serial.println("Error opening the services file");

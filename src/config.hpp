@@ -1,11 +1,10 @@
 #ifndef CONFIGURATION_H
 #define CONFIGURATION_H
 
-#include <FS.h>
-#include <SD.h>
 #include <YAMLDuino.h>
 #include <cstdlib>
 #include <ArduinoJson.h>
+#include "storage.hpp"
 #include "constants.h"
 #include "utils.hpp"
 

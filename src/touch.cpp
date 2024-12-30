@@ -105,40 +105,40 @@ bool touch_load_calibration()
         Serial.println("Calibration file not found on SPIFFS!");
         return false;
     }
-    File calibration_file = SPIFFS.open(TOUCH_CALIBRATION_SPIFFS_FILE_PATH, FILE_READ);
-    if (!calibration_file || calibration_file.size() == 0)
+    File file = SPIFFS.open(TOUCH_CALIBRATION_SPIFFS_FILE_PATH, FILE_READ);
+    if (!file || file.size() == 0)
     {
         Serial.println("File is empty or failed to open!");
         return false;
     }
     Serial.println("loading calibration");
-    cal.x_min = calibration_file.parseInt();
-    cal.y_min = calibration_file.parseInt();
-    cal.x_max = calibration_file.parseInt();
-    cal.y_max = calibration_file.parseInt();
+    cal.x_min = file.parseInt();
+    cal.y_min = file.parseInt();
+    cal.x_max = file.parseInt();
+    cal.y_max = file.parseInt();
     Serial.printf("x_min %d\n", cal.x_min);
     Serial.printf("y_min %d\n", cal.y_min);
     Serial.printf("x_max %d\n", cal.x_max);
     Serial.printf("y_max %d\n", cal.y_max);
-    calibration_file.close();
+    file.close();
     Serial.println("calibration loaded");
     return true;
 }
 
 void touch_save_calibration()
 {
-    File calibration_file = SPIFFS.open(TOUCH_CALIBRATION_SPIFFS_FILE_PATH, FILE_WRITE);
-    if (!calibration_file)
+    File file = SPIFFS.open(TOUCH_CALIBRATION_SPIFFS_FILE_PATH, FILE_WRITE);
+    if (!file)
     {
         Serial.println("File is empty or failed to open!");
         return;
     }
-    calibration_file.println(cal.x_min);
-    calibration_file.println(cal.y_min);
-    calibration_file.println(cal.x_max);
-    calibration_file.println(cal.y_max);
-    calibration_file.flush();
-    calibration_file.close();
+    file.println(cal.x_min);
+    file.println(cal.y_min);
+    file.println(cal.x_max);
+    file.println(cal.y_max);
+    file.flush();
+    file.close();
     Serial.println("calibration saved");
 }
 

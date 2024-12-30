@@ -8,7 +8,7 @@
 #include "config.hpp"
 #include "utils.hpp"
 #include "clock.hpp"
-#include "file.hpp"
+#include "storage.hpp"
 #include "wifi.hpp"
 #include "touch-screen.hpp"
 #include "manager.hpp"
@@ -27,7 +27,7 @@ enum ApplicationState
 void setup()
 {
   Serial.begin(115200);
-  init_sd_card_reader();
+  init_storage();
   load_services();
   Configuration config = Configuration::load();
 

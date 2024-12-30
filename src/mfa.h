@@ -14,11 +14,9 @@ extern "C"
 #include <ESP32Time.h>
 #include <ArduinoJson.h>
 #include <YAMLDuino.h>
-#include <FS.h>
-#include <SD.h>
 #include "services.h"
 #include "constants.h"
-#include "file.hpp"
+#include "storage.hpp"
 #include "clock.hpp"
 #include "utils.hpp"
 
