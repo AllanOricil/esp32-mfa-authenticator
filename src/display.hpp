@@ -6,6 +6,7 @@
 #include <Arduino.h>
 #include <lvgl.h>
 #include <string.h>
+#include <esp_log.h>
 #include "constants.h"
 #include "./ui/ui.h"
 #include "config.hpp"

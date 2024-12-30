@@ -1,15 +1,17 @@
 #include "wifi.hpp"
 
+static const char *TAG = "wifi";
+
 void init_wifi(Configuration config)
 {
-  Serial.printf("Connecting to %s", config.wifi.ssid.c_str());
+  ESP_LOGI(TAG, "initialzing wifi");
+  ESP_LOGI(TAG, "connecting to %s", config.wifi.ssid.c_str());
   WiFi.begin(config.wifi.ssid.c_str(), config.wifi.password.c_str());
   while (WiFi.status() != WL_CONNECTED)
   {
     delay(500);
-    Serial.print(".");
+    ESP_LOGI(TAG, ".");
   }
-  Serial.println("\nWi-Fi initialized");
-  Serial.print("IP Address: ");
-  Serial.println(WiFi.localIP());
+  ESP_LOGI(TAG, "IP Address: %s", WiFi.localIP().toString().c_str());
+  ESP_LOGI(TAG, "wifi initialized");
 }

@@ -1,16 +1,18 @@
 #include <time.h>
 #include <string.h>
+#include <esp_log.h>
 #include "ui.h"
 #include "services.h"
 #include "constants.h"
 #include "pin.h"
 #include "mfa.h"
 
+static const char *TAG = "ui_events";
+
 void on_totp_screen_gesture(lv_event_t *e)
 {
     lv_dir_t dir = lv_indev_get_gesture_dir(lv_indev_get_act());
-    printf("DIR: %d\n", dir);
-
+    ESP_LOGD(TAG, "dir %d", dir);
     // NOTE: it is inverted because the gesture event is inverted
     bool group_changed = false;
     if (dir == LV_DIR_LEFT)
@@ -43,8 +45,7 @@ void on_pin_screen_keyboard_button_clicked(lv_event_t *e)
 {
     lv_obj_t *keyboard = lv_event_get_target(e);
     uint32_t btn_id = lv_btnmatrix_get_selected_btn(keyboard);
-    printf("Debug message: %u\n", btn_id);
-
+    ESP_LOGD(TAG, "button id %u", btn_id);
     if (btn_id != LV_BTNMATRIX_BTN_NONE)
     {
         const char *btn_text = lv_btnmatrix_get_btn_text(keyboard, btn_id);

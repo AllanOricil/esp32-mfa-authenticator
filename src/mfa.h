@@ -10,10 +10,9 @@ extern "C"
 }
 
 #include <TOTP.h>
-#include <TimeLib.h>
-#include <ESP32Time.h>
 #include <ArduinoJson.h>
 #include <YAMLDuino.h>
+#include <esp_log.h>
 #include "services.h"
 #include "constants.h"
 #include "storage.hpp"

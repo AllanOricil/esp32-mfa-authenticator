@@ -1,8 +1,10 @@
 #include "utils.hpp"
 
+static const char *TAG = "utils";
+
 Secret decode_encoded_base32_secret(const char *encoded_secret)
 {
-  Serial.printf("decoding %s\n", encoded_secret);
+  ESP_LOGD(TAG, "decoding %s", encoded_secret);
 
   int encoded_secret_length = strlen(encoded_secret);
   uint8_t *encoded_secret_bytes = new uint8_t[encoded_secret_length];
@@ -15,20 +17,20 @@ Secret decode_encoded_base32_secret(const char *encoded_secret)
   Base32 base32;
   int secret_length = base32.fromBase32(encoded_secret_bytes, encoded_secret_length, (uint8_t *&)decoded_secret_value);
 
-  Serial.println("decoded base 32 encoded_secret");
+  ESP_LOGD(TAG, "decoded base 32 secret");
   for (int i = 0; i < secret_length; i++)
   {
-    Serial.print(decoded_secret_value[i], HEX);
-    Serial.print(" ");
+    ESP_LOGD(TAG, "%02X ", decoded_secret_value[i]);
   }
-  Serial.println();
-  Serial.printf("length: %d\n", secret_length);
+  ESP_LOGD(TAG, "length: %d", secret_length);
 
   Secret decoded_secret = {
       .length = secret_length,
       .value = decoded_secret_value};
 
   delete[] encoded_secret_bytes;
+
+  ESP_LOGD(TAG, "secret was decoded successfully");
   return decoded_secret;
 }
 
@@ -38,7 +40,7 @@ void print_free_memory()
   unsigned long current_millis = millis();
   if (current_millis - last_time_it_outputed_free_memory >= 5000)
   {
-    Serial.printf("Free Memory: %u\n", xPortGetFreeHeapSize());
+    ESP_LOGV(TAG, "free memory: %u", xPortGetFreeHeapSize());
     last_time_it_outputed_free_memory = current_millis;
   }
 }

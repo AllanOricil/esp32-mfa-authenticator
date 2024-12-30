@@ -1,51 +1,57 @@
 #include "storage.hpp"
 
+static const char *TAG = "storage";
+
 void init_external_storage()
 {
+  ESP_LOGI(TAG, "initializing external storage");
   if (!SD.begin(TF_CS))
   {
-    Serial.println("sd card mount failed");
+    ESP_LOGE(TAG, "failed to mount sd card reader");
     return;
   }
   uint8_t cardType = SD.cardType();
   if (cardType == CARD_NONE)
   {
-    Serial.println("No SD card attached");
+    ESP_LOGE(TAG, "no sd card attached");
     return;
   }
 
-  Serial.print("SD Card Type: ");
+  ESP_LOGD(TAG, "sd card type: ");
   if (cardType == CARD_MMC)
   {
-    Serial.println("MMC");
+    ESP_LOGD(TAG, "MMC");
   }
   else if (cardType == CARD_SD)
   {
-    Serial.println("SDSC");
+    ESP_LOGD(TAG, "SDSC");
   }
   else if (cardType == CARD_SDHC)
   {
-    Serial.println("SDHC");
+    ESP_LOGD(TAG, "SDHC");
   }
   else
   {
-    Serial.println("UNKNOWN");
+    ESP_LOGD(TAG, "unknown");
   }
 
-  Serial.printf("SD Card Size: %lluMB\n", SD.cardSize() / (1024 * 1024));
-  Serial.printf("Total space: %lluMB\n", SD.totalBytes() / (1024 * 1024));
-  Serial.printf("Used space: %lluMB\n", SD.usedBytes() / (1024 * 1024));
+  ESP_LOGD(TAG, "SD Card Size: %lluMB", SD.cardSize() / (1024 * 1024));
+  ESP_LOGD(TAG, "Total space: %lluMB", SD.totalBytes() / (1024 * 1024));
+  ESP_LOGD(TAG, "Used space: %lluMB", SD.usedBytes() / (1024 * 1024));
+
+  ESP_LOGI(TAG, "external storage initialized");
 }
 
 void init_internal_storage()
 {
+  ESP_LOGI(TAG, "initializing internal storage");
   if (!SPIFFS.begin(true))
   {
-    Serial.println("SPIFFS mount failed");
+    ESP_LOGE(TAG, "failed to mount SPIFFS");
     return;
   }
 
-  Serial.println("SPIFFS mount successfully");
+  ESP_LOGI(TAG, "internal storage initialized");
 }
 
 void init_storage()

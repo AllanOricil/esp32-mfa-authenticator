@@ -5,6 +5,7 @@
 #include <SD.h>
 #include <SPIFFS.h>
 #include <SPI.h>
+#include <esp_log.h>
 
 void init_storage();
 

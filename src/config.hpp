@@ -4,9 +4,10 @@
 #include <YAMLDuino.h>
 #include <cstdlib>
 #include <ArduinoJson.h>
+#include <esp_log.h>
 #include "storage.hpp"
-#include "constants.h"
 #include "utils.hpp"
+#include "constants.h"
 
 class Configuration
 {

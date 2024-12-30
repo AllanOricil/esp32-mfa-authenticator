@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include <ESPAsyncWebServer.h>
 #include <SPIFFS.h>
+#include <esp_log.h>
 #include "constants.h"
 #include "config.hpp"
 

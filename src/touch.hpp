@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include <lvgl.h>
 #include <string.h>
+#include <esp_log.h>
 #include "storage.hpp"
 #include "constants.h"
 

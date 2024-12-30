@@ -1,6 +1,7 @@
 #ifndef TOUCH_SCREEN
 #define TOUCH_SCREEN
 
+#include <esp_log.h>
 #include "config.hpp"
 #include "display.hpp"
 #include "touch.hpp"

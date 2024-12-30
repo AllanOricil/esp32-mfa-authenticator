@@ -1,5 +1,5 @@
 #include <Arduino.h>
-
+#include <esp_log.h>
 #include "ui/ui.h"
 #include "pin.h"
 #include "constants.h"
@@ -12,6 +12,8 @@
 #include "wifi.hpp"
 #include "touch-screen.hpp"
 #include "manager.hpp"
+
+static const char *TAG = "main";
 
 enum ApplicationState
 {
@@ -26,13 +28,15 @@ enum ApplicationState
 
 void setup()
 {
+#if ENABLE_SERIAL
   Serial.begin(115200);
+#endif
+  ESP_LOGI(TAG, "----------- begin setup ------------");
   init_storage();
   load_services();
   Configuration config = Configuration::load();
 
   init_pin(config.security.pin.hash.c_str(), config.security.pin.key.c_str());
-  lv_init();
   init_touch_screen(config);
   init_wifi(config);
   init_clock();
@@ -40,6 +44,7 @@ void setup()
   init_ui(
       config.is_secure(),
       config.security.maxNumberOfWrongUnlockAttempts);
+  ESP_LOGI(TAG, "----------- end setup ------------");
 }
 
 void loop()
