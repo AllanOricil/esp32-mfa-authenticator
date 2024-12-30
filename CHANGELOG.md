@@ -1,3 +1,10 @@
+# [0.17.0](https://github.com/AllanOricil/esp32-mfa-authenticator/compare/v0.16.0...v0.17.0) (2024-12-30)
+
+
+### Features
+
+* use esp_log.h as the logger library ([09f4ac3](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/09f4ac30644149d520cfb9965ecd31fa4ca6c9a9))
+
 # [0.16.0](https://github.com/AllanOricil/esp32-mfa-authenticator/compare/v0.15.0...v0.16.0) (2024-12-27)
 
 
