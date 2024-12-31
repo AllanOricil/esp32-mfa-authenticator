@@ -116,5 +116,34 @@ async function fetchConfig(): Promise<Config> {
     throw error;
   }
 }
+async function auth(username: string, password: string) {
+  try {
+    console.debug("Authenticating...");
+    const body = JSON.stringify({
+      username,
+      password,
+    });
 
-export { updateConfig, fetchConfig, Config };
+    const response = await fetch("/api/v1/authenticate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Authentication failed with status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    console.debug("Authentication successful", data);
+    return data;
+  } catch (error) {
+    console.error("Error during authentication:", error);
+    throw error;
+  }
+}
+
+export { updateConfig, fetchConfig, auth, Config };

@@ -15,6 +15,7 @@ export default defineNuxtConfig({
         ["esp-web-install-button"].some((prefix) => tag.startsWith(prefix)),
     },
   },
+  modules: ["@pinia/nuxt"],
   app: {
     head: {
       link: [
