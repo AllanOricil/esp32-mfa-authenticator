@@ -19,11 +19,6 @@
 // NOTE: 6 digits + 1 for the null-terminating character
 #define MAX_TOTP_LENGTH 7
 
-// MQTT
-#define MQTT_RECONNECT_INTERVAL 60000
-#define MQTT_MAX_PAYLOAD_SIZE 1024
-#define MQTT_WRITE_NEW_SECRET_TOPIC "esp32-totp-write-new-secret"
-
 // PIN
 #define PIN_MIN_LENGTH 6
 #define PIN_MAX_LENGTH 20

@@ -6,18 +6,6 @@ const CONFIG_SCHEMA = object({
     ssid: string().required("SSID is required"),
     password: string().required("WiFi password is required"),
   }),
-  mqtt: object({
-    server: string().required("MQTT server is required"),
-    port: number()
-      .default(1883)
-      .required("Port is required")
-      .typeError("Port number must be a number")
-      .positive("Port number must be positive")
-      .integer("Port number must be an integer")
-      .strict(),
-    username: string().nullable().notRequired(),
-    password: string().nullable().notRequired(),
-  }),
   security: object({
     pin: object({
       pin: string().nullable().notRequired(),
@@ -72,12 +60,6 @@ interface Config {
     ssid: String;
     password: String;
   };
-  mqtt: {
-    server: String;
-    port: String;
-    username: String;
-    password: String;
-  };
   security: {
     pin: {
       hash: String;
@@ -99,12 +81,6 @@ function parse(data: Record<any, any>): Config {
     wifi: {
       ssid: data.wifi.ssid,
       password: data.wifi.password,
-    },
-    mqtt: {
-      server: data.mqtt.server,
-      port: data.mqtt.port,
-      username: data.mqtt.username,
-      password: data.mqtt.password,
     },
     security: {
       pin: {

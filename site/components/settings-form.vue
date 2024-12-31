@@ -42,48 +42,6 @@
         />
       </div>
     </div>
-    <div class="mb-4">
-      <h4 class="mb-3">MQTT</h4>
-
-      <div>
-        <label for="server" class="form-label">Server</label>
-        <input
-          type="text"
-          class="form-control"
-          id="server"
-          v-model="state.settings.mqtt.server"
-        />
-      </div>
-      <div>
-        <label for="port" class="form-label">Port</label>
-        <input
-          type="number"
-          class="form-control"
-          id="port"
-          min="0"
-          @input="ensureNumber"
-          v-model.number="state.settings.mqtt.port"
-        />
-      </div>
-      <div>
-        <label for="username" class="form-label">Username</label>
-        <input
-          type="text"
-          class="form-control"
-          id="username"
-          v-model="state.settings.mqtt.username"
-        />
-      </div>
-      <div>
-        <label for="password" class="form-label">Password</label>
-        <input
-          type="password"
-          class="form-control"
-          id="password"
-          v-model="state.settings.mqtt.password"
-        />
-      </div>
-    </div>
 
     <div class="mb-4">
       <h4 class="mb-3">Security</h4>
@@ -167,12 +125,6 @@ const state = reactive<{ settings: Config }>({
       ssid: undefined,
       password: undefined,
     },
-    mqtt: {
-      server: undefined,
-      port: undefined,
-      username: undefined,
-      password: undefined,
-    },
     security: {
       pin: {
         key: undefined,
@@ -189,10 +141,6 @@ const state = reactive<{ settings: Config }>({
   },
 });
 
-const ensureNumber = () => {
-  state.settings.mqtt.port = state.settings.mqtt.port.replace(/\D/g, "");
-};
-
 let toastInstance: bootstrap.Toast | null = null;
 const toastMessage = ref<string>("");
 const toastClass = ref<string>("");
@@ -203,12 +151,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       wifi: {
         ssid: state.settings.wifi.ssid,
         password: state.settings.wifi.password,
-      },
-      mqtt: {
-        server: state.settings.mqtt.server,
-        port: state.settings.mqtt.port || 1883,
-        username: state.settings.mqtt.username || "",
-        password: state.settings.mqtt.password || "",
       },
       security: {
         pin: {

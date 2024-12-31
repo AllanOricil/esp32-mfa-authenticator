@@ -1,6 +1,6 @@
 #include "config.hpp"
 
-static const char *TAG = "clock";
+static const char *TAG = "config";
 
 String Configuration::serializeToJson(bool safe) const
 {
@@ -10,12 +10,6 @@ String Configuration::serializeToJson(bool safe) const
 	JsonObject wifiObj = doc.createNestedObject("wifi");
 	wifiObj["ssid"] = wifi.ssid;
 	wifiObj["password"] = safe ? "*********" : wifi.password;
-
-	JsonObject mqttObj = doc.createNestedObject("mqtt");
-	mqttObj["server"] = mqtt.server;
-	mqttObj["port"] = string_2_int(mqtt.port.c_str());
-	mqttObj["username"] = mqtt.username;
-	mqttObj["password"] = safe ? "*********" : mqtt.password;
 
 	JsonObject securityObj = doc.createNestedObject("security");
 	JsonObject pinObj = securityObj.createNestedObject("pin");
@@ -64,20 +58,6 @@ Configuration Configuration::load()
 		if (root["wifi"]["password"].isNull())
 			throw std::runtime_error("Wifi password must be defined");
 		config.wifi.password = root.gettext("wifi:password");
-	}
-
-	if (root["mqtt"].isMap())
-	{
-		if (!root["mqtt"]["server"].isNull())
-			config.mqtt.server = root.gettext("mqtt:server");
-		if (!root["mqtt"]["port"].isNull())
-		{
-			config.mqtt.port = root.gettext("mqtt:port");
-		}
-		if (!root["mqtt"]["username"].isNull())
-			config.mqtt.username = root.gettext("mqtt:username");
-		if (!root["mqtt"]["password"].isNull())
-			config.mqtt.password = root.gettext("mqtt:password");
 	}
 
 	if (root["security"].isMap())
@@ -141,14 +121,6 @@ Configuration Configuration::parse(const String &jsonString)
 		config.wifi.ssid = jsonDocument["wifi"]["ssid"].as<String>();
 	}
 
-	if (jsonDocument.containsKey("mqtt"))
-	{
-		config.mqtt.port = jsonDocument["mqtt"]["port"].as<String>();
-		config.mqtt.server = jsonDocument["mqtt"]["server"].as<String>();
-		config.mqtt.username = jsonDocument["mqtt"]["username"].as<String>();
-		config.mqtt.password = jsonDocument["mqtt"]["password"].as<String>();
-	}
-
 	if (jsonDocument.containsKey("security"))
 	{
 
@@ -186,16 +158,6 @@ Configuration Configuration::parse(const String &jsonString)
 bool Configuration::is_secure()
 {
 	return !security.pin.hash.isEmpty() && !security.pin.key.isEmpty();
-}
-
-bool Configuration::is_mqtt_server_settings_configured()
-{
-	return !mqtt.server.isEmpty() && !mqtt.port.isEmpty();
-}
-
-bool Configuration::is_mqtt_topic_credentials_configured()
-{
-	return !mqtt.username.isEmpty() && !mqtt.password.isEmpty();
 }
 
 bool Configuration::save() const

@@ -106,16 +106,6 @@ wifi:
   # [REQUIRED] (text) wifi id
   ssid: test
 
-mqtt:
-  # [OPTIONAL] (text) mqtt server port
-  port: 1883
-  # [OPTIONAL] (text) mqtt server ip
-  server: 192.168.0.1
-  # [OPTIONAL] (text) mqtt connection username
-  username: test
-  # [OPTIONAL] (text) mqtt connection password
-  password: test
-
 security:
   # [OPTIONAL] (number) [default 3] board is locked and requires a hard reset, after N wrong unlock attempts
   max_number_of_wrong_unlock_attempts: 3

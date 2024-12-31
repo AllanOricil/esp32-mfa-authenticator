@@ -18,13 +18,6 @@ public:
 		String ssid = "";
 		String password = "";
 	} wifi;
-	struct MQTTSettings
-	{
-		String server = "";
-		String port = "";
-		String username = "";
-		String password = "";
-	} mqtt;
 	struct SecuritySettings
 	{
 		struct PinSettings
@@ -48,8 +41,6 @@ public:
 	static Configuration parse(const String &jsonString);
 	bool save() const;
 	bool is_secure();
-	bool is_mqtt_server_settings_configured();
-	bool is_mqtt_topic_credentials_configured();
 };
 
 #endif // CONFIGURATION_H
