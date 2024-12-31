@@ -12,7 +12,6 @@
 class Configuration
 {
 public:
-	String version = "0.0.0";
 	struct WiFiSettings
 	{
 		String ssid = "";
@@ -25,22 +24,22 @@ public:
 			String hash = "";
 			String key = "";
 		} pin;
-		int maxNumberOfWrongUnlockAttempts = MAX_NUMBER_OF_WRONG_UNLOCK_ATTEMPTS;
+		int unlock_attempts = MAX_UNLOCK_ATTEMPTS;
 	} authentication;
 	struct TouchSettings
 	{
-		bool forceCalibration = false;
+		bool calibrate = false;
 	} touch;
 	struct DisplaySettings
 	{
-		int sleepTimeout = 10;
+		int sleep_timeout = 10;
 	} display;
 
-	String serializeToJson(bool safe) const;
+	String to_json_string(bool safe) const;
 	static Configuration load();
 	static Configuration parse(const String &jsonString);
 	bool save() const;
-	bool is_secure();
+	bool is_authentication_configured();
 };
 
 #endif // CONFIGURATION_H

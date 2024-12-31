@@ -74,7 +74,7 @@ void init_manager()
 		[](AsyncWebServerRequest *request)
 		{
 			Configuration config = Configuration::load();
-			request->send(200, "application/json", config.serializeToJson(true));
+			request->send(200, "application/json", config.to_json_string(true));
 		});
 
 	server.on(

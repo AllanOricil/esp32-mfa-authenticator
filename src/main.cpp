@@ -42,8 +42,8 @@ void setup()
   init_clock();
   init_manager();
   init_ui(
-      config.is_secure(),
-      config.authentication.maxNumberOfWrongUnlockAttempts);
+      config.is_authentication_configured(),
+      config.authentication.unlock_attempts);
   ESP_LOGI(TAG, "----------- end setup ------------");
 }
 

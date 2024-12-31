@@ -12,8 +12,8 @@ extern "C"
 
 	typedef struct
 	{
-		int number_of_wrong_unlock_attempts;
-		int max_number_of_wrong_unlock_attempts;
+		int unlock_attempts;
+		int max_unlock_attempts;
 		bool display_pin_screen;
 	} Config;
 
@@ -29,7 +29,7 @@ extern "C"
 	void ui_event_pin_screen_keyboard_button(lv_event_t *e);
 	void ui_event_pin_screen_textarea(lv_event_t *e);
 	void init_ui(bool display_pin_screen,
-				 int max_number_of_wrong_unlock_attempts);
+				 int max_unlock_attempts);
 	void load_first_screen();
 	void ui_task_handler();
 	void ui_totp_screen_update_totp_labels();

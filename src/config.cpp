@@ -2,26 +2,25 @@
 
 static const char *TAG = "config";
 
-String Configuration::serializeToJson(bool safe) const
+String Configuration::to_json_string(bool safe) const
 {
 	StaticJsonDocument<512> doc;
-	doc["version"] = version;
 
-	JsonObject wifiObj = doc.createNestedObject("wifi");
-	wifiObj["ssid"] = wifi.ssid;
-	wifiObj["password"] = safe ? "*********" : wifi.password;
+	JsonObject _wifi = doc.createNestedObject("wifi");
+	_wifi["ssid"] = wifi.ssid;
+	_wifi["password"] = safe ? "*********" : wifi.password;
 
-	JsonObject authenticationObj = doc.createNestedObject("authentication");
-	JsonObject pinObj = authenticationObj.createNestedObject("pin");
-	pinObj["hash"] = safe ? "*********" : authentication.pin.hash;
-	pinObj["key"] = safe ? "*********" : authentication.pin.key;
-	authenticationObj["max_number_of_wrong_unlock_attempts"] = authentication.maxNumberOfWrongUnlockAttempts;
+	JsonObject _authentication = doc.createNestedObject("authentication");
+	JsonObject _pin = _authentication.createNestedObject("pin");
+	_pin["hash"] = safe ? "*********" : authentication.pin.hash;
+	_pin["key"] = safe ? "*********" : authentication.pin.key;
+	_authentication["unlock_attempts"] = authentication.unlock_attempts;
 
-	JsonObject displayObj = doc.createNestedObject("display");
-	displayObj["sleep_timeout"] = display.sleepTimeout;
+	JsonObject _display = doc.createNestedObject("display");
+	_display["sleep_timeout"] = display.sleep_timeout;
 
-	JsonObject touchObj = doc.createNestedObject("touch");
-	touchObj["force_calibration"] = touch.forceCalibration;
+	JsonObject _touch = doc.createNestedObject("touch");
+	_touch["calibrate"] = touch.calibrate;
 
 	String json;
 	serializeJson(doc, json);
@@ -62,11 +61,11 @@ Configuration Configuration::load()
 
 	if (root["authentication"].isMap())
 	{
-		if (!root["authentication"]["max_number_of_wrong_unlock_attempts"].isNull())
+		if (!root["authentication"]["unlock_attempts"].isNull())
 		{
-			int maxNumberOfWrongUnlockAttempts = string_2_int(root.gettext("authentication:max_number_of_wrong_unlock_attempts"));
-			config.authentication.maxNumberOfWrongUnlockAttempts = maxNumberOfWrongUnlockAttempts > 0 ? maxNumberOfWrongUnlockAttempts
-																									  : MAX_NUMBER_OF_WRONG_UNLOCK_ATTEMPTS;
+			int unlock_attempts = string_2_int(root.gettext("authentication:unlock_attempts"));
+			config.authentication.unlock_attempts = unlock_attempts > 0 ? unlock_attempts
+																		: MAX_UNLOCK_ATTEMPTS;
 		}
 
 		if (root["authentication"]["pin"].isMap())
@@ -83,79 +82,117 @@ Configuration Configuration::load()
 	{
 		if (!root["display"]["sleep_timeout"].isNull())
 		{
-			int sleepTimeout = string_2_int(root.gettext("display:sleep_timeout"));
-			config.display.sleepTimeout = sleepTimeout > 0 ? sleepTimeout
-														   : SLEEP_TIMEOUT;
+			int sleep_timeout = string_2_int(root.gettext("display:sleep_timeout"));
+			config.display.sleep_timeout = sleep_timeout > 0 ? sleep_timeout
+															 : SLEEP_TIMEOUT;
 		}
 	}
 
 	if (root["touch"].isMap())
 	{
-		const char *forceCalibration = root.gettext("touch:force_calibration");
-		config.touch.forceCalibration = forceCalibration && (strcmp(forceCalibration, "true") == 0 || strcmp(forceCalibration, "1") == 0);
+		const char *calibrate = root.gettext("touch:calibrate");
+		config.touch.calibrate = calibrate && (strcmp(calibrate, "true") == 0 || strcmp(calibrate, "1") == 0);
 	}
 
 	ESP_LOGI(TAG, "config loaded successfully");
 	return config;
 }
 
-Configuration Configuration::parse(const String &jsonString)
+Configuration Configuration::parse(const String &json_strig)
 {
 	Configuration config;
-	StaticJsonDocument<512> jsonDocument;
-	DeserializationError error = deserializeJson(jsonDocument, jsonString);
+	StaticJsonDocument<512> doc;
+	DeserializationError error = deserializeJson(doc, json_strig);
 	if (error)
 	{
 		ESP_LOGE(TAG, "failed to parse json %s", error.c_str());
 		throw std::runtime_error("Failed to parse JSON.");
 	}
 
-	if (jsonDocument.containsKey("version"))
+	if (!doc.containsKey("wifi"))
 	{
-		config.version = jsonDocument["version"].as<String>();
+		ESP_LOGE(TAG, "wifi settings are required");
+		throw std::runtime_error("wifi settings are required.");
 	}
 
-	if (jsonDocument.containsKey("wifi"))
+	config.wifi.password = doc["wifi"]["password"].as<String>();
+	if (!config.wifi.password)
 	{
-		config.wifi.password = jsonDocument["wifi"]["password"].as<String>();
-		config.wifi.ssid = jsonDocument["wifi"]["ssid"].as<String>();
+		ESP_LOGE(TAG, "wifi password is required");
+		throw std::runtime_error("wifi password is required.");
 	}
 
-	if (jsonDocument.containsKey("authentication"))
+	config.wifi.ssid = doc["wifi"]["ssid"].as<String>();
+	if (!config.wifi.ssid)
+	{
+		ESP_LOGE(TAG, "wifi ssid is required");
+		throw std::runtime_error("wifi ssid is required.");
+	}
+
+	if (doc.containsKey("authentication"))
 	{
 
-		if (jsonDocument["authentication"].containsKey("maxNumberOfWrongUnlockAttempts"))
+		int unlock_attempts = doc["authentication"]["unlock_attempts"].as<int>();
+		if (unlock_attempts)
 		{
-			int maxNumberOfWrongUnlockAttempts = jsonDocument["authentication"]["maxNumberOfWrongUnlockAttempts"].as<int>();
-			config.authentication.maxNumberOfWrongUnlockAttempts = maxNumberOfWrongUnlockAttempts > 0 ? maxNumberOfWrongUnlockAttempts
-																									  : MAX_NUMBER_OF_WRONG_UNLOCK_ATTEMPTS;
+			config.authentication.unlock_attempts = unlock_attempts;
 		}
 		else
 		{
-			config.authentication.maxNumberOfWrongUnlockAttempts = MAX_NUMBER_OF_WRONG_UNLOCK_ATTEMPTS;
+			ESP_LOGD(TAG, "using %d", MAX_UNLOCK_ATTEMPTS);
 		}
 
-		if (jsonDocument["authentication"].containsKey("pin"))
+		if (doc["authentication"].containsKey("pin"))
 		{
-			config.authentication.pin.hash = jsonDocument["authentication"]["pin"]["hash"].as<String>();
-			config.authentication.pin.key = jsonDocument["authentication"]["pin"]["key"].as<String>();
+			config.authentication.pin.hash = doc["authentication"]["pin"]["hash"].as<String>();
+			if (!config.authentication.pin.hash)
+			{
+				ESP_LOGE(TAG, "authetication pin hash is required");
+				throw std::runtime_error("authetication pin hash is required.");
+			}
+
+			config.authentication.pin.key = doc["authentication"]["pin"]["key"].as<String>();
+			if (!config.authentication.pin.key)
+			{
+				ESP_LOGE(TAG, "authentication pin key is required");
+				throw std::runtime_error("authentication pin key is required.");
+			}
+		}
+		else
+		{
+			ESP_LOGD(TAG, "no pin settings were found");
 		}
 	}
-
-	if (jsonDocument.containsKey("display"))
+	else
 	{
-		config.display.sleepTimeout = jsonDocument["display"]["sleepTimeout"].as<int>();
+
+		ESP_LOGD(TAG, "no authentication settings were found");
 	}
 
-	if (jsonDocument.containsKey("touch"))
+	if (doc.containsKey("display"))
 	{
-		config.touch.forceCalibration = jsonDocument["touch"]["forceCalibration"].as<bool>();
+		config.display.sleep_timeout = doc["display"]["sleep_timeout"].as<int>();
+	}
+	else
+	{
+
+		ESP_LOGD(TAG, "no display settings were found");
+	}
+
+	if (doc.containsKey("touch"))
+	{
+		config.touch.calibrate = doc["touch"]["calibrate"].as<bool>();
+	}
+	else
+	{
+
+		ESP_LOGD(TAG, "no touch settings were found");
 	}
 
 	return config;
 }
 
-bool Configuration::is_secure()
+bool Configuration::is_authentication_configured()
 {
 	return !authentication.pin.hash.isEmpty() && !authentication.pin.key.isEmpty();
 }
@@ -170,8 +207,8 @@ bool Configuration::save() const
 		return false;
 	}
 
-	String configJson = serializeToJson(false);
-	YAML::StringStream json_input_stream(configJson);
+	String config_json = to_json_string(false);
+	YAML::StringStream json_input_stream(config_json);
 	YAMLNode root = YAMLNode::loadStream(json_input_stream);
 	serializeYml(root.getDocument(), file, OUTPUT_YAML);
 	file.close();

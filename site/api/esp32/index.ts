@@ -11,7 +11,7 @@ const CONFIG_SCHEMA = object({
       pin: string().nullable().notRequired(),
       hash: string().nullable().notRequired(),
     }),
-    maxNumberOfWrongUnlockAttempts: number()
+    unlock_attempts: number()
       .default(3)
       .typeError("Max number of wrong unlock attempts must be a number")
       .positive("Max number of wrong unlock attempts must be positive")
@@ -19,10 +19,10 @@ const CONFIG_SCHEMA = object({
       .strict(),
   }),
   display: object({
-    sleepTimeout: number().nullable().notRequired(),
+    sleep_timeout: number().nullable().notRequired(),
   }),
   touch: object({
-    forceCalibration: boolean().default(false),
+    calibrate: boolean().default(false),
   }),
 });
 
@@ -55,7 +55,6 @@ async function updateConfig(config: Record<any, any>): Promise<void> {
 }
 
 interface Config {
-  version: String;
   wifi: {
     ssid: String;
     password: String;
@@ -65,19 +64,18 @@ interface Config {
       hash: String;
       key: String;
     };
-    maxNumberOfWrongUnlockAttempts: Number;
+    unlock_attempts: Number;
   };
   display: {
-    sleepTimeout: Number;
+    sleep_timeout: Number;
   };
   touch: {
-    forceCalibration: Boolean;
+    calibrate: Boolean;
   };
 }
 
 function parse(data: Record<any, any>): Config {
   const config: Config = {
-    version: data.version,
     wifi: {
       ssid: data.wifi.ssid,
       password: data.wifi.password,
@@ -87,14 +85,13 @@ function parse(data: Record<any, any>): Config {
         hash: data.authentication.pin.hash,
         key: data.authentication.pin.key,
       },
-      maxNumberOfWrongUnlockAttempts:
-        data.authentication.max_number_of_wrong_unlock_attempts,
+      unlock_attempts: data.authentication.unlock_attempts,
     },
     display: {
-      sleepTimeout: data.display.sleep_timeout,
+      sleep_timeout: data.display.sleep_timeout,
     },
     touch: {
-      forceCalibration: data.touch.force_calibration,
+      calibrate: data.touch.force_calibration,
     },
   };
   return config;

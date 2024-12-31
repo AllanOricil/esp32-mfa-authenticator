@@ -97,9 +97,6 @@ You can flash your ESP32-CYD board with the latest build using this [site](https
 ### ⚙️ config.yml
 
 ```yml
-# [REQUIRED] necessary for enabling future changes
-version: 0.0.0
-
 wifi:
   # [REQUIRED] (text) wifi connection password
   password: test
@@ -108,7 +105,7 @@ wifi:
 
 authentication:
   # [OPTIONAL] (number) [default 3] board is locked and requires a hard reset, after N wrong unlock attempts
-  max_number_of_wrong_unlock_attempts: 3
+  unlock_attempts: 3
   pin:
     # [OPTIONAL] (text) pin code composed of numbers only and HMAC-SHA256 hashed
     hash: test
@@ -121,7 +118,7 @@ display:
 
 touch:
   # [OPTIONAL] (bool=false|0) calibrate touch sensor if true or 1
-  force_calibration: 0
+  calibrate: 0
 ```
 
 > [!IMPORTANT]
@@ -241,7 +238,7 @@ services:
 
 ```yml
 touch:
-  force_calibration: true
+  calibrate: true
 ```
 
 3. Insert the SD card with the updated `config.yml` into your board.
@@ -255,7 +252,7 @@ touch:
 
 ```yml
 touch:
-  force_calibration: false
+  calibrate: false
 ```
 
 8. Save the file, insert the SD card back into the board, and reboot by pressing the `RST` button.

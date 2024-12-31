@@ -45,17 +45,13 @@
 
     <div class="mb-4">
       <h4 class="mb-3">Authentication</h4>
-      <label for="max-number-of-wrong-unlock-attempts" class="form-label"
-        >Max number of wrong unlock attempts</label
-      >
+      <label for="unlock-attempts" class="form-label">Unlock Attempts</label>
       <input
         type="number"
         class="form-control"
-        id="max-number-of-wrong-unlock-attempts"
+        id="unlock-attempts"
         min="1"
-        v-model.number="
-          state.settings.authentication.maxNumberOfWrongUnlockAttempts
-        "
+        v-model.number="state.settings.authentication.unlock_attempts"
       />
       <div>
         <label for="pin-hash" class="form-label">Pin Hash</label>
@@ -89,7 +85,7 @@
           class="form-control"
           id="sleep-timeout"
           min="0"
-          v-model.number="state.settings.display.sleepTimeout"
+          v-model.number="state.settings.display.sleep_timeout"
         />
       </div>
     </div>
@@ -100,11 +96,11 @@
       <input
         type="checkbox"
         class="form-check-input"
-        id="force-calibration"
-        v-model="state.settings.touch.forceCalibration"
+        id="touch-calibrate"
+        v-model="state.settings.touch.calibrate"
       />
-      <label class="form-check-label ps-2" for="force-calibration"
-        >Force calibration</label
+      <label class="form-check-label ps-2" for="touch-calibrate"
+        >Calibrate</label
       >
     </div>
 
@@ -132,13 +128,13 @@ const state = reactive<{ settings: Config }>({
         key: undefined,
         hash: undefined,
       },
-      maxNumberOfWrongUnlockAttempts: 3,
+      unlock_attempts: 3,
     },
     display: {
-      sleepTimeout: 5,
+      sleep_timeout: 5,
     },
     touch: {
-      forceCalibration: false,
+      calibrate: false,
     },
   },
 });
@@ -149,7 +145,6 @@ const toastClass = ref<string>("");
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   try {
     const updated = await updateConfig({
-      version: "0.0.0",
       wifi: {
         ssid: state.settings.wifi.ssid,
         password: state.settings.wifi.password,
@@ -159,14 +154,13 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
           hash: state.settings.authentication.pin.hash || "",
           key: state.settings.authentication.pin.key || "",
         },
-        maxNumberOfWrongUnlockAttempts:
-          state.settings.authentication.maxNumberOfWrongUnlockAttempts || 3,
+        unlock_attempts: state.settings.authentication.unlock_attempts || 3,
       },
       display: {
-        sleepTimeout: state.settings.display.sleepTimeout || "",
+        sleep_timeout: state.settings.display.sleep_timeout || "",
       },
       touch: {
-        forceCalibration: state.settings.touch.forceCalibration ? 1 : 0,
+        calibrate: state.settings.touch.calibrate ? 1 : 0,
       },
     });
 
