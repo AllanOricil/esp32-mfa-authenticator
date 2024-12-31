@@ -22,6 +22,11 @@ String Configuration::to_json_string(bool safe) const
 	JsonObject _touch = doc.createNestedObject("touch");
 	_touch["calibrate"] = touch.calibrate;
 
+	JsonObject _manager = doc.createNestedObject("manager");
+	JsonObject _manager_authentication = _manager.createNestedObject("authentication");
+	_manager_authentication["username"] = manager.authentication.username;
+	_manager_authentication["password"] = manager.authentication.password;
+
 	String json;
 	serializeJson(doc, json);
 	return json;
@@ -94,15 +99,31 @@ Configuration Configuration::load()
 		config.touch.calibrate = calibrate && (strcmp(calibrate, "true") == 0 || strcmp(calibrate, "1") == 0);
 	}
 
+	if (root["manager"].isMap())
+	{
+		if (root["manager"]["authentication"].isMap())
+		{
+			if (!root["manager"]["authentication"]["username"].isNull())
+			{
+				config.manager.authentication.username = root.gettext("manager:authentication:username");
+			}
+
+			if (!root["manager"]["authentication"]["password"].isNull())
+			{
+				config.manager.authentication.password = root.gettext("manager:authentication:password");
+			}
+		}
+	}
+
 	ESP_LOGI(TAG, "config loaded successfully");
 	return config;
 }
 
-Configuration Configuration::parse(const String &json_strig)
+Configuration Configuration::parse(const String &json_string)
 {
 	Configuration config;
 	StaticJsonDocument<512> doc;
-	DeserializationError error = deserializeJson(doc, json_strig);
+	DeserializationError error = deserializeJson(doc, json_string);
 	if (error)
 	{
 		ESP_LOGE(TAG, "failed to parse json %s", error.c_str());

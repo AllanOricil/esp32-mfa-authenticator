@@ -18,6 +18,7 @@ extern "C"
 
 	void init_auth(const char *hash, const char *key);
 	bool validate_pin(const char *pin);
+	bool authenticate(const char *username, const char *password);
 
 #ifdef __cplusplus
 }

@@ -18,7 +18,7 @@ bool validate_file_exists(const char *path)
 	}
 }
 
-void init_manager()
+void init_manager(Configuration config)
 {
 	ESP_LOGI(TAG, "initializing manager server");
 
@@ -67,13 +67,59 @@ void init_manager()
 			request->send(SPIFFS, "/favicon.ico", "image/x-icon");
 		});
 
+	server.on(
+		"/api/v1/auth",
+		HTTP_POST,
+		[](AsyncWebServerRequest *request) {},
+		nullptr,
+		[](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+		{
+			try
+			{
+				String data_json = String((char *)data);
+				StaticJsonDocument<256> doc;
+				DeserializationError error = deserializeJson(doc, data_json);
+				if (error)
+				{
+					ESP_LOGE(TAG, "JSON parsing failed: %s", error.c_str());
+					request->send(400, "application/json", "{\"message\":\"invalid JSON\"}");
+					return;
+				}
+
+				const char *username = doc["username"];
+				const char *password = doc["password"];
+
+				if (!username || !password)
+				{
+					ESP_LOGE(TAG, "missing username or password in JSON");
+					request->send(400, "application/json", "{\"message\":\"Username or password missing\"}");
+					return;
+				}
+
+				if (authenticate(username, password))
+				{
+					ESP_LOGI(TAG, "authentication successful, session token set");
+
+					request->send(200, "application/json", "{\"message\":\"authentication successful\"}");
+				}
+				else
+				{
+					request->send(401, "application/json", "{\"message\":\"invalid credentials\"}");
+				}
+			}
+			catch (const std::exception &e)
+			{
+				ESP_LOGE(TAG, "error while authenticating: %s", e.what());
+				request->send(500, "application/json", "{\"message\":\"something went wrong\"}");
+			}
+		});
+
 	// NOTE: api routes
 	server.on(
 		"/api/v1/config",
 		HTTP_GET,
 		[](AsyncWebServerRequest *request)
 		{
-			Configuration config = Configuration::load();
 			request->send(200, "application/json", config.to_json_string(true));
 		});
 
@@ -88,6 +134,7 @@ void init_manager()
 			{
 				String data_json = String((char *)data);
 				Configuration new_config = Configuration::parse(data_json);
+				new_config.manager = config.manager;
 				if (new_config.save())
 				{
 					ESP_LOGI(TAG, "config updated successfully");

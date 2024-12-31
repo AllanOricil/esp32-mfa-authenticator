@@ -17,6 +17,15 @@ public:
 		String ssid = "";
 		String password = "";
 	} wifi;
+	struct ManagerSettings
+	{
+		struct ManagerAuthenticationSettings
+		{
+			String username = "admin";
+			String password = "";
+			String key = "";
+		} authentication;
+	} manager;
 	struct AuthenticationSettings
 	{
 		struct PinSettings
@@ -37,7 +46,7 @@ public:
 
 	String to_json_string(bool safe) const;
 	static Configuration load();
-	static Configuration parse(const String &jsonString);
+	static Configuration parse(const String &json_string);
 	bool save() const;
 	bool is_authentication_configured();
 };

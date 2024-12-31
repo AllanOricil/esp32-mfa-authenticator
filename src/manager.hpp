@@ -7,7 +7,8 @@
 #include <esp_log.h>
 #include "constants.h"
 #include "config.hpp"
+#include "auth.h"
 
-void init_manager();
+void init_manager(Configuration config);
 
 #endif // MANAGER_H

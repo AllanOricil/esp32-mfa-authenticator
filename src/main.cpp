@@ -36,11 +36,16 @@ void setup()
   load_services();
   Configuration config = Configuration::load();
 
-  init_auth(config.authentication.pin.hash.c_str(), config.authentication.pin.key.c_str());
+  init_auth(
+      config.authentication.pin.hash.c_str(),
+      config.authentication.pin.key.c_str(),
+      config.manager.authentication.username.c_str(),
+      config.manager.authentication.password.c_str(),
+      config.manager.authentication.key.c_str());
   init_touch_screen(config);
   init_wifi(config);
   init_clock();
-  init_manager();
+  init_manager(config);
   init_ui(
       config.is_authentication_configured(),
       config.authentication.unlock_attempts);
