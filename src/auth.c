@@ -2,8 +2,8 @@
 
 static const char *TAG = "auth";
 
-static char *pin_hash = NULL;
-static char *pin_key = NULL;
+char *pin_hash = NULL;
+char *pin_key = NULL;
 
 unsigned char *hex_to_bin(const char *hex_string)
 {

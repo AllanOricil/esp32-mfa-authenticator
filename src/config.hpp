@@ -18,7 +18,7 @@ public:
 		String ssid = "";
 		String password = "";
 	} wifi;
-	struct SecuritySettings
+	struct AuthenticationSettings
 	{
 		struct PinSettings
 		{
@@ -26,7 +26,7 @@ public:
 			String key = "";
 		} pin;
 		int maxNumberOfWrongUnlockAttempts = MAX_NUMBER_OF_WRONG_UNLOCK_ATTEMPTS;
-	} security;
+	} authentication;
 	struct TouchSettings
 	{
 		bool forceCalibration = false;

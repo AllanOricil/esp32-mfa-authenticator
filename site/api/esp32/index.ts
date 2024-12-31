@@ -6,7 +6,7 @@ const CONFIG_SCHEMA = object({
     ssid: string().required("SSID is required"),
     password: string().required("WiFi password is required"),
   }),
-  security: object({
+  authentication: object({
     pin: object({
       pin: string().nullable().notRequired(),
       hash: string().nullable().notRequired(),
@@ -60,7 +60,7 @@ interface Config {
     ssid: String;
     password: String;
   };
-  security: {
+  authentication: {
     pin: {
       hash: String;
       key: String;
@@ -82,13 +82,13 @@ function parse(data: Record<any, any>): Config {
       ssid: data.wifi.ssid,
       password: data.wifi.password,
     },
-    security: {
+    authentication: {
       pin: {
-        hash: data.security.pin.hash,
-        key: data.security.pin.key,
+        hash: data.authentication.pin.hash,
+        key: data.authentication.pin.key,
       },
       maxNumberOfWrongUnlockAttempts:
-        data.security.max_number_of_wrong_unlock_attempts,
+        data.authentication.max_number_of_wrong_unlock_attempts,
     },
     display: {
       sleepTimeout: data.display.sleep_timeout,

@@ -44,7 +44,7 @@
     </div>
 
     <div class="mb-4">
-      <h4 class="mb-3">Security</h4>
+      <h4 class="mb-3">Authentication</h4>
       <label for="max-number-of-wrong-unlock-attempts" class="form-label"
         >Max number of wrong unlock attempts</label
       >
@@ -53,7 +53,9 @@
         class="form-control"
         id="max-number-of-wrong-unlock-attempts"
         min="1"
-        v-model.number="state.settings.security.maxNumberOfWrongUnlockAttempts"
+        v-model.number="
+          state.settings.authentication.maxNumberOfWrongUnlockAttempts
+        "
       />
       <div>
         <label for="pin-hash" class="form-label">Pin Hash</label>
@@ -61,7 +63,7 @@
           type="password"
           class="form-control"
           id="pin-hash"
-          v-model="state.settings.security.pin.hash"
+          v-model="state.settings.authentication.pin.hash"
         />
       </div>
       <div>
@@ -70,7 +72,7 @@
           type="password"
           class="form-control"
           id="pin-key"
-          v-model="state.settings.security.pin.key"
+          v-model="state.settings.authentication.pin.key"
         />
       </div>
     </div>
@@ -125,7 +127,7 @@ const state = reactive<{ settings: Config }>({
       ssid: undefined,
       password: undefined,
     },
-    security: {
+    authentication: {
       pin: {
         key: undefined,
         hash: undefined,
@@ -152,13 +154,13 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         ssid: state.settings.wifi.ssid,
         password: state.settings.wifi.password,
       },
-      security: {
+      authentication: {
         pin: {
-          hash: state.settings.security.pin.hash || "",
-          key: state.settings.security.pin.key || "",
+          hash: state.settings.authentication.pin.hash || "",
+          key: state.settings.authentication.pin.key || "",
         },
         maxNumberOfWrongUnlockAttempts:
-          state.settings.security.maxNumberOfWrongUnlockAttempts || 3,
+          state.settings.authentication.maxNumberOfWrongUnlockAttempts || 3,
       },
       display: {
         sleepTimeout: state.settings.display.sleepTimeout || "",

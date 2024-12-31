@@ -11,11 +11,11 @@ String Configuration::serializeToJson(bool safe) const
 	wifiObj["ssid"] = wifi.ssid;
 	wifiObj["password"] = safe ? "*********" : wifi.password;
 
-	JsonObject securityObj = doc.createNestedObject("security");
-	JsonObject pinObj = securityObj.createNestedObject("pin");
-	pinObj["hash"] = safe ? "*********" : security.pin.hash;
-	pinObj["key"] = safe ? "*********" : security.pin.key;
-	securityObj["max_number_of_wrong_unlock_attempts"] = security.maxNumberOfWrongUnlockAttempts;
+	JsonObject authenticationObj = doc.createNestedObject("authentication");
+	JsonObject pinObj = authenticationObj.createNestedObject("pin");
+	pinObj["hash"] = safe ? "*********" : authentication.pin.hash;
+	pinObj["key"] = safe ? "*********" : authentication.pin.key;
+	authenticationObj["max_number_of_wrong_unlock_attempts"] = authentication.maxNumberOfWrongUnlockAttempts;
 
 	JsonObject displayObj = doc.createNestedObject("display");
 	displayObj["sleep_timeout"] = display.sleepTimeout;
@@ -60,22 +60,22 @@ Configuration Configuration::load()
 		config.wifi.password = root.gettext("wifi:password");
 	}
 
-	if (root["security"].isMap())
+	if (root["authentication"].isMap())
 	{
-		if (!root["security"]["max_number_of_wrong_unlock_attempts"].isNull())
+		if (!root["authentication"]["max_number_of_wrong_unlock_attempts"].isNull())
 		{
-			int maxNumberOfWrongUnlockAttempts = string_2_int(root.gettext("security:max_number_of_wrong_unlock_attempts"));
-			config.security.maxNumberOfWrongUnlockAttempts = maxNumberOfWrongUnlockAttempts > 0 ? maxNumberOfWrongUnlockAttempts
-																								: MAX_NUMBER_OF_WRONG_UNLOCK_ATTEMPTS;
+			int maxNumberOfWrongUnlockAttempts = string_2_int(root.gettext("authentication:max_number_of_wrong_unlock_attempts"));
+			config.authentication.maxNumberOfWrongUnlockAttempts = maxNumberOfWrongUnlockAttempts > 0 ? maxNumberOfWrongUnlockAttempts
+																									  : MAX_NUMBER_OF_WRONG_UNLOCK_ATTEMPTS;
 		}
 
-		if (root["security"]["pin"].isMap())
+		if (root["authentication"]["pin"].isMap())
 		{
-			if (!root["security"]["pin"]["hash"].isNull())
-				config.security.pin.hash = root.gettext("security:pin:hash");
+			if (!root["authentication"]["pin"]["hash"].isNull())
+				config.authentication.pin.hash = root.gettext("authentication:pin:hash");
 
-			if (!root["security"]["pin"]["key"].isNull())
-				config.security.pin.key = root.gettext("security:pin:key");
+			if (!root["authentication"]["pin"]["key"].isNull())
+				config.authentication.pin.key = root.gettext("authentication:pin:key");
 		}
 	}
 
@@ -121,24 +121,24 @@ Configuration Configuration::parse(const String &jsonString)
 		config.wifi.ssid = jsonDocument["wifi"]["ssid"].as<String>();
 	}
 
-	if (jsonDocument.containsKey("security"))
+	if (jsonDocument.containsKey("authentication"))
 	{
 
-		if (jsonDocument["security"].containsKey("maxNumberOfWrongUnlockAttempts"))
+		if (jsonDocument["authentication"].containsKey("maxNumberOfWrongUnlockAttempts"))
 		{
-			int maxNumberOfWrongUnlockAttempts = jsonDocument["security"]["maxNumberOfWrongUnlockAttempts"].as<int>();
-			config.security.maxNumberOfWrongUnlockAttempts = maxNumberOfWrongUnlockAttempts > 0 ? maxNumberOfWrongUnlockAttempts
-																								: MAX_NUMBER_OF_WRONG_UNLOCK_ATTEMPTS;
+			int maxNumberOfWrongUnlockAttempts = jsonDocument["authentication"]["maxNumberOfWrongUnlockAttempts"].as<int>();
+			config.authentication.maxNumberOfWrongUnlockAttempts = maxNumberOfWrongUnlockAttempts > 0 ? maxNumberOfWrongUnlockAttempts
+																									  : MAX_NUMBER_OF_WRONG_UNLOCK_ATTEMPTS;
 		}
 		else
 		{
-			config.security.maxNumberOfWrongUnlockAttempts = MAX_NUMBER_OF_WRONG_UNLOCK_ATTEMPTS;
+			config.authentication.maxNumberOfWrongUnlockAttempts = MAX_NUMBER_OF_WRONG_UNLOCK_ATTEMPTS;
 		}
 
-		if (jsonDocument["security"].containsKey("pin"))
+		if (jsonDocument["authentication"].containsKey("pin"))
 		{
-			config.security.pin.hash = jsonDocument["security"]["pin"]["hash"].as<String>();
-			config.security.pin.key = jsonDocument["security"]["pin"]["key"].as<String>();
+			config.authentication.pin.hash = jsonDocument["authentication"]["pin"]["hash"].as<String>();
+			config.authentication.pin.key = jsonDocument["authentication"]["pin"]["key"].as<String>();
 		}
 	}
 
@@ -157,7 +157,7 @@ Configuration Configuration::parse(const String &jsonString)
 
 bool Configuration::is_secure()
 {
-	return !security.pin.hash.isEmpty() && !security.pin.key.isEmpty();
+	return !authentication.pin.hash.isEmpty() && !authentication.pin.key.isEmpty();
 }
 
 bool Configuration::save() const
