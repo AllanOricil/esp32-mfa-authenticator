@@ -16,7 +16,7 @@ extern "C"
 {
 #endif
 
-	void init_pin(const char *hash, const char *key);
+	void init_auth(const char *hash, const char *key);
 	bool validate_pin(const char *pin);
 
 #ifdef __cplusplus

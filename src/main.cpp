@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <esp_log.h>
 #include "ui/ui.h"
-#include "pin.h"
+#include "auth.h"
 #include "constants.h"
 #include "services.h"
 #include "mfa.h"
@@ -36,7 +36,7 @@ void setup()
   load_services();
   Configuration config = Configuration::load();
 
-  init_pin(config.security.pin.hash.c_str(), config.security.pin.key.c_str());
+  init_auth(config.security.pin.hash.c_str(), config.security.pin.key.c_str());
   init_touch_screen(config);
   init_wifi(config);
   init_clock();

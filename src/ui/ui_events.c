@@ -4,7 +4,7 @@
 #include "ui.h"
 #include "services.h"
 #include "constants.h"
-#include "pin.h"
+#include "auth.h"
 #include "mfa.h"
 
 static const char *TAG = "ui_events";

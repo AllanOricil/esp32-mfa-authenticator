@@ -1,6 +1,6 @@
-#include "pin.h"
+#include "auth.h"
 
-static const char *TAG = "pin";
+static const char *TAG = "auth";
 
 static char *pin_hash = NULL;
 static char *pin_key = NULL;
@@ -56,7 +56,7 @@ bool validate_pin(const char *pin)
 	return memcmp(generated_hash, hex_to_bin(pin_hash), sizeof(generated_hash)) == 0;
 }
 
-void init_pin(const char *hash, const char *key)
+void init_auth(const char *hash, const char *key)
 {
 	pin_hash = strdup(hash);
 	pin_key = strdup(key);
