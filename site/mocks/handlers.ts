@@ -71,4 +71,43 @@ export const handlers = [
       { status: 200 }
     );
   }),
+
+  http.get("/api/v1/services", async () => {
+    return HttpResponse.json(
+      [
+        {
+          name: "a",
+          totp: "******",
+          group: 1,
+        },
+        {
+          name: "b",
+          totp: "******",
+          group: 1,
+        },
+        {
+          name: "c",
+          totp: "******",
+          group: 2,
+        },
+        {
+          name: "d",
+          totp: "******",
+          group: 3,
+        },
+      ],
+      {
+        status: 200,
+      }
+    );
+  }),
+
+  http.put("/api/v1/services", async () => {
+    return HttpResponse.json(
+      {
+        message: "services updated",
+      },
+      { status: 200 }
+    );
+  }),
 ];
