@@ -2,18 +2,10 @@ import { defineStore } from "pinia";
 import ESP32MFAAuthenticatorClient from "@/api/esp32-mfa-authenticator-client";
 
 interface AuthState {
-  session: string | null;
+  isAuthenticated: boolean;
 }
 
-function getCookie(name) {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) {
-    return parts.pop()?.split(";").shift() ?? null;
-  }
-  return null;
-}
-
+// NOTE: this is kind redundant since cookies are marked with HttpOnly they can't be accessed from js. The server removes them with Set-Cookie header.
 function deleteAllCookies() {
   const cookies = document.cookie.split(";");
 
@@ -25,14 +17,14 @@ function deleteAllCookies() {
 
 export const useAuthStore = defineStore("auth", {
   state: (): AuthState => ({
-    session: getCookie("esp32_mfa_authenticator_session_id"),
+    isAuthenticated: false,
   }),
   actions: {
     async login(username, password) {
       try {
         const client = new ESP32MFAAuthenticatorClient();
-        const response = await client.login(username, password);
-        this.session = response.session;
+        await client.login(username, password);
+        this.isAuthenticated = true;
       } catch (error) {
         console.error("Login failed:", error);
         throw error;
@@ -47,7 +39,7 @@ export const useAuthStore = defineStore("auth", {
         console.error("Logout failed:", error);
         throw error;
       } finally {
-        this.session = null;
+        this.isAuthenticated = false;
         deleteAllCookies();
       }
     },
@@ -58,13 +50,10 @@ export const useAuthStore = defineStore("auth", {
         await client.validateSession();
       } catch (error) {
         console.error("Session validation failed:", error);
-        this.session = null;
+        this.isAuthenticated = false;
         deleteAllCookies();
         throw error;
       }
     },
-  },
-  getters: {
-    isAuthenticated: (state) => !!state.session,
   },
 });

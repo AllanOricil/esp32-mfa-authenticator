@@ -9,7 +9,7 @@ export const handlers = [
     date.setTime(date.getTime() + MAX_SESSION_TIME * 60 * 1000);
 
     const response = new HttpResponse(
-      JSON.stringify({ session: "03f46f43-a4b0-4911-9bea-719614df1188" }),
+      JSON.stringify({ message: "login successful" }),
       {
         status: 200,
         headers: {
