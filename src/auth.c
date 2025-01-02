@@ -201,6 +201,12 @@ session *authenticate(const char *username, const char *password)
 	unsigned char generated_hash[32];
 	if (!hash(_manager_key, password, generated_hash, sizeof(generated_hash)))
 	{
+		ESP_LOGE(TAG, "failed to hash password");
+		return NULL;
+	}
+
+	if (memcmp(generated_hash, hex_to_bin(_manager_password), sizeof(generated_hash)) != 0)
+	{
 		ESP_LOGE(TAG, "invalid password");
 		return NULL;
 	}
