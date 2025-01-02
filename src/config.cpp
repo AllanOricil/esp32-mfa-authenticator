@@ -57,11 +57,17 @@ Configuration Configuration::load()
 	if (root["wifi"].isMap())
 	{
 		if (root["wifi"]["ssid"].isNull())
-			throw std::runtime_error("Wifi ssid must be defined");
+		{
+			ESP_LOGE(TAG, "wifi.ssid is empty");
+			throw std::runtime_error("wifi ssid must be defined");
+		}
 		config.wifi.ssid = root.gettext("wifi:ssid");
 
 		if (root["wifi"]["password"].isNull())
-			throw std::runtime_error("Wifi password must be defined");
+		{
+			ESP_LOGE(TAG, "wifi.password is empty");
+			throw std::runtime_error("wifi password must be defined");
+		}
 		config.wifi.password = root.gettext("wifi:password");
 	}
 
@@ -111,6 +117,11 @@ Configuration Configuration::load()
 			if (!root["manager"]["authentication"]["password"].isNull())
 			{
 				config.manager.authentication.password = root.gettext("manager:authentication:password");
+			}
+
+			if (!root["manager"]["authentication"]["key"].isNull())
+			{
+				config.manager.authentication.key = root.gettext("manager:authentication:key");
 			}
 
 			if (!root["manager"]["authentication"]["session_length"].isNull())
@@ -222,6 +233,11 @@ Configuration Configuration::parse(const String &json_string)
 bool Configuration::is_authentication_configured()
 {
 	return !authentication.pin.hash.isEmpty() && !authentication.pin.key.isEmpty();
+}
+
+bool Configuration::is_manager_configured()
+{
+	return !manager.authentication.username.isEmpty() && !manager.authentication.password.isEmpty() && !manager.authentication.key.isEmpty();
 }
 
 bool Configuration::save() const

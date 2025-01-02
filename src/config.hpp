@@ -50,6 +50,7 @@ public:
 	static Configuration parse(const String &json_string);
 	bool save() const;
 	bool is_authentication_configured();
+	bool is_manager_configured();
 };
 
 #endif // CONFIGURATION_H

@@ -46,7 +46,11 @@ void setup()
   init_touch_screen(config);
   const char *local_network_ip = init_wifi(config).c_str();
   init_clock();
-  init_manager(config, local_network_ip);
+
+  if (config.is_manager_configured())
+  {
+    init_manager(config, local_network_ip);
+  }
   init_ui(
       config.is_authentication_configured(),
       config.authentication.unlock_attempts);
