@@ -9,6 +9,7 @@
 #include "constants.h"
 #include "config.hpp"
 #include "utils.hpp"
+#include "storage.hpp"
 
 void init_manager(Configuration config, const char *local_network_ip);
 

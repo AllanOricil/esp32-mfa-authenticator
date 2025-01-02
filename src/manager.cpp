@@ -4,40 +4,26 @@ static const char *TAG = "manager";
 
 AsyncWebServer server(80);
 
-bool validate_file_exists(const char *path)
-{
-	if (SPIFFS.exists(path))
-	{
-		ESP_LOGI(TAG, "file %s exists", path);
-		return true;
-	}
-	else
-	{
-		ESP_LOGE(TAG, "file %s does not exist", path);
-		return false;
-	}
-}
-
-String getCookie(AsyncWebServerRequest *request, const String &cookieName)
+String get_cookie(AsyncWebServerRequest *request, const String &name)
 {
 	String cookies = request->header("Cookie");
-	int startPos = cookies.indexOf(cookieName + "=");
-	if (startPos != -1)
+	int start_pos = cookies.indexOf(name + "=");
+	if (start_pos != -1)
 	{
-		startPos += cookieName.length() + 1;
-		int endPos = cookies.indexOf(";", startPos);
-		if (endPos == -1)
+		start_pos += name.length() + 1;
+		int end_pos = cookies.indexOf(";", start_pos);
+		if (end_pos == -1)
 		{
-			endPos = cookies.length();
+			end_pos = cookies.length();
 		}
-		return cookies.substring(startPos, endPos);
+		return cookies.substring(start_pos, end_pos);
 	}
 	return "";
 }
 
 bool is_session_valid(AsyncWebServerRequest *request)
 {
-	String session_id = getCookie(request, "esp32_mfa_authenticator_session_id");
+	String session_id = get_cookie(request, "esp32_mfa_authenticator_session_id");
 	if (session_id != "")
 	{
 		return validate_session(session_id.c_str());
@@ -73,13 +59,13 @@ void init_manager(Configuration config, const char *local_network_ip)
 	ESP_LOGI(TAG, "initializing manager server");
 
 	if (
-		!validate_file_exists("/index.html") ||
-		!validate_file_exists("/esp32/login/index.html") ||
-		!validate_file_exists("/esp32/services/index.html") ||
-		!validate_file_exists("/esp32/settings/index.html") ||
-		!validate_file_exists("/200.html") ||
-		!validate_file_exists("/404.html") ||
-		!validate_file_exists("/favicon.ico"))
+		!is_file_available(SPIFFS, "/index.html") ||
+		!is_file_available(SPIFFS, "/esp32/login/index.html") ||
+		!is_file_available(SPIFFS, "/esp32/services/index.html") ||
+		!is_file_available(SPIFFS, "/esp32/settings/index.html") ||
+		!is_file_available(SPIFFS, "/200.html") ||
+		!is_file_available(SPIFFS, "/404.html") ||
+		!is_file_available(SPIFFS, "/favicon.ico"))
 	{
 		ESP_LOGE(TAG, "one or more required files are missing. Server initializing aborted");
 		return;
@@ -164,6 +150,7 @@ void init_manager(Configuration config, const char *local_network_ip)
 				}
 				else
 				{
+					ESP_LOGE(TAG, "invalid credentials");
 					request->send(401, "application/json", "{\"message\":\"invalid credentials\"}");
 				}
 			}
@@ -202,7 +189,7 @@ void init_manager(Configuration config, const char *local_network_ip)
 		{
 			try
 			{
-				String session_id = getCookie(request, "esp32_mfa_authenticator_session_id");
+				String session_id = get_cookie(request, "esp32_mfa_authenticator_session_id");
 				if (session_id != "")
 				{
 					if (validate_session(session_id.c_str()))

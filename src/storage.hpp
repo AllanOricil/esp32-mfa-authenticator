@@ -8,5 +8,6 @@
 #include <esp_log.h>
 
 void init_storage();
+bool is_file_available(fs::FS &fs, const char *path);
 
 #endif // FILE_H
