@@ -1,8 +1,8 @@
-import { object, string, number, boolean, type InferType } from "yup";
+import { object, array, string, number, boolean, type InferType } from "yup";
 import { type AxiosInstance } from "axios";
 import { createAxiosInstance, type RetryConfig } from "@/utils/axios";
 
-const CONFIG_SCHEMA = object({
+const CONFIG_PUT_SCHEMA = object({
   wifi: object({
     ssid: string().required("SSID is required"),
     password: string().required("WiFi password is required"),
@@ -14,9 +14,9 @@ const CONFIG_SCHEMA = object({
     }),
     unlock_attempts: number()
       .default(3)
-      .typeError("Max number of wrong unlock attempts must be a number")
-      .positive("Max number of wrong unlock attempts must be positive")
-      .integer("Max number of wrong unlock attempts must be an integer")
+      .typeError("Unlock attempts must be a number")
+      .positive("Unlock attempts must be positive")
+      .integer("Unlock attempts must be an integer")
       .strict(),
   }),
   display: object({
@@ -27,9 +27,19 @@ const CONFIG_SCHEMA = object({
   }),
 });
 
-type Schema = InferType<typeof CONFIG_SCHEMA>;
+const SERVICES_PUT_SCHEMA = array().of(
+  object({
+    name: string().required("Name is required."),
+    group: number()
+      .typeError("Group must be a number")
+      .integer("Group must be an integer.")
+      .positive("Group must be positive")
+      .required("Group is required.")
+      .strict(),
+  })
+);
 
-interface Config {
+export interface Config {
   wifi: {
     ssid: String;
     password: String;
@@ -47,6 +57,12 @@ interface Config {
   touch: {
     calibrate: Boolean;
   };
+}
+
+export interface Service {
+  name: string;
+  totp: string;
+  group: number;
 }
 
 export default class ESP32MFAAuthenticatorClient {
@@ -96,15 +112,15 @@ export default class ESP32MFAAuthenticatorClient {
     }
   }
 
-  public async updateConfig(config: Record<any, any>): Promise<void> {
+  public async updateConfig(config: Config): Promise<Config> {
     try {
       console.debug("Validating configuration");
-      await CONFIG_SCHEMA.validate(config, { abortEarly: false });
+      await CONFIG_PUT_SCHEMA.validate(config, { abortEarly: false });
       console.debug("Updating configuration");
       const response = await this.client.put("/config", { config });
-      return response.data;
+      return response.data as Config;
     } catch (error) {
-      console.error("Error updating configuration:", error);
+      console.error("Error while updating configuration:", error);
       throw error;
     }
   }
@@ -113,9 +129,33 @@ export default class ESP32MFAAuthenticatorClient {
     try {
       console.debug("Fetching Configuration");
       const response = await this.client.get("/config");
-      return response.data;
+      return response.data as Config;
     } catch (error) {
-      console.error("Error fetching configuration:", error);
+      console.error("Error while fetching configuration:", error);
+      throw error;
+    }
+  }
+
+  public async fetchServices(): Promise<Service[]> {
+    try {
+      console.debug("Fetching Services");
+      const response = await this.client.get("/services");
+      return response.data as Service[];
+    } catch (error) {
+      console.error("Error while fetching services:", error);
+      throw error;
+    }
+  }
+
+  public async updateServices(services: Service[]): Promise<Service[]> {
+    try {
+      console.debug("Validating services");
+      await SERVICES_PUT_SCHEMA.validate(services, { abortEarly: false });
+      console.debug("Updating services");
+      const response = await this.client.post("/services");
+      return response.data as Service[];
+    } catch (error) {
+      console.error("Error while updating services:", error);
       throw error;
     }
   }
