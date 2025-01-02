@@ -29,7 +29,7 @@
           type="text"
           class="form-control"
           id="ssid"
-          v-model="state.settings.wifi.ssid"
+          v-model="settings.wifi.ssid"
         />
       </div>
       <div>
@@ -38,7 +38,7 @@
           type="password"
           class="form-control"
           id="password"
-          v-model="state.settings.wifi.password"
+          v-model="settings.wifi.password"
         />
       </div>
     </div>
@@ -51,7 +51,7 @@
         class="form-control"
         id="unlock-attempts"
         min="1"
-        v-model.number="state.settings.authentication.unlock_attempts"
+        v-model.number="settings.authentication.unlock_attempts"
       />
       <div>
         <label for="pin-hash" class="form-label">Pin Hash</label>
@@ -59,7 +59,7 @@
           type="password"
           class="form-control"
           id="pin-hash"
-          v-model="state.settings.authentication.pin.hash"
+          v-model="settings.authentication.pin.hash"
         />
       </div>
       <div>
@@ -68,7 +68,7 @@
           type="password"
           class="form-control"
           id="pin-key"
-          v-model="state.settings.authentication.pin.key"
+          v-model="settings.authentication.pin.key"
         />
       </div>
     </div>
@@ -85,7 +85,7 @@
           class="form-control"
           id="sleep-timeout"
           min="0"
-          v-model.number="state.settings.display.sleep_timeout"
+          v-model.number="settings.display.sleep_timeout"
         />
       </div>
     </div>
@@ -97,7 +97,7 @@
         type="checkbox"
         class="form-check-input"
         id="touch-calibrate"
-        v-model="state.settings.touch.calibrate"
+        v-model="settings.touch.calibrate"
       />
       <label class="form-check-label ps-2" for="touch-calibrate"
         >Calibrate</label
@@ -114,54 +114,54 @@
 
 <script lang="ts" setup>
 import jsYaml from "js-yaml";
-import { reactive, ref } from "vue";
-import ESP32MFAAuthenticatorClient from "~/api/esp32-mfa-authenticator-client";
+import { ref, onMounted } from "vue";
+import ESP32MFAAuthenticatorClient, {
+  type Config,
+} from "~/api/esp32-mfa-authenticator-client";
 
-const state = reactive<{ settings: Config }>({
-  settings: {
-    wifi: {
-      ssid: undefined,
-      password: undefined,
+const settings = ref<Config>({
+  wifi: {
+    ssid: undefined,
+    password: undefined,
+  },
+  authentication: {
+    pin: {
+      key: undefined,
+      hash: undefined,
     },
-    authentication: {
-      pin: {
-        key: undefined,
-        hash: undefined,
-      },
-      unlock_attempts: 3,
-    },
-    display: {
-      sleep_timeout: 5,
-    },
-    touch: {
-      calibrate: false,
-    },
+    unlock_attempts: 3,
+  },
+  display: {
+    sleep_timeout: 5,
+  },
+  touch: {
+    calibrate: false,
   },
 });
 
 let toastInstance: bootstrap.Toast | null = null;
 const toastMessage = ref<string>("");
 const toastClass = ref<string>("");
-async function onSubmit(event: FormSubmitEvent<Schema>) {
+async function onSubmit(event: SubmitEvent) {
   try {
     const client = new ESP32MFAAuthenticatorClient();
-    const updated = await client.updateConfig({
+    await client.updateConfig({
       wifi: {
-        ssid: state.settings.wifi.ssid,
-        password: state.settings.wifi.password,
+        ssid: settings.value.wifi.ssid,
+        password: settings.value.wifi.password,
       },
       authentication: {
         pin: {
-          hash: state.settings.authentication.pin.hash || "",
-          key: state.settings.authentication.pin.key || "",
+          hash: settings.value.authentication.pin.hash || "",
+          key: settings.value.authentication.pin.key || "",
         },
-        unlock_attempts: state.settings.authentication.unlock_attempts || 3,
+        unlock_attempts: settings.value.authentication.unlock_attempts || 3,
       },
       display: {
-        sleep_timeout: state.settings.display.sleep_timeout || "",
+        sleep_timeout: settings.value.display.sleep_timeout || "",
       },
       touch: {
-        calibrate: state.settings.touch.calibrate ? 1 : 0,
+        calibrate: settings.value.touch.calibrate ? 1 : 0,
       },
     });
 
@@ -176,14 +176,20 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 }
 
 onMounted(async () => {
-  const client = new ESP32MFAAuthenticatorClient();
-  state.settings = await client.fetchConfig();
-  // TODO: move toast to layout
   const toastElement = document.getElementById("submit-toast");
   if (toastElement) {
     toastInstance = new bootstrap.Toast(toastElement, {
       autohide: false,
     });
+  }
+
+  try {
+    const client = new ESP32MFAAuthenticatorClient();
+    settings.value = await client.fetchConfig();
+  } catch (error) {
+    toastMessage.value = "Error loading settings";
+    toastClass.value = "bg-danger text-white";
+    if (toastInstance) toastInstance.show();
   }
 });
 </script>
@@ -194,5 +200,9 @@ onMounted(async () => {
   top: 20px;
   right: 20px;
   z-index: 1000;
+}
+
+.toast-body {
+  width: 90%;
 }
 </style>
