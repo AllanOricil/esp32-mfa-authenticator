@@ -88,7 +88,7 @@ export default class ESP32MFAAuthenticatorClient {
 
   public async validateSession() {
     try {
-      const response = await this.client.get("/auth/validate");
+      const response = await this.client.post("/auth/validate");
       return response.data;
     } catch (error) {
       console.error("Error while validating session: ", error);
