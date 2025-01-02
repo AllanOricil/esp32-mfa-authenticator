@@ -132,7 +132,7 @@ manager:
   password:
   # [REQUIRED] (text) key used to hash the password
   key:
-  # [REQUIRED] (number) [default 5] amount of minutes for the session duration
+  # [OPTIONAL] (number) [default 5] amount of minutes for the session duration
   session_length: 5
 ```
 
@@ -144,6 +144,7 @@ manager:
 
 > [!NOTE]
 > A pink screen appears to indicate that both `config.yml` and `services.yml` have been parsed and loaded into memory.
+
 
 ## 📖 Guides
 
@@ -345,7 +346,7 @@ authentication:
   pin:
     hash: 7dbd45736c57090dd62a7e1c8db1a08c353b4a836f2c6b43fd1dd3f1e747ea59
     key: TUwNzIxF5lJncAJVMkmb4EiSP9vm0OyF
-  max_number_of_wrong_unlock_attempts: 3
+  unlock_attempts: 3
 ```
 
 ## 🎯 Roadmap
