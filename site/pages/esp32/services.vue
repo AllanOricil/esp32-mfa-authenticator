@@ -13,6 +13,11 @@
 
 <script lang="ts" setup>
 import Totps from "~/components/totps.vue";
+
+definePageMeta({
+  middleware: ["auth"],
+  layout: "authenticated",
+});
 </script>
 
 <style></style>

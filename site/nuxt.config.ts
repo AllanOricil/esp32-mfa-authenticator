@@ -1,5 +1,5 @@
 export default defineNuxtConfig({
-  title: "Hello Nuxt",
+  title: "esp32-mfa-authenticator",
   theme: {
     dark: true,
     colors: {
@@ -32,4 +32,6 @@ export default defineNuxtConfig({
       ],
     },
   },
+
+  compatibilityDate: "2025-01-01",
 });

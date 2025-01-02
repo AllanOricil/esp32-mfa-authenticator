@@ -115,7 +115,7 @@
 <script lang="ts" setup>
 import jsYaml from "js-yaml";
 import { reactive, ref } from "vue";
-import { fetchConfig, updateConfig, type Config } from "../api/esp32";
+import ESP32MFAAuthenticatorClient from "~/api/esp32-mfa-authenticator-client";
 
 const state = reactive<{ settings: Config }>({
   settings: {
@@ -144,7 +144,8 @@ const toastMessage = ref<string>("");
 const toastClass = ref<string>("");
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   try {
-    const updated = await updateConfig({
+    const client = new ESP32MFAAuthenticatorClient();
+    const updated = await client.updateConfig({
       wifi: {
         ssid: state.settings.wifi.ssid,
         password: state.settings.wifi.password,
@@ -175,7 +176,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 }
 
 onMounted(async () => {
-  state.settings = await fetchConfig();
+  const client = new ESP32MFAAuthenticatorClient();
+  state.settings = await client.fetchConfig();
   // TODO: move toast to layout
   const toastElement = document.getElementById("submit-toast");
   if (toastElement) {

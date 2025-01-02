@@ -1,11 +1,8 @@
 <template>
-  <div class="container mt-5">
+  <div class="container mt-5 dark-mode">
     <div class="row justify-content-center">
       <div class="col-md-6">
         <div class="card">
-          <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">Login</h5>
-          </div>
           <div class="card-body">
             <form @submit.prevent="handleLogin">
               <div class="mb-3">
@@ -31,7 +28,7 @@
                 />
               </div>
               <div class="d-grid">
-                <button type="submit" class="btn btn-primary">Login</button>
+                <button type="submit" class="btn btn-light">Login</button>
               </div>
             </form>
           </div>
@@ -45,6 +42,9 @@
 </template>
 
 <script>
+import { useAuthStore } from "@/stores/auth";
+import { navigateTo } from "#app";
+
 export default {
   name: "AuthForm",
   data() {
@@ -57,13 +57,9 @@ export default {
   methods: {
     async handleLogin() {
       try {
-        const data = await auth(this.username, this.password);
-        if (data && data.token) {
-          alert("Login successful!");
-          this.errorMessage = null;
-        } else {
-          this.errorMessage = "Authentication failed: No token received.";
-        }
+        const authStore = useAuthStore();
+        await authStore.login(this.username, this.password);
+        navigateTo("/esp32/services");
       } catch (error) {
         this.errorMessage = "Invalid username or password";
         console.error("Login error:", error);
@@ -76,5 +72,28 @@ export default {
 <style scoped>
 .card {
   border-radius: 10px;
+}
+
+.dark-mode {
+  color: #e0e0e0;
+}
+
+.dark-mode .card {
+  background-color: #333;
+}
+
+.dark-mode .alert-danger {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.dark-mode .btn-light {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.dark-mode .btn-primary {
+  background-color: #007bff;
+  color: #fff;
 }
 </style>
