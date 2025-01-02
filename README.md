@@ -124,16 +124,18 @@ touch:
   # [OPTIONAL] (bool=false|0) calibrate touch sensor if true or 1
   calibrate: 0
 
-# [OPTIONAL] configure authentication for the management app. The management app is enable only if username, password, key are set.
+# [OPTIONAL] configure the management app
 manager:
-  # [REQUIRED] (text) username to start a session
-  username:
-  # [REQUIRED] (text) HMAC-SHA256 hashed password to start a session
-  password:
-  # [REQUIRED] (text) key used to hash the password
-  key:
-  # [OPTIONAL] (number) [default 5] amount of minutes for the session duration
-  session_length: 5
+  # [OPTIONAL] configure authentication for the management app. The management app is enabled only if username, password, key are set.
+  authentication:
+    # [REQUIRED] (text) username to start a session
+    username:
+    # [REQUIRED] (text) HMAC-SHA256 hashed password to start a session
+    password:
+    # [REQUIRED] (text) key used to hash the password
+    key:
+    # [OPTIONAL] (number) [default 5] amount of minutes for the session duration
+    session_length: 5
 ```
 
 > [!IMPORTANT]
