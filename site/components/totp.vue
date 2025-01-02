@@ -31,48 +31,46 @@
   </div>
 </template>
 
-<script>
-import { ref, onMounted, watch } from "vue";
+<script lang="ts" setup>
+import { ref, onMounted, onBeforeUnmount } from "vue";
 
-export default {
-  name: "Card",
-  props: {
-    service: Object,
-  },
-  data() {
-    return {
-      progress: 100,
-      intervalId: null,
-      isOverflowing: false,
-      code: null,
-    };
-  },
-  methods: {
-    startCountdown() {
-      this.intervalId = setInterval(() => {
-        const now = new Date();
-        const totalSeconds = now.getSeconds() + now.getMilliseconds() / 1000;
-        const remainingSeconds = 30 - (totalSeconds % 30);
-        if (remainingSeconds < 1) {
-          this.progress = 100;
-          this.code = this.generateRandomCode();
-        } else {
-          this.progress = (remainingSeconds / 30) * 100;
-        }
-      }, 1000);
-    },
-    generateRandomCode() {
-      return Math.floor(100000 + Math.random() * 900000);
-    },
-  },
-  mounted() {
-    this.code = this.generateRandomCode();
-    this.startCountdown();
-  },
-  beforeUnmount() {
-    clearInterval(this.intervalId);
-  },
+defineProps({
+  service: Object,
+});
+
+const progress = ref(100);
+const intervalId = ref<NodeJS.Timeout | null>(null);
+const isOverflowing = ref(false);
+const code = ref<number | null>(null);
+
+const startCountdown = () => {
+  intervalId.value = setInterval(() => {
+    const now = new Date();
+    const totalSeconds = now.getSeconds() + now.getMilliseconds() / 1000;
+    const remainingSeconds = 30 - (totalSeconds % 30);
+    if (remainingSeconds < 1) {
+      progress.value = 100;
+      code.value = generateRandomCode();
+    } else {
+      progress.value = (remainingSeconds / 30) * 100;
+    }
+  }, 1000);
 };
+
+const generateRandomCode = (): number => {
+  return Math.floor(100000 + Math.random() * 900000);
+};
+
+onMounted(() => {
+  code.value = generateRandomCode();
+  startCountdown();
+});
+
+onBeforeUnmount(() => {
+  if (intervalId.value) {
+    clearInterval(intervalId.value);
+  }
+});
 </script>
 
 <style scoped>

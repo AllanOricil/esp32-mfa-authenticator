@@ -42,7 +42,7 @@ const logout = async () => {
   try {
     await authStore.logout();
   } finally {
-    navigateTo("/esp32/login");
+    await navigateTo("/esp32/login");
   }
 };
 </script>

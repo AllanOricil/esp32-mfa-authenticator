@@ -6,27 +6,20 @@
   </draggable>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
+import { ref } from "vue";
 import { VueDraggableNext } from "vue-draggable-next";
 import Totp from "~/components/totp.vue";
-import { defineComponent } from "vue";
 
-export default defineComponent({
-  name: "totps",
-  components: {
-    draggable: VueDraggableNext,
-  },
-  data() {
-    return {
-      services: [
-        { id: 1, name: "allanoricilcos@outlook.com" },
-        { id: 2, name: "allanoricilcos@outlook.com" },
-        { id: 3, name: "allanoricilcos@outlook.com" },
-        { id: 4, name: "allanoricilcos@outlook.com" },
-      ],
-    };
-  },
-});
+const name = "totps";
+const services = ref([
+  { id: 1, name: "allanoricilcos@outlook.com" },
+  { id: 2, name: "allanoricilcos@outlook.com" },
+  { id: 3, name: "allanoricilcos@outlook.com" },
+  { id: 4, name: "allanoricilcos@outlook.com" },
+]);
+
+const draggable = VueDraggableNext;
 </script>
 
 <style></style>

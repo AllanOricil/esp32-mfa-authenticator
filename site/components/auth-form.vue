@@ -41,31 +41,25 @@
   </div>
 </template>
 
-<script>
+<script lang="ts" setup>
+import { ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { navigateTo } from "#app";
 
-export default {
-  name: "AuthForm",
-  data() {
-    return {
-      username: "",
-      password: "",
-      errorMessage: null,
-    };
-  },
-  methods: {
-    async handleLogin() {
-      try {
-        const authStore = useAuthStore();
-        await authStore.login(this.username, this.password);
-        navigateTo("/esp32/services");
-      } catch (error) {
-        this.errorMessage = "Invalid username or password";
-        console.error("Login error:", error);
-      }
-    },
-  },
+const username = ref("");
+const password = ref("");
+const errorMessage = ref(null);
+const authStore = useAuthStore();
+const router = useRouter();
+
+const handleLogin = async () => {
+  try {
+    await authStore.login(username.value, password.value);
+    await navigateTo("/esp32/services", { replace: true });
+  } catch (error) {
+    errorMessage.value = "Invalid username or password";
+    console.error("Login error:", error);
+  }
 };
 </script>
 
