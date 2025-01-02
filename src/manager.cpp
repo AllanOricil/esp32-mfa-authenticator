@@ -35,12 +35,48 @@ String getCookie(AsyncWebServerRequest *request, const String &cookieName)
 	return "";
 }
 
+bool is_session_valid(AsyncWebServerRequest *request)
+{
+	String session_id = getCookie(request, "esp32_mfa_authenticator_session_id");
+	if (session_id != "")
+	{
+		return validate_session(session_id.c_str());
+	}
+	return false;
+}
+
+// NOTE: we are validating if the session belongs to the board
+void is_authorized(
+	AsyncWebServerRequest *request,
+	const std::function<void(AsyncWebServerRequest *)> &handler)
+{
+	try
+	{
+		if (!is_session_valid(request))
+		{
+			request->send(401, "application/json", "{\"message\":\"session not found\"}");
+			ESP_LOGI(TAG, "session not found");
+			return;
+		}
+
+		handler(request);
+	}
+	catch (const std::exception &e)
+	{
+		ESP_LOGE(TAG, "error while validating the session: %s", e.what());
+		request->send(500, "application/json", "{\"message\":\"something went wrong\"}");
+	}
+}
+
 void init_manager(Configuration config, const char *local_network_ip)
 {
 	ESP_LOGI(TAG, "initializing manager server");
 
 	if (
 		!validate_file_exists("/index.html") ||
+		!validate_file_exists("/esp32/login/index.html") ||
+		!validate_file_exists("/esp32/services/index.html") ||
+		!validate_file_exists("/esp32/settings/index.html") ||
 		!validate_file_exists("/200.html") ||
 		!validate_file_exists("/404.html") ||
 		!validate_file_exists("/favicon.ico"))
@@ -51,7 +87,7 @@ void init_manager(Configuration config, const char *local_network_ip)
 
 	ESP_LOGD(TAG, "configuring routes");
 
-	// NOTE: assets routes
+	// NOTE: configuring page routes
 	server.on(
 		"/",
 		HTTP_GET,
@@ -74,6 +110,7 @@ void init_manager(Configuration config, const char *local_network_ip)
 			request->send(SPIFFS, "/404.html", "text/html");
 		});
 
+	// NOTE: configuring assets routes
 	server.serveStatic("/_nuxt/", SPIFFS, "/_nuxt/");
 
 	server.on(
@@ -84,7 +121,7 @@ void init_manager(Configuration config, const char *local_network_ip)
 			request->send(SPIFFS, "/favicon.ico", "image/x-icon");
 		});
 
-	// NOTE: api routes
+	// NOTE: configuring api routes
 	server.on(
 		"/api/v1/auth/login",
 		HTTP_POST,
@@ -121,7 +158,7 @@ void init_manager(Configuration config, const char *local_network_ip)
 
 					// NOTE: only this server can use this session token from js
 					String cookie = "esp32_mfa_authenticator_session_id=" + String(session->session_id) + "; Expires=" + format_time_to_UTC_String(session->expiration) + "; Path=/; HttpOnly; SameSite=Strict";
-					AsyncWebServerResponse *response = request->beginResponse(200, "application/json", "{\"message\":\"authentication successful\"}");
+					AsyncWebServerResponse *response = request->beginResponse(200, "application/json", "{\"message\":\"login successful\"}");
 					response->addHeader("Set-Cookie", cookie);
 					request->send(response);
 				}
@@ -197,7 +234,21 @@ void init_manager(Configuration config, const char *local_network_ip)
 		HTTP_GET,
 		[config](AsyncWebServerRequest *request)
 		{
-			request->send(200, "application/json", config.to_json_string(true));
+			is_authorized(
+				request,
+				[config](AsyncWebServerRequest *request)
+				{
+					try
+					{
+						request->send(200, "application/json", config.to_json_string(true));
+						ESP_LOGI(TAG, "session is valid and can read config");
+					}
+					catch (const std::exception &e)
+					{
+						ESP_LOGE(TAG, "error while fetching config: %s", e.what());
+						request->send(500, "application/json", "{\"message\":\"something went wrong\"}");
+					}
+				});
 		});
 
 	server.on(
@@ -207,22 +258,27 @@ void init_manager(Configuration config, const char *local_network_ip)
 		nullptr,
 		[config](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
 		{
-			try
-			{
-				String data_json = String((char *)data);
-				Configuration new_config = Configuration::parse(data_json);
-				new_config.manager = config.manager;
-				if (new_config.save())
+			is_authorized(
+				request,
+				[config, data](AsyncWebServerRequest *request)
 				{
-					ESP_LOGI(TAG, "config updated successfully");
-					request->send(200, "application/json", "{\"message\":\"configuration updated\"}");
-				}
-			}
-			catch (const std::exception &e)
-			{
-				ESP_LOGE(TAG, "error while updating config: %s", e.what());
-				request->send(500, "application/json", "{\"message\":\"something went wrong\"}");
-			}
+					try
+					{
+						String data_json = String((char *)data);
+						Configuration new_config = Configuration::parse(data_json);
+						new_config.manager = config.manager;
+						if (new_config.save())
+						{
+							ESP_LOGI(TAG, "config updated successfully");
+							request->send(200, "application/json", "{\"message\":\"configuration updated\"}");
+						}
+					}
+					catch (const std::exception &e)
+					{
+						ESP_LOGE(TAG, "error while updating config: %s", e.what());
+						request->send(500, "application/json", "{\"message\":\"something went wrong\"}");
+					}
+				});
 		});
 
 	ESP_LOGD(TAG, "server routes configured");
@@ -237,7 +293,7 @@ void init_manager(Configuration config, const char *local_network_ip)
 	DefaultHeaders::Instance().addHeader("Permissions-Policy", "geolocation=(), microphone=()");
 
 	// TODO: allow configuring this using config.manager.baseURL
-	DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", String("http://") + local_network_ip);
+	DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", String("http://") + String(local_network_ip));
 	DefaultHeaders::Instance().addHeader("Access-Control-Allow-Methods", "GET, PUT, OPTIONS");
 	DefaultHeaders::Instance().addHeader("Access-Control-Allow-Headers", "Content-Type, Cookie");
 	DefaultHeaders::Instance().addHeader("Access-Control-Allow-Credentials", "true");
