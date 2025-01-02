@@ -19,17 +19,16 @@
 // NOTE: 6 digits + 1 for the null-terminating character
 #define MAX_TOTP_LENGTH 7
 
-// MQTT
-#define MQTT_RECONNECT_INTERVAL 60000
-#define MQTT_MAX_PAYLOAD_SIZE 1024
-#define MQTT_WRITE_NEW_SECRET_TOPIC "esp32-totp-write-new-secret"
-
 // PIN
 #define PIN_MIN_LENGTH 6
 #define PIN_MAX_LENGTH 20
 
-// SECURITY
-#define MAX_NUMBER_OF_WRONG_UNLOCK_ATTEMPTS 3
+// AUTHENTICATION
+#define MAX_UNLOCK_ATTEMPTS 3
+
+// MANAGER AUTHENTICATION
+// NOTE: how many minutes the session is valid. For security purposes, sessions are set to 5 minutes but can be overwritten by the User in config.yml
+#define MAX_MANAGER_SESSION_LENGTH 5
 
 // UI
 #define PIN_SCREEN_NAME "pin"

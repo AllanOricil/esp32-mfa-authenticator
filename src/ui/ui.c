@@ -57,11 +57,11 @@ void ui_event_pin_screen_textarea(lv_event_t *e)
 
 void init_ui(
     bool display_pin_screen,
-    int max_number_of_wrong_unlock_attempts)
+    int max_unlock_attempts)
 {
     config.display_pin_screen = display_pin_screen;
-    config.number_of_wrong_unlock_attempts = max_number_of_wrong_unlock_attempts;
-    config.max_number_of_wrong_unlock_attempts = max_number_of_wrong_unlock_attempts;
+    config.unlock_attempts = max_unlock_attempts;
+    config.max_unlock_attempts = max_unlock_attempts;
 
     lv_disp_t *disp = lv_disp_get_default();
     lv_theme_t *theme = lv_theme_default_init(

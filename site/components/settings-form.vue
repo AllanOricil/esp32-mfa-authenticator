@@ -29,7 +29,7 @@
           type="text"
           class="form-control"
           id="ssid"
-          v-model="state.settings.wifi.ssid"
+          v-model="settings.wifi.ssid"
         />
       </div>
       <div>
@@ -38,64 +38,20 @@
           type="password"
           class="form-control"
           id="password"
-          v-model="state.settings.wifi.password"
-        />
-      </div>
-    </div>
-    <div class="mb-4">
-      <h4 class="mb-3">MQTT</h4>
-
-      <div>
-        <label for="server" class="form-label">Server</label>
-        <input
-          type="text"
-          class="form-control"
-          id="server"
-          v-model="state.settings.mqtt.server"
-        />
-      </div>
-      <div>
-        <label for="port" class="form-label">Port</label>
-        <input
-          type="number"
-          class="form-control"
-          id="port"
-          min="0"
-          @input="ensureNumber"
-          v-model.number="state.settings.mqtt.port"
-        />
-      </div>
-      <div>
-        <label for="username" class="form-label">Username</label>
-        <input
-          type="text"
-          class="form-control"
-          id="username"
-          v-model="state.settings.mqtt.username"
-        />
-      </div>
-      <div>
-        <label for="password" class="form-label">Password</label>
-        <input
-          type="password"
-          class="form-control"
-          id="password"
-          v-model="state.settings.mqtt.password"
+          v-model="settings.wifi.password"
         />
       </div>
     </div>
 
     <div class="mb-4">
-      <h4 class="mb-3">Security</h4>
-      <label for="max-number-of-wrong-unlock-attempts" class="form-label"
-        >Max number of wrong unlock attempts</label
-      >
+      <h4 class="mb-3">Authentication</h4>
+      <label for="unlock-attempts" class="form-label">Unlock Attempts</label>
       <input
         type="number"
         class="form-control"
-        id="max-number-of-wrong-unlock-attempts"
+        id="unlock-attempts"
         min="1"
-        v-model.number="state.settings.security.maxNumberOfWrongUnlockAttempts"
+        v-model.number="settings.authentication.unlock_attempts"
       />
       <div>
         <label for="pin-hash" class="form-label">Pin Hash</label>
@@ -103,7 +59,7 @@
           type="password"
           class="form-control"
           id="pin-hash"
-          v-model="state.settings.security.pin.hash"
+          v-model="settings.authentication.pin.hash"
         />
       </div>
       <div>
@@ -112,7 +68,7 @@
           type="password"
           class="form-control"
           id="pin-key"
-          v-model="state.settings.security.pin.key"
+          v-model="settings.authentication.pin.key"
         />
       </div>
     </div>
@@ -129,7 +85,7 @@
           class="form-control"
           id="sleep-timeout"
           min="0"
-          v-model.number="state.settings.display.sleepTimeout"
+          v-model.number="settings.display.sleep_timeout"
         />
       </div>
     </div>
@@ -140,11 +96,11 @@
       <input
         type="checkbox"
         class="form-check-input"
-        id="force-calibration"
-        v-model="state.settings.touch.forceCalibration"
+        id="touch-calibrate"
+        v-model="settings.touch.calibrate"
       />
-      <label class="form-check-label ps-2" for="force-calibration"
-        >Force calibration</label
+      <label class="form-check-label ps-2" for="touch-calibrate"
+        >Calibrate</label
       >
     </div>
 
@@ -158,71 +114,54 @@
 
 <script lang="ts" setup>
 import jsYaml from "js-yaml";
-import { reactive, ref } from "vue";
-import { fetchConfig, updateConfig, type Config } from "../api/esp32";
+import { ref, onMounted } from "vue";
+import ESP32MFAAuthenticatorClient, {
+  type Config,
+} from "~/api/esp32-mfa-authenticator-client";
 
-const state = reactive<{ settings: Config }>({
-  settings: {
-    wifi: {
-      ssid: undefined,
-      password: undefined,
+const settings = ref<Config>({
+  wifi: {
+    ssid: undefined,
+    password: undefined,
+  },
+  authentication: {
+    pin: {
+      key: undefined,
+      hash: undefined,
     },
-    mqtt: {
-      server: undefined,
-      port: undefined,
-      username: undefined,
-      password: undefined,
-    },
-    security: {
-      pin: {
-        key: undefined,
-        hash: undefined,
-      },
-      maxNumberOfWrongUnlockAttempts: 3,
-    },
-    display: {
-      sleepTimeout: 5,
-    },
-    touch: {
-      forceCalibration: false,
-    },
+    unlock_attempts: 3,
+  },
+  display: {
+    sleep_timeout: 5,
+  },
+  touch: {
+    calibrate: false,
   },
 });
-
-const ensureNumber = () => {
-  state.settings.mqtt.port = state.settings.mqtt.port.replace(/\D/g, "");
-};
 
 let toastInstance: bootstrap.Toast | null = null;
 const toastMessage = ref<string>("");
 const toastClass = ref<string>("");
-async function onSubmit(event: FormSubmitEvent<Schema>) {
+async function onSubmit(event: SubmitEvent) {
   try {
-    const updated = await updateConfig({
-      version: "0.0.0",
+    const client = new ESP32MFAAuthenticatorClient();
+    await client.updateConfig({
       wifi: {
-        ssid: state.settings.wifi.ssid,
-        password: state.settings.wifi.password,
+        ssid: settings.value.wifi.ssid,
+        password: settings.value.wifi.password,
       },
-      mqtt: {
-        server: state.settings.mqtt.server,
-        port: state.settings.mqtt.port || 1883,
-        username: state.settings.mqtt.username || "",
-        password: state.settings.mqtt.password || "",
-      },
-      security: {
+      authentication: {
         pin: {
-          hash: state.settings.security.pin.hash || "",
-          key: state.settings.security.pin.key || "",
+          hash: settings.value.authentication.pin.hash || "",
+          key: settings.value.authentication.pin.key || "",
         },
-        maxNumberOfWrongUnlockAttempts:
-          state.settings.security.maxNumberOfWrongUnlockAttempts || 3,
+        unlock_attempts: settings.value.authentication.unlock_attempts || 3,
       },
       display: {
-        sleepTimeout: state.settings.display.sleepTimeout || "",
+        sleep_timeout: settings.value.display.sleep_timeout || "",
       },
       touch: {
-        forceCalibration: state.settings.touch.forceCalibration ? 1 : 0,
+        calibrate: settings.value.touch.calibrate ? 1 : 0,
       },
     });
 
@@ -237,13 +176,20 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 }
 
 onMounted(async () => {
-  state.settings = await fetchConfig();
-  // TODO: move toast to layout
   const toastElement = document.getElementById("submit-toast");
   if (toastElement) {
     toastInstance = new bootstrap.Toast(toastElement, {
       autohide: false,
     });
+  }
+
+  try {
+    const client = new ESP32MFAAuthenticatorClient();
+    settings.value = await client.fetchConfig();
+  } catch (error) {
+    toastMessage.value = "Error loading settings";
+    toastClass.value = "bg-danger text-white";
+    if (toastInstance) toastInstance.show();
   }
 });
 </script>
@@ -254,5 +200,9 @@ onMounted(async () => {
   top: 20px;
   right: 20px;
   z-index: 1000;
+}
+
+.toast-body {
+  width: 90%;
 }
 </style>

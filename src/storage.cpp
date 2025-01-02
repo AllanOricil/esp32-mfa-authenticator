@@ -59,3 +59,17 @@ void init_storage()
   init_internal_storage();
   init_external_storage();
 }
+
+bool is_file_available(fs::FS &fs, const char *path)
+{
+  if (fs.exists(path))
+  {
+    ESP_LOGI(TAG, "file %s exists", path);
+    return true;
+  }
+  else
+  {
+    ESP_LOGE(TAG, "file %s does not exist", path);
+    return false;
+  }
+}

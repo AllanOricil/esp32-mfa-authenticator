@@ -1,5 +1,5 @@
 export default defineNuxtConfig({
-  title: "Hello Nuxt",
+  title: "esp32-mfa-authenticator",
   theme: {
     dark: true,
     colors: {
@@ -15,6 +15,7 @@ export default defineNuxtConfig({
         ["esp-web-install-button"].some((prefix) => tag.startsWith(prefix)),
     },
   },
+  modules: ["@pinia/nuxt", "pinia-plugin-persistedstate/nuxt"],
   app: {
     head: {
       link: [
@@ -31,4 +32,16 @@ export default defineNuxtConfig({
       ],
     },
   },
+  vite: {
+    build: {
+      rollupOptions: {
+        output: {
+          // NOTE: https://github.com/rollup/rollup/issues/2756#issuecomment-951370238
+          // NOTE: a single js because esp32 server can't handle serving multiple ones in parallel, consistently. It throws an exception or fail to serve a partition.
+          manualChunks: () => "everything.js",
+        },
+      },
+    },
+  },
+  compatibilityDate: "2025-01-01",
 });

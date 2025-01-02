@@ -2,7 +2,7 @@
 
 static const char *TAG = "wifi";
 
-void init_wifi(Configuration config)
+String init_wifi(Configuration config)
 {
   ESP_LOGI(TAG, "initialzing wifi");
   ESP_LOGI(TAG, "connecting to %s", config.wifi.ssid.c_str());
@@ -14,4 +14,5 @@ void init_wifi(Configuration config)
   }
   ESP_LOGI(TAG, "IP Address: %s", WiFi.localIP().toString().c_str());
   ESP_LOGI(TAG, "wifi initialized");
+  return WiFi.localIP().toString();
 }

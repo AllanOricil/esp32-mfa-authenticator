@@ -110,8 +110,8 @@ void init_display(Configuration config)
 {
     ESP_LOGI(TAG, "initializing display");
 
-    sleep_timeout = config.display.sleepTimeout * 1000;
-    show_pin_screen = config.is_secure();
+    sleep_timeout = config.display.sleep_timeout * 1000;
+    show_pin_screen = config.is_authentication_configured();
 
     ESP_LOGD(TAG, "initiliazing backlight");
     pinMode(TFT_BCKL, OUTPUT);

@@ -22,7 +22,7 @@ void init_touch_screen(Configuration config)
 
 	init_display(config);
 	init_touch(
-		config.touch.forceCalibration,
+		config.touch.calibrate,
 		single_touch_handler,
 		double_touch_handler);
 

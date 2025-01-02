@@ -1,33 +1,32 @@
 #include "config.hpp"
 
-static const char *TAG = "clock";
+static const char *TAG = "config";
 
-String Configuration::serializeToJson(bool safe) const
+String Configuration::to_json_string(bool safe) const
 {
 	StaticJsonDocument<512> doc;
-	doc["version"] = version;
 
-	JsonObject wifiObj = doc.createNestedObject("wifi");
-	wifiObj["ssid"] = wifi.ssid;
-	wifiObj["password"] = safe ? "*********" : wifi.password;
+	JsonObject _wifi = doc.createNestedObject("wifi");
+	_wifi["ssid"] = wifi.ssid;
+	_wifi["password"] = safe ? "*********" : wifi.password;
 
-	JsonObject mqttObj = doc.createNestedObject("mqtt");
-	mqttObj["server"] = mqtt.server;
-	mqttObj["port"] = string_2_int(mqtt.port.c_str());
-	mqttObj["username"] = mqtt.username;
-	mqttObj["password"] = safe ? "*********" : mqtt.password;
+	JsonObject _authentication = doc.createNestedObject("authentication");
+	JsonObject _pin = _authentication.createNestedObject("pin");
+	_pin["hash"] = safe ? "*********" : authentication.pin.hash;
+	_pin["key"] = safe ? "*********" : authentication.pin.key;
+	_authentication["unlock_attempts"] = authentication.unlock_attempts;
 
-	JsonObject securityObj = doc.createNestedObject("security");
-	JsonObject pinObj = securityObj.createNestedObject("pin");
-	pinObj["hash"] = safe ? "*********" : security.pin.hash;
-	pinObj["key"] = safe ? "*********" : security.pin.key;
-	securityObj["max_number_of_wrong_unlock_attempts"] = security.maxNumberOfWrongUnlockAttempts;
+	JsonObject _display = doc.createNestedObject("display");
+	_display["sleep_timeout"] = display.sleep_timeout;
 
-	JsonObject displayObj = doc.createNestedObject("display");
-	displayObj["sleep_timeout"] = display.sleepTimeout;
+	JsonObject _touch = doc.createNestedObject("touch");
+	_touch["calibrate"] = touch.calibrate;
 
-	JsonObject touchObj = doc.createNestedObject("touch");
-	touchObj["force_calibration"] = touch.forceCalibration;
+	JsonObject _manager = doc.createNestedObject("manager");
+	JsonObject _manager_authentication = _manager.createNestedObject("authentication");
+	_manager_authentication["username"] = manager.authentication.username;
+	_manager_authentication["password"] = manager.authentication.password;
+	_manager_authentication["session_length"] = manager.authentication.session_length;
 
 	String json;
 	serializeJson(doc, json);
@@ -58,44 +57,36 @@ Configuration Configuration::load()
 	if (root["wifi"].isMap())
 	{
 		if (root["wifi"]["ssid"].isNull())
-			throw std::runtime_error("Wifi ssid must be defined");
+		{
+			ESP_LOGE(TAG, "wifi.ssid is empty");
+			throw std::runtime_error("wifi ssid must be defined");
+		}
 		config.wifi.ssid = root.gettext("wifi:ssid");
 
 		if (root["wifi"]["password"].isNull())
-			throw std::runtime_error("Wifi password must be defined");
+		{
+			ESP_LOGE(TAG, "wifi.password is empty");
+			throw std::runtime_error("wifi password must be defined");
+		}
 		config.wifi.password = root.gettext("wifi:password");
 	}
 
-	if (root["mqtt"].isMap())
+	if (root["authentication"].isMap())
 	{
-		if (!root["mqtt"]["server"].isNull())
-			config.mqtt.server = root.gettext("mqtt:server");
-		if (!root["mqtt"]["port"].isNull())
+		if (!root["authentication"]["unlock_attempts"].isNull())
 		{
-			config.mqtt.port = root.gettext("mqtt:port");
-		}
-		if (!root["mqtt"]["username"].isNull())
-			config.mqtt.username = root.gettext("mqtt:username");
-		if (!root["mqtt"]["password"].isNull())
-			config.mqtt.password = root.gettext("mqtt:password");
-	}
-
-	if (root["security"].isMap())
-	{
-		if (!root["security"]["max_number_of_wrong_unlock_attempts"].isNull())
-		{
-			int maxNumberOfWrongUnlockAttempts = string_2_int(root.gettext("security:max_number_of_wrong_unlock_attempts"));
-			config.security.maxNumberOfWrongUnlockAttempts = maxNumberOfWrongUnlockAttempts > 0 ? maxNumberOfWrongUnlockAttempts
-																								: MAX_NUMBER_OF_WRONG_UNLOCK_ATTEMPTS;
+			int unlock_attempts = string_2_int(root.gettext("authentication:unlock_attempts"));
+			config.authentication.unlock_attempts = unlock_attempts > 0 ? unlock_attempts
+																		: MAX_UNLOCK_ATTEMPTS;
 		}
 
-		if (root["security"]["pin"].isMap())
+		if (root["authentication"]["pin"].isMap())
 		{
-			if (!root["security"]["pin"]["hash"].isNull())
-				config.security.pin.hash = root.gettext("security:pin:hash");
+			if (!root["authentication"]["pin"]["hash"].isNull())
+				config.authentication.pin.hash = root.gettext("authentication:pin:hash");
 
-			if (!root["security"]["pin"]["key"].isNull())
-				config.security.pin.key = root.gettext("security:pin:key");
+			if (!root["authentication"]["pin"]["key"].isNull())
+				config.authentication.pin.key = root.gettext("authentication:pin:key");
 		}
 	}
 
@@ -103,99 +94,150 @@ Configuration Configuration::load()
 	{
 		if (!root["display"]["sleep_timeout"].isNull())
 		{
-			int sleepTimeout = string_2_int(root.gettext("display:sleep_timeout"));
-			config.display.sleepTimeout = sleepTimeout > 0 ? sleepTimeout
-														   : SLEEP_TIMEOUT;
+			int sleep_timeout = string_2_int(root.gettext("display:sleep_timeout"));
+			config.display.sleep_timeout = sleep_timeout > 0 ? sleep_timeout : SLEEP_TIMEOUT;
 		}
 	}
 
 	if (root["touch"].isMap())
 	{
-		const char *forceCalibration = root.gettext("touch:force_calibration");
-		config.touch.forceCalibration = forceCalibration && (strcmp(forceCalibration, "true") == 0 || strcmp(forceCalibration, "1") == 0);
+		const char *calibrate = root.gettext("touch:calibrate");
+		config.touch.calibrate = calibrate && (strcmp(calibrate, "true") == 0 || strcmp(calibrate, "1") == 0);
+	}
+
+	if (root["manager"].isMap())
+	{
+		if (root["manager"]["authentication"].isMap())
+		{
+			if (!root["manager"]["authentication"]["username"].isNull())
+			{
+				config.manager.authentication.username = root.gettext("manager:authentication:username");
+			}
+
+			if (!root["manager"]["authentication"]["password"].isNull())
+			{
+				config.manager.authentication.password = root.gettext("manager:authentication:password");
+			}
+
+			if (!root["manager"]["authentication"]["key"].isNull())
+			{
+				config.manager.authentication.key = root.gettext("manager:authentication:key");
+			}
+
+			if (!root["manager"]["authentication"]["session_length"].isNull())
+			{
+				int session_length = string_2_int(root.gettext("manager:authentication:session_length"));
+				config.manager.authentication.session_length = session_length > 0 ? session_length : MAX_MANAGER_SESSION_LENGTH;
+			}
+		}
 	}
 
 	ESP_LOGI(TAG, "config loaded successfully");
 	return config;
 }
 
-Configuration Configuration::parse(const String &jsonString)
+Configuration Configuration::parse(const String &json_string)
 {
 	Configuration config;
-	StaticJsonDocument<512> jsonDocument;
-	DeserializationError error = deserializeJson(jsonDocument, jsonString);
+	StaticJsonDocument<512> doc;
+	DeserializationError error = deserializeJson(doc, json_string);
 	if (error)
 	{
 		ESP_LOGE(TAG, "failed to parse json %s", error.c_str());
 		throw std::runtime_error("Failed to parse JSON.");
 	}
 
-	if (jsonDocument.containsKey("version"))
+	if (!doc.containsKey("wifi"))
 	{
-		config.version = jsonDocument["version"].as<String>();
+		ESP_LOGE(TAG, "wifi settings are required");
+		throw std::runtime_error("wifi settings are required.");
 	}
 
-	if (jsonDocument.containsKey("wifi"))
+	config.wifi.password = doc["wifi"]["password"].as<String>();
+	if (!config.wifi.password)
 	{
-		config.wifi.password = jsonDocument["wifi"]["password"].as<String>();
-		config.wifi.ssid = jsonDocument["wifi"]["ssid"].as<String>();
+		ESP_LOGE(TAG, "wifi password is required");
+		throw std::runtime_error("wifi password is required.");
 	}
 
-	if (jsonDocument.containsKey("mqtt"))
+	config.wifi.ssid = doc["wifi"]["ssid"].as<String>();
+	if (!config.wifi.ssid)
 	{
-		config.mqtt.port = jsonDocument["mqtt"]["port"].as<String>();
-		config.mqtt.server = jsonDocument["mqtt"]["server"].as<String>();
-		config.mqtt.username = jsonDocument["mqtt"]["username"].as<String>();
-		config.mqtt.password = jsonDocument["mqtt"]["password"].as<String>();
+		ESP_LOGE(TAG, "wifi ssid is required");
+		throw std::runtime_error("wifi ssid is required.");
 	}
 
-	if (jsonDocument.containsKey("security"))
+	if (doc.containsKey("authentication"))
 	{
 
-		if (jsonDocument["security"].containsKey("maxNumberOfWrongUnlockAttempts"))
+		int unlock_attempts = doc["authentication"]["unlock_attempts"].as<int>();
+		if (unlock_attempts)
 		{
-			int maxNumberOfWrongUnlockAttempts = jsonDocument["security"]["maxNumberOfWrongUnlockAttempts"].as<int>();
-			config.security.maxNumberOfWrongUnlockAttempts = maxNumberOfWrongUnlockAttempts > 0 ? maxNumberOfWrongUnlockAttempts
-																								: MAX_NUMBER_OF_WRONG_UNLOCK_ATTEMPTS;
+			config.authentication.unlock_attempts = unlock_attempts;
 		}
 		else
 		{
-			config.security.maxNumberOfWrongUnlockAttempts = MAX_NUMBER_OF_WRONG_UNLOCK_ATTEMPTS;
+			ESP_LOGD(TAG, "using %d", MAX_UNLOCK_ATTEMPTS);
 		}
 
-		if (jsonDocument["security"].containsKey("pin"))
+		if (doc["authentication"].containsKey("pin"))
 		{
-			config.security.pin.hash = jsonDocument["security"]["pin"]["hash"].as<String>();
-			config.security.pin.key = jsonDocument["security"]["pin"]["key"].as<String>();
+			config.authentication.pin.hash = doc["authentication"]["pin"]["hash"].as<String>();
+			if (!config.authentication.pin.hash)
+			{
+				ESP_LOGE(TAG, "authetication pin hash is required");
+				throw std::runtime_error("authetication pin hash is required.");
+			}
+
+			config.authentication.pin.key = doc["authentication"]["pin"]["key"].as<String>();
+			if (!config.authentication.pin.key)
+			{
+				ESP_LOGE(TAG, "authentication pin key is required");
+				throw std::runtime_error("authentication pin key is required.");
+			}
+		}
+		else
+		{
+			ESP_LOGD(TAG, "no pin settings were found");
 		}
 	}
-
-	if (jsonDocument.containsKey("display"))
+	else
 	{
-		config.display.sleepTimeout = jsonDocument["display"]["sleepTimeout"].as<int>();
+
+		ESP_LOGD(TAG, "no authentication settings were found");
 	}
 
-	if (jsonDocument.containsKey("touch"))
+	if (doc.containsKey("display"))
 	{
-		config.touch.forceCalibration = jsonDocument["touch"]["forceCalibration"].as<bool>();
+		config.display.sleep_timeout = doc["display"]["sleep_timeout"].as<int>();
+	}
+	else
+	{
+
+		ESP_LOGD(TAG, "no display settings were found");
+	}
+
+	if (doc.containsKey("touch"))
+	{
+		config.touch.calibrate = doc["touch"]["calibrate"].as<bool>();
+	}
+	else
+	{
+
+		ESP_LOGD(TAG, "no touch settings were found");
 	}
 
 	return config;
 }
 
-bool Configuration::is_secure()
+bool Configuration::is_authentication_configured()
 {
-	return !security.pin.hash.isEmpty() && !security.pin.key.isEmpty();
+	return !authentication.pin.hash.isEmpty() && !authentication.pin.key.isEmpty();
 }
 
-bool Configuration::is_mqtt_server_settings_configured()
+bool Configuration::is_manager_configured()
 {
-	return !mqtt.server.isEmpty() && !mqtt.port.isEmpty();
-}
-
-bool Configuration::is_mqtt_topic_credentials_configured()
-{
-	return !mqtt.username.isEmpty() && !mqtt.password.isEmpty();
+	return !manager.authentication.username.isEmpty() && !manager.authentication.password.isEmpty() && !manager.authentication.key.isEmpty();
 }
 
 bool Configuration::save() const
@@ -208,8 +250,8 @@ bool Configuration::save() const
 		return false;
 	}
 
-	String configJson = serializeToJson(false);
-	YAML::StringStream json_input_stream(configJson);
+	String config_json = to_json_string(false);
+	YAML::StringStream json_input_stream(config_json);
 	YAMLNode root = YAMLNode::loadStream(json_input_stream);
 	serializeYml(root.getDocument(), file, OUTPUT_YAML);
 	file.close();

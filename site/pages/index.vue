@@ -53,9 +53,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
-// You can use the script setup for any script you need
-</script>
+<script lang="ts" setup></script>
 
 <style scoped>
 .container {

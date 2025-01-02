@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <esp_log.h>
 #include "ui/ui.h"
-#include "pin.h"
+#include "auth.h"
 #include "constants.h"
 #include "services.h"
 #include "mfa.h"
@@ -36,14 +36,24 @@ void setup()
   load_services();
   Configuration config = Configuration::load();
 
-  init_pin(config.security.pin.hash.c_str(), config.security.pin.key.c_str());
+  init_auth(
+      config.authentication.pin.hash.c_str(),
+      config.authentication.pin.key.c_str(),
+      config.manager.authentication.username.c_str(),
+      config.manager.authentication.password.c_str(),
+      config.manager.authentication.key.c_str(),
+      config.manager.authentication.session_length);
   init_touch_screen(config);
-  init_wifi(config);
+  const char *local_network_ip = init_wifi(config).c_str();
   init_clock();
-  init_manager();
+
+  if (config.is_manager_configured())
+  {
+    init_manager(config, local_network_ip);
+  }
   init_ui(
-      config.is_secure(),
-      config.security.maxNumberOfWrongUnlockAttempts);
+      config.is_authentication_configured(),
+      config.authentication.unlock_attempts);
   ESP_LOGI(TAG, "----------- end setup ------------");
 }
 

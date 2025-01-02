@@ -12,44 +12,45 @@
 class Configuration
 {
 public:
-	String version = "0.0.0";
 	struct WiFiSettings
 	{
 		String ssid = "";
 		String password = "";
 	} wifi;
-	struct MQTTSettings
+	struct ManagerSettings
 	{
-		String server = "";
-		String port = "";
-		String username = "";
-		String password = "";
-	} mqtt;
-	struct SecuritySettings
+		struct ManagerAuthenticationSettings
+		{
+			String username = "";
+			String password = "";
+			String key = "";
+			int session_length = MAX_MANAGER_SESSION_LENGTH;
+		} authentication;
+	} manager;
+	struct AuthenticationSettings
 	{
 		struct PinSettings
 		{
 			String hash = "";
 			String key = "";
 		} pin;
-		int maxNumberOfWrongUnlockAttempts = MAX_NUMBER_OF_WRONG_UNLOCK_ATTEMPTS;
-	} security;
+		int unlock_attempts = MAX_UNLOCK_ATTEMPTS;
+	} authentication;
 	struct TouchSettings
 	{
-		bool forceCalibration = false;
+		bool calibrate = false;
 	} touch;
 	struct DisplaySettings
 	{
-		int sleepTimeout = 10;
+		int sleep_timeout = 10;
 	} display;
 
-	String serializeToJson(bool safe) const;
+	String to_json_string(bool safe) const;
 	static Configuration load();
-	static Configuration parse(const String &jsonString);
+	static Configuration parse(const String &json_string);
 	bool save() const;
-	bool is_secure();
-	bool is_mqtt_server_settings_configured();
-	bool is_mqtt_topic_credentials_configured();
+	bool is_authentication_configured();
+	bool is_manager_configured();
 };
 
 #endif // CONFIGURATION_H

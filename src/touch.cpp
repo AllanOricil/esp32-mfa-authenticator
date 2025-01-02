@@ -16,7 +16,7 @@ struct Calibration cal = {
     .y_max = 0};
 
 void init_touch(
-    bool force_calibration,
+    bool calibrate,
     TouchCallback single_touch_handler,
     TouchCallback double_touch_handler)
 {
@@ -32,7 +32,7 @@ void init_touch(
     digitalWrite(TOUCH_CS, HIGH);
     digitalWrite(TOUCH_CLK, LOW);
 
-    if ((!SPIFFS.begin(true)) || (!touch_load_calibration() || (force_calibration)))
+    if ((!SPIFFS.begin(true)) || (!touch_load_calibration() || (calibrate)))
     {
         ESP_LOGI(TAG, "touch must be calibrated");
         is_calibrated = false;

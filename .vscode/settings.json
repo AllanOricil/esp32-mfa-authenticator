@@ -79,6 +79,7 @@
     "stdbool.h": "c",
     "stdio.h": "c",
     "touch.h": "c",
-    "pin.h": "c"
+    "pin.h": "c",
+    "auth.h": "c"
   }
 }

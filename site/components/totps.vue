@@ -4,29 +4,31 @@
       <Totp :service="service"></Totp>
     </div>
   </draggable>
+  <div v-if="errorMessage" class="alert alert-danger mt-3" role="alert">
+    {{ errorMessage }}
+  </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
+import { ref, onBeforeMount } from "vue";
 import { VueDraggableNext } from "vue-draggable-next";
 import Totp from "~/components/totp.vue";
-import { defineComponent } from "vue";
+import ESP32MFAAuthenticatorClient from "@/api/esp32-mfa-authenticator-client";
 
-export default defineComponent({
-  name: "totps",
-  components: {
-    draggable: VueDraggableNext,
-  },
-  data() {
-    return {
-      services: [
-        { id: 1, name: "allanoricilcos@outlook.com" },
-        { id: 2, name: "allanoricilcos@outlook.com" },
-        { id: 3, name: "allanoricilcos@outlook.com" },
-        { id: 4, name: "allanoricilcos@outlook.com" },
-      ],
-    };
-  },
+const name = "totps";
+
+const services = ref([]);
+const errorMessage = ref(null);
+
+onBeforeMount(async () => {
+  try {
+    const client = new ESP32MFAAuthenticatorClient();
+    services.value = await client.fetchServices();
+  } catch (error) {
+    errorMessage.value = "Could not fetch services";
+  }
 });
+const draggable = VueDraggableNext;
 </script>
 
 <style></style>

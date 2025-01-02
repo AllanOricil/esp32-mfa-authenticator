@@ -97,41 +97,43 @@ You can flash your ESP32-CYD board with the latest build using this [site](https
 ### ⚙️ config.yml
 
 ```yml
-# [REQUIRED] necessary for enabling future changes
-version: 0.0.0
-
+# [REQUIRED] configure the credentials used to connect to a wifi network
 wifi:
   # [REQUIRED] (text) wifi connection password
   password: test
   # [REQUIRED] (text) wifi id
   ssid: test
 
-mqtt:
-  # [OPTIONAL] (text) mqtt server port
-  port: 1883
-  # [OPTIONAL] (text) mqtt server ip
-  server: 192.168.0.1
-  # [OPTIONAL] (text) mqtt connection username
-  username: test
-  # [OPTIONAL] (text) mqtt connection password
-  password: test
-
-security:
+# [REQUIRED] configure authentication for the board
+authentication:
   # [OPTIONAL] (number) [default 3] board is locked and requires a hard reset, after N wrong unlock attempts
-  max_number_of_wrong_unlock_attempts: 3
+  unlock_attempts: 3
   pin:
     # [OPTIONAL] (text) pin code composed of numbers only and HMAC-SHA256 hashed
     hash: test
     # [OPTIONAL] (text) key used to hash pin code
     key: test
 
+# [OPTIONAL] configure display settings
 display:
   # [OPTIONAL] (number) [default 10] if provided, the display will turn off after n seconds have passed
   sleep_timeout: 10
 
+# [OPTIONAL] configure touch settings
 touch:
   # [OPTIONAL] (bool=false|0) calibrate touch sensor if true or 1
-  force_calibration: 0
+  calibrate: 0
+
+# [OPTIONAL] configure authentication for the management app. The management app is enable only if username, password, key are set.
+manager:
+  # [REQUIRED] (text) username to start a session
+  username:
+  # [REQUIRED] (text) HMAC-SHA256 hashed password to start a session
+  password:
+  # [REQUIRED] (text) key used to hash the password
+  key:
+  # [REQUIRED] (number) [default 5] amount of minutes for the session duration
+  session_length: 5
 ```
 
 > [!IMPORTANT]
@@ -251,7 +253,7 @@ services:
 
 ```yml
 touch:
-  force_calibration: true
+  calibrate: true
 ```
 
 3. Insert the SD card with the updated `config.yml` into your board.
@@ -265,7 +267,7 @@ touch:
 
 ```yml
 touch:
-  force_calibration: false
+  calibrate: false
 ```
 
 8. Save the file, insert the SD card back into the board, and reboot by pressing the `RST` button.
@@ -310,7 +312,7 @@ When the board is connected to your local network, a settings page, similarly to
 - set `key` with the secret you got in step 1
 
 ```yml
-security:
+authentication:
   pin:
     hash: 7dbd45736c57090dd62a7e1c8db1a08c353b4a836f2c6b43fd1dd3f1e747ea59
     key: TUwNzIxF5lJncAJVMkmb4EiSP9vm0OyF
@@ -339,7 +341,7 @@ echo -n "YOUR_PIN_NUMBER" | openssl dgst -sha256 -hmac "YOUR_32_CHARACTERS_LONG_
 - set `key` with the secret you got in step 1
 
 ```yml
-security:
+authentication:
   pin:
     hash: 7dbd45736c57090dd62a7e1c8db1a08c353b4a836f2c6b43fd1dd3f1e747ea59
     key: TUwNzIxF5lJncAJVMkmb4EiSP9vm0OyF

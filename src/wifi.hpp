@@ -5,6 +5,6 @@
 #include <esp_log.h>
 #include "config.hpp"
 
-void init_wifi(Configuration config);
+String init_wifi(Configuration config);
 
 #endif // WIFI_H
