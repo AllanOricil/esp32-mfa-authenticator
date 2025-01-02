@@ -1,3 +1,26 @@
+# [0.18.0](https://github.com/AllanOricil/esp32-mfa-authenticator/compare/v0.17.0...v0.18.0) (2025-01-02)
+
+
+### Bug Fixes
+
+* ensure resource routes validate session before providing data ([bedc219](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/bedc219b5f23e297ad057ef94f351e95afb66ce4))
+* improve auth api ([df985c1](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/df985c11a482effc949ea63a48f5c576e945d84a))
+* invalid password ([ef09c45](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/ef09c45bbe81704bb73689c11f3be43c7d07188c))
+* **manager:** error while validating session ([f7ddbba](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/f7ddbbaebb753a8a71dbbf141716734c49bdbd58))
+* **manager:** page not loading because assets are missing ([af81775](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/af81775c1973b85db1d53854eaa253b566d39095))
+* **manager:** re-auth during hard refreshes while session cookie ([13e8cea](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/13e8ceabb4b4aba6b69d2f6de3cef586ad866be9))
+* **manager:** unauthorized due to missing session ([9a2b3c4](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/9a2b3c46d7e8640befc365fecda328344f40eee1))
+
+
+### Features
+
+* add username/password auth route in the manager server ([e38fe39](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/e38fe39147ab3196364a5b143ce4e6f7ac4a6cc9))
+* enable manager only if username, password and key are set in config.yml ([6e299be](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/6e299be6c3c1e0bf0509fb97545670dcc190da60))
+* **manager:** add authentication with username and password ([cc01402](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/cc014029fddbf44ab7f08af0a63dbb5d7547c8a0))
+* **manager:** add fetchServices and updateServices to esp32-mfa-authenticator client ([c615cb3](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/c615cb3116aec5c6ac3f91b8970d7a6a23902c50))
+* **manager:** add first iteration of the icon ([0e92fc6](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/0e92fc6a93994a95b79b8b9362e8ff2e05dd02c3))
+* **manager:** fetch services from server ([2b51738](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/2b5173886dc32564b6153bcf05133e786df9f626))
+
 # [0.17.0](https://github.com/AllanOricil/esp32-mfa-authenticator/compare/v0.16.0...v0.17.0) (2024-12-30)
 
 
