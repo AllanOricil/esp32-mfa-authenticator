@@ -21,9 +21,10 @@ public:
 	{
 		struct ManagerAuthenticationSettings
 		{
-			String username = "admin";
+			String username = "";
 			String password = "";
 			String key = "";
+			int session_length = MAX_MANAGER_SESSION_LENGTH;
 		} authentication;
 	} manager;
 	struct AuthenticationSettings

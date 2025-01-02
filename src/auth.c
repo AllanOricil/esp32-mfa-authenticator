@@ -2,11 +2,102 @@
 
 static const char *TAG = "auth";
 
-char *pin_hash = NULL;
-char *pin_key = NULL;
-char *manager_username = NULL;
-char *manager_password = NULL;
-char *manager_key = NULL;
+char *_pin_hash = NULL;
+char *_pin_key = NULL;
+char *_manager_username = NULL;
+char *_manager_password = NULL;
+char *_manager_key = NULL;
+int _manager_session_length = MAX_MANAGER_SESSION_LENGTH;
+
+session *current_session = NULL;
+
+static char *generate_session_id()
+{
+	const char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	size_t length = 32;
+	char *session_id = malloc(length + 1);
+
+	if (session_id == NULL)
+		return NULL;
+
+	for (size_t i = 0; i < length; i++)
+	{
+		session_id[i] = charset[rand() % (sizeof(charset) - 1)];
+	}
+	session_id[length] = '\0';
+
+	return session_id;
+}
+
+bool create_session(const char *username)
+{
+	if (current_session != NULL)
+	{
+		ESP_LOGW(TAG, "session already exists. Destroying existing session.");
+		destroy_session();
+	}
+
+	current_session = malloc(sizeof(session));
+	if (current_session == NULL)
+	{
+		ESP_LOGE(TAG, "failed to allocate memory for session.");
+		return false;
+	}
+
+	current_session->session_id = generate_session_id();
+	current_session->username = strdup(username);
+	current_session->expiration = time(NULL) + _manager_session_length * 60;
+
+	if (current_session->session_id == NULL || current_session->username == NULL)
+	{
+		ESP_LOGE(TAG, "failed to create session.");
+		destroy_session();
+		return false;
+	}
+
+	ESP_LOGI(TAG, "session created for user: %s", username);
+	ESP_LOGI(TAG, "session ID: %s", current_session->session_id);
+
+	return true;
+}
+
+bool validate_session(const char *session_id)
+{
+	if (current_session == NULL)
+	{
+		ESP_LOGW(TAG, "mo active session.");
+		return false;
+	}
+
+	if (strcmp(current_session->session_id, session_id) != 0)
+	{
+		ESP_LOGW(TAG, "invalid session ID.");
+		return false;
+	}
+
+	if (time(NULL) > current_session->expiration)
+	{
+		ESP_LOGW(TAG, "session expired.");
+		destroy_session();
+		return false;
+	}
+
+	ESP_LOGI(TAG, "session is valid for user: %s", current_session->username);
+	return true;
+}
+
+void destroy_session()
+{
+	if (current_session != NULL)
+	{
+		free(current_session->session_id);
+		free(current_session->username);
+		free(current_session);
+		current_session = NULL;
+
+		ESP_LOGI(TAG, "session destroyed.");
+	}
+}
 
 unsigned char *hex_to_bin(const char *hex_string)
 {
@@ -40,7 +131,7 @@ void print_hash(unsigned char *hash, size_t length)
 	}
 }
 
-static bool generate_hmac(const char *key, const char *data, unsigned char *output, size_t output_size)
+static bool hash(const char *key, const char *data, unsigned char *output, size_t output_size)
 {
 	if (key == NULL || data == NULL || output == NULL || output_size < 32)
 	{
@@ -87,70 +178,69 @@ static bool generate_hmac(const char *key, const char *data, unsigned char *outp
 	return true;
 }
 
+session *authenticate(const char *username, const char *password)
+{
+	if (username == NULL)
+	{
+		ESP_LOGE(TAG, "username is empty");
+		return NULL;
+	}
+
+	if (password == NULL)
+	{
+		ESP_LOGE(TAG, "password is empty");
+		return NULL;
+	}
+
+	if (strcmp(username, _manager_username) != 0)
+	{
+		ESP_LOGW(TAG, "invalid username");
+		return NULL;
+	}
+
+	unsigned char generated_hash[32];
+	if (!hash(_manager_key, password, generated_hash, sizeof(generated_hash)))
+	{
+		ESP_LOGE(TAG, "invalid password");
+		return NULL;
+	}
+
+	if (!create_session(username))
+	{
+		return NULL;
+	}
+
+	return current_session;
+}
+
 bool validate_pin(const char *pin)
 {
 	if (strlen(pin) < PIN_MIN_LENGTH)
 		return false;
 
 	unsigned char generated_hash[32];
-	if (!generate_hmac((char *)pin_key, pin, generated_hash, sizeof(generated_hash)))
+	if (!hash(_pin_key, pin, generated_hash, sizeof(generated_hash)))
 	{
 		return false;
 	}
 
-	return memcmp(generated_hash, hex_to_bin(pin_hash), sizeof(generated_hash)) == 0;
+	return memcmp(generated_hash, hex_to_bin(_pin_hash), sizeof(generated_hash)) == 0;
 }
 
-bool authenticate(const char *username, const char *password)
+void init_auth(
+	const char *pin_hash,
+	const char *pin_key,
+	const char *manager_username,
+	const char *manager_password,
+	const char *manager_key,
+	const int manager_session_length)
 {
-	if (username == NULL)
-	{
-		ESP_LOGE(TAG, "username is empty");
-		return false;
-	}
-
-	if (password == NULL)
-	{
-		ESP_LOGE(TAG, "password is empty");
-		return false;
-	}
-
-	if (strcmp(username, manager_username) != 0)
-	{
-		ESP_LOGW(TAG, "invalid username");
-		return false;
-	}
-
-	unsigned char generated_hash[32];
-	if (!generate_hmac(manager_key, password, generated_hash, sizeof(generated_hash)))
-	{
-		return false;
-	}
-
-	unsigned char *stored_hash = hex_to_bin(manager_password);
-	if (stored_hash == NULL)
-	{
-		ESP_LOGE(TAG, "failed to convert stored password hash to binary");
-		return false;
-	}
-
-	bool is_valid = memcmp(generated_hash, stored_hash, sizeof(generated_hash)) == 0;
-
-	free(stored_hash);
-
-	if (!is_valid)
-	{
-		ESP_LOGW(TAG, "invalid password");
-	}
-
-	return is_valid;
-}
-
-void init_auth(const char *pin_hash, const char *pin_key, const char *manager_username, const char *manager_password, const char *manager_key)
-{
-	pin_hash = strdup(pin_hash);
-	pin_key = strdup(pin_key);
-	manager_username = strdup(manager_username);
-	manager_password = strdup(manager_password);
-	manager_key = strdup(manager_key);
+	ESP_LOGI(TAG, "initializing auth");
+	_pin_hash = strdup(pin_hash);
+	_pin_key = strdup(pin_key);
+	_manager_username = strdup(manager_username);
+	_manager_password = strdup(manager_password);
+	_manager_key = strdup(manager_key);
+	_manager_session_length = manager_session_length;
+	ESP_LOGI(TAG, "auth initialized");
 }

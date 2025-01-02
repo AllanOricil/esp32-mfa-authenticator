@@ -41,11 +41,12 @@ void setup()
       config.authentication.pin.key.c_str(),
       config.manager.authentication.username.c_str(),
       config.manager.authentication.password.c_str(),
-      config.manager.authentication.key.c_str());
+      config.manager.authentication.key.c_str(),
+      config.manager.authentication.session_length);
   init_touch_screen(config);
-  init_wifi(config);
+  const char *local_network_ip = init_wifi(config).c_str();
   init_clock();
-  init_manager(config);
+  init_manager(config, local_network_ip);
   init_ui(
       config.is_authentication_configured(),
       config.authentication.unlock_attempts);

@@ -26,6 +26,7 @@ String Configuration::to_json_string(bool safe) const
 	JsonObject _manager_authentication = _manager.createNestedObject("authentication");
 	_manager_authentication["username"] = manager.authentication.username;
 	_manager_authentication["password"] = manager.authentication.password;
+	_manager_authentication["session_length"] = manager.authentication.session_length;
 
 	String json;
 	serializeJson(doc, json);
@@ -88,8 +89,7 @@ Configuration Configuration::load()
 		if (!root["display"]["sleep_timeout"].isNull())
 		{
 			int sleep_timeout = string_2_int(root.gettext("display:sleep_timeout"));
-			config.display.sleep_timeout = sleep_timeout > 0 ? sleep_timeout
-															 : SLEEP_TIMEOUT;
+			config.display.sleep_timeout = sleep_timeout > 0 ? sleep_timeout : SLEEP_TIMEOUT;
 		}
 	}
 
@@ -111,6 +111,12 @@ Configuration Configuration::load()
 			if (!root["manager"]["authentication"]["password"].isNull())
 			{
 				config.manager.authentication.password = root.gettext("manager:authentication:password");
+			}
+
+			if (!root["manager"]["authentication"]["session_length"].isNull())
+			{
+				int session_length = string_2_int(root.gettext("manager:authentication:session_length"));
+				config.manager.authentication.session_length = session_length > 0 ? session_length : MAX_MANAGER_SESSION_LENGTH;
 			}
 		}
 	}

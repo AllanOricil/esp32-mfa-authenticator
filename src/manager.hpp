@@ -5,10 +5,11 @@
 #include <ESPAsyncWebServer.h>
 #include <SPIFFS.h>
 #include <esp_log.h>
+#include "auth.h"
 #include "constants.h"
 #include "config.hpp"
-#include "auth.h"
+#include "utils.hpp"
 
-void init_manager(Configuration config);
+void init_manager(Configuration config, const char *local_network_ip);
 
 #endif // MANAGER_H

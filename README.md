@@ -97,12 +97,14 @@ You can flash your ESP32-CYD board with the latest build using this [site](https
 ### ⚙️ config.yml
 
 ```yml
+# [REQUIRED] configure the credentials used to connect to a wifi network
 wifi:
   # [REQUIRED] (text) wifi connection password
   password: test
   # [REQUIRED] (text) wifi id
   ssid: test
 
+# [REQUIRED] configure authentication for the board
 authentication:
   # [OPTIONAL] (number) [default 3] board is locked and requires a hard reset, after N wrong unlock attempts
   unlock_attempts: 3
@@ -112,13 +114,26 @@ authentication:
     # [OPTIONAL] (text) key used to hash pin code
     key: test
 
+# [OPTIONAL] configure display settings
 display:
   # [OPTIONAL] (number) [default 10] if provided, the display will turn off after n seconds have passed
   sleep_timeout: 10
 
+# [OPTIONAL] configure touch settings
 touch:
   # [OPTIONAL] (bool=false|0) calibrate touch sensor if true or 1
   calibrate: 0
+
+# [REQUIRED] configure authentication for the management app
+manager:
+  # [OPTIONAL] (text) username to access the management app
+  username:
+  # [OPTIONAL] (text) HMAC-SHA256 hashed password
+  password:
+  # [OPTIONAL] (text) key used to hash the password
+  key:
+  # [OPTIONAL] (number) [default 5] amount of minutes for the session duration
+  session_length: 5
 ```
 
 > [!IMPORTANT]

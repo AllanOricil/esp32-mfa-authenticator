@@ -16,9 +16,24 @@ extern "C"
 {
 #endif
 
-	void init_auth(const char *hash, const char *key);
+	typedef struct
+	{
+		char *session_id;
+		char *username;
+		time_t expiration;
+	} session;
+
+	void init_auth(
+		const char *pin_hash,
+		const char *pin_key,
+		const char *manager_username,
+		const char *manager_password,
+		const char *manager_key,
+		const int manager_session_length);
 	bool validate_pin(const char *pin);
-	bool authenticate(const char *username, const char *password);
+	session *authenticate(const char *username, const char *password);
+	bool validate_session(const char *session_id);
+	void destroy_session();
 
 #ifdef __cplusplus
 }

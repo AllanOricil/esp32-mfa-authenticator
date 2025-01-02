@@ -50,3 +50,11 @@ int string_2_int(const char *input)
   int parsed_input = atoi(input);
   return parsed_input >= 0 ? parsed_input : 0;
 }
+
+String format_time_to_UTC_String(time_t timeValue)
+{
+  char buffer[80];
+  struct tm *gmt = gmtime(&timeValue);
+  strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S GMT", gmt);
+  return String(buffer);
+}

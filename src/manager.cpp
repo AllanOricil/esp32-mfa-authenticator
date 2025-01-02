@@ -18,7 +18,24 @@ bool validate_file_exists(const char *path)
 	}
 }
 
-void init_manager(Configuration config)
+String getCookie(AsyncWebServerRequest *request, const String &cookieName)
+{
+	String cookies = request->header("Cookie");
+	int startPos = cookies.indexOf(cookieName + "=");
+	if (startPos != -1)
+	{
+		startPos += cookieName.length() + 1;
+		int endPos = cookies.indexOf(";", startPos);
+		if (endPos == -1)
+		{
+			endPos = cookies.length();
+		}
+		return cookies.substring(startPos, endPos);
+	}
+	return "";
+}
+
+void init_manager(Configuration config, const char *local_network_ip)
 {
 	ESP_LOGI(TAG, "initializing manager server");
 
@@ -67,8 +84,9 @@ void init_manager(Configuration config)
 			request->send(SPIFFS, "/favicon.ico", "image/x-icon");
 		});
 
+	// NOTE: api routes
 	server.on(
-		"/api/v1/auth",
+		"/api/v1/auth/login",
 		HTTP_POST,
 		[](AsyncWebServerRequest *request) {},
 		nullptr,
@@ -92,15 +110,20 @@ void init_manager(Configuration config)
 				if (!username || !password)
 				{
 					ESP_LOGE(TAG, "missing username or password in JSON");
-					request->send(400, "application/json", "{\"message\":\"Username or password missing\"}");
+					request->send(400, "application/json", "{\"message\":\"username or password missing\"}");
 					return;
 				}
 
-				if (authenticate(username, password))
+				session *session = authenticate(username, password);
+				if (session != nullptr)
 				{
 					ESP_LOGI(TAG, "authentication successful, session token set");
 
-					request->send(200, "application/json", "{\"message\":\"authentication successful\"}");
+					// NOTE: only this server can use this session token from js
+					String cookie = "esp32_mfa_authenticator_session_id=" + String(session->session_id) + "; Expires=" + format_time_to_UTC_String(session->expiration) + "; Path=/; HttpOnly; SameSite=Strict";
+					AsyncWebServerResponse *response = request->beginResponse(200, "application/json", "{\"message\":\"authentication successful\"}");
+					response->addHeader("Set-Cookie", cookie);
+					request->send(response);
 				}
 				else
 				{
@@ -114,11 +137,65 @@ void init_manager(Configuration config)
 			}
 		});
 
-	// NOTE: api routes
+	server.on(
+		"/api/v1/auth/logout",
+		HTTP_POST,
+		[](AsyncWebServerRequest *request)
+		{
+			try
+			{
+				destroy_session();
+				String cookie = "esp32_mfa_authenticator_session_id=; Expires=0; Max-Age=0; Path=/; HttpOnly; SameSite=Strict";
+				AsyncWebServerResponse *response = request->beginResponse(200, "application/json", "{\"message\":\"logout successful\"}");
+				response->addHeader("Set-Cookie", cookie);
+				request->send(response);
+				ESP_LOGI(TAG, "logout successful, session token cleared");
+			}
+			catch (const std::exception &e)
+			{
+				ESP_LOGE(TAG, "error while logging out: %s", e.what());
+				request->send(500, "application/json", "{\"message\":\"something went wrong\"}");
+			}
+		});
+
+	server.on(
+		"/api/v1/auth/validate",
+		HTTP_POST,
+		[](AsyncWebServerRequest *request)
+		{
+			try
+			{
+				String session_id = getCookie(request, "esp32_mfa_authenticator_session_id");
+				if (session_id != "")
+				{
+					if (validate_session(session_id.c_str()))
+					{
+						request->send(200, "application/json", "{\"message\":\"session valid\"}");
+						ESP_LOGI(TAG, "session validated successfully");
+					}
+					else
+					{
+						request->send(401, "application/json", "{\"message\":\"session invalid\"}");
+						ESP_LOGI(TAG, "session invalid");
+					}
+				}
+				else
+				{
+					request->send(401, "application/json", "{\"message\":\"session not found\"}");
+					ESP_LOGI(TAG, "session not found");
+				}
+			}
+			catch (const std::exception &e)
+			{
+				ESP_LOGE(TAG, "error while validating session: %s", e.what());
+				request->send(500, "application/json", "{\"message\":\"something went wrong\"}");
+			}
+		});
+
 	server.on(
 		"/api/v1/config",
 		HTTP_GET,
-		[](AsyncWebServerRequest *request)
+		[config](AsyncWebServerRequest *request)
 		{
 			request->send(200, "application/json", config.to_json_string(true));
 		});
@@ -128,7 +205,7 @@ void init_manager(Configuration config)
 		HTTP_PUT,
 		[](AsyncWebServerRequest *request) {},
 		nullptr,
-		[](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+		[config](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
 		{
 			try
 			{
@@ -150,9 +227,21 @@ void init_manager(Configuration config)
 
 	ESP_LOGD(TAG, "server routes configured");
 
-	DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
+	// NOTE: these are some of helmet headers I got from one of many of my servers built with express
+	DefaultHeaders::Instance().addHeader("X-Content-Type-Options", "nosniff");
+	DefaultHeaders::Instance().addHeader("X-Frame-Options", "DENY");
+	DefaultHeaders::Instance().addHeader("X-XSS-Protection", "1; mode=block");
+	// TODO: add this if config.manager.baseURL is set with a reverse proxy one ? have to try
+	// DefaultHeaders::Instance().addHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
+	DefaultHeaders::Instance().addHeader("Referrer-Policy", "no-referrer");
+	DefaultHeaders::Instance().addHeader("Permissions-Policy", "geolocation=(), microphone=()");
+
+	// TODO: allow configuring this using config.manager.baseURL
+	DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", String("http://") + local_network_ip);
 	DefaultHeaders::Instance().addHeader("Access-Control-Allow-Methods", "GET, PUT, OPTIONS");
-	DefaultHeaders::Instance().addHeader("Access-Control-Allow-Headers", "Content-Type");
+	DefaultHeaders::Instance().addHeader("Access-Control-Allow-Headers", "Content-Type, Cookie");
+	DefaultHeaders::Instance().addHeader("Access-Control-Allow-Credentials", "true");
+	DefaultHeaders::Instance().addHeader("Access-Control-Max-Age", "3600");
 
 	server.begin();
 
