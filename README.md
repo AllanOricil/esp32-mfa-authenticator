@@ -92,7 +92,7 @@ You can flash your ESP32-CYD board with the latest build using this [site](https
 ## 🔌 Boot and Reset Requirements
 
 - 2.4Ghz WiFi signal with internet connection, in order to sync the board's clock with the [NTP server](https://ntp.org/).
-- SD card with `config.yml` in the root as shown below:
+- SD card with `config.yml` and `services.yml` files in the root, as shown below:
 
 ### ⚙️ config.yml
 
@@ -147,6 +147,18 @@ manager:
 > [!NOTE]
 > A pink screen appears to indicate that both `config.yml` and `services.yml` have been parsed and loaded into memory.
 
+### 🔒 services.yml
+
+```yml
+# [REQUIRED] (list) stores a list of services
+services:
+  # [REQUIRED] (text) unique name for a service in a group. It must not exceed 60 characters.
+  - name: abc
+    # [REQUIRED] (text) Base32 encoded secret for the service.
+    secret: abc
+    # [OPTIONAL] (number) [default 0] it also defaults to 0 if < 0 or > 9
+    group: 0
+```
 
 ## 📖 Guides
 
