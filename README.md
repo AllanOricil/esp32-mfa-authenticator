@@ -129,11 +129,11 @@ manager:
   # [OPTIONAL] configure authentication for the management app. The management app is enabled only if username, password, key are set.
   authentication:
     # [REQUIRED] (text) username to start a session
-    username:
+    username: admin
     # [REQUIRED] (text) HMAC-SHA256 hashed password to start a session
-    password:
-    # [REQUIRED] (text) key used to hash the password
-    key:
+    password: 7dbd45736c57090dd62a7e1c8db1a08c353b4a836f2c6b43fd1dd3f1e747ea59
+    # [REQUIRED] (text) 32 characters key used to hash the password
+    key: TUwNzIxF5lJncAJVMkmb4EiSP9vm0OyF
     # [OPTIONAL] (number) [default 5] amount of minutes for the session duration
     session_length: 5
 ```
