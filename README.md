@@ -153,7 +153,7 @@ manager:
 ### 📚 How to navigate and control the board
 
 - <b>Change groups:</b> Swipe left or right to navigate between different groups.
-- <b>Lock Screen:</b> Tap twice to lock the screen.
+- <b>Lock:</b> Tap twice on the screen to lock the board.
 - <b>Wake up:</b> Tap once to wake up the board.
 
 ### 📚 How to build using PlatformIO CLI
