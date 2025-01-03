@@ -319,7 +319,7 @@ authentication:
   pin:
     hash: 7dbd45736c57090dd62a7e1c8db1a08c353b4a836f2c6b43fd1dd3f1e747ea59
     key: TUwNzIxF5lJncAJVMkmb4EiSP9vm0OyF
-  max_number_of_wrong_unlock_attempts: 3
+  unlock_attempts: 3
 ```
 
 #### Option 2
@@ -349,6 +349,18 @@ authentication:
     hash: 7dbd45736c57090dd62a7e1c8db1a08c353b4a836f2c6b43fd1dd3f1e747ea59
     key: TUwNzIxF5lJncAJVMkmb4EiSP9vm0OyF
   unlock_attempts: 3
+```
+
+### 📚 How to setup the Password for the Management App
+
+The steps to generate the password for the management app are the same as those used to set up the PIN. Once the password is created, add the following properties to your `config.yml`:
+
+```yml
+manager:
+  authentication:
+    username: admin
+    password: 7dbd45736c57090dd62a7e1c8db1a08c353b4a836f2c6b43fd1dd3f1e747ea59
+    key: TUwNzIxF5lJncAJVMkmb4EiSP9vm0OyF
 ```
 
 ## 🎯 Roadmap
