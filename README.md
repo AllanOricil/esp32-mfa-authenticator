@@ -110,9 +110,9 @@ authentication:
   unlock_attempts: 3
   pin:
     # [OPTIONAL] (text) pin code composed of numbers only and HMAC-SHA256 hashed
-    hash: test
+    hash: 7dbd45736c57090dd62a7e1c8db1a08c353b4a836f2c6b43fd1dd3f1e747ea59
     # [OPTIONAL] (text) key used to hash pin code
-    key: test
+    key: TUwNzIxF5lJncAJVMkmb4EiSP9vm0OyF
 
 # [OPTIONAL] configure display settings
 display:
