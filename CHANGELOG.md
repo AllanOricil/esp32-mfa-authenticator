@@ -1,3 +1,10 @@
+# [0.19.0](https://github.com/AllanOricil/esp32-mfa-authenticator/compare/v0.18.0...v0.19.0) (2025-01-04)
+
+
+### Features
+
+* there can exist up to 100 services divided between 10 groups ([981f14c](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/981f14c8ae3e623d8735208c4cc5ed7bca4f2f01))
+
 # [0.18.0](https://github.com/AllanOricil/esp32-mfa-authenticator/compare/v0.17.0...v0.18.0) (2025-01-02)
 
 
