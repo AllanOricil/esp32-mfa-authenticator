@@ -26,18 +26,10 @@ void on_totp_screen_gesture(lv_event_t *e)
 
     if (group_changed)
     {
-        int active_group_length = get_active_services_group_length();
-        if (!active_group_length)
-        {
-            ui_totp_screen_render_active_group_index();
-        }
-        else
-        {
-            update_totps();
-            ui_totp_screen_render_totp_components();
-            ui_totp_screen_update_totp_labels();
-            ui_totp_screen_update_totp_countdowns();
-        }
+        update_totps();
+        ui_totp_screen_render_totp_components();
+        ui_totp_screen_update_totp_labels();
+        ui_totp_screen_update_totp_countdowns();
     }
 }
 

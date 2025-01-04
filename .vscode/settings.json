@@ -80,6 +80,7 @@
     "stdio.h": "c",
     "touch.h": "c",
     "pin.h": "c",
-    "auth.h": "c"
+    "auth.h": "c",
+    "esp_log.h": "c"
   }
 }

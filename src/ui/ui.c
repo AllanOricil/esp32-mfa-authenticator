@@ -1,5 +1,7 @@
 #include "ui.h"
 
+static const char *TAG = "ui";
+
 uint32_t LV_EVENT_SETUP_COMPLETE;
 lv_obj_t *ui_init_screen;
 lv_obj_t *ui_totp_screen;
@@ -59,6 +61,7 @@ void init_ui(
     bool display_pin_screen,
     int max_unlock_attempts)
 {
+    ESP_LOGI(TAG, "initializing ui");
     config.display_pin_screen = display_pin_screen;
     config.unlock_attempts = max_unlock_attempts;
     config.max_unlock_attempts = max_unlock_attempts;
@@ -76,6 +79,7 @@ void init_ui(
     ui_touch_calibration_screen_init();
     ui_totp_screen_init();
     ui_pin_screen_init();
+    ESP_LOGI(TAG, "ui initialized");
 }
 
 void load_first_screen()

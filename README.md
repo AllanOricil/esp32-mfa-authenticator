@@ -156,7 +156,7 @@ services:
   - name: abc
     # [REQUIRED] (text) Base32 encoded secret for the service.
     secret: abc
-    # [OPTIONAL] (number) [default 0] it also defaults to 0 if < 0 or > 9
+    # [OPTIONAL] (number) [default 0] it must be an integer between 0 and 255. It is used to group services and determine their priority. Services with smaller group numbers are rendered first. For instance, services assigned to group 100 will be rendered before those in group 255. In a services file. you can have up to 150 services.
     group: 0
 ```
 
@@ -195,20 +195,7 @@ platformio device monitor
 
 ### 📚 How to register a Service
 
-Services are registered in a file called `services.yml` that must be located in the root of an SD card. It must follow the schema shown below:
-
-```yml
-# [REQUIRED] (list) stores a list of services
-services:
-  # [REQUIRED] (text) unique name for a service in a group. It must not exceed 60 characters.
-  - name: abc
-    # [REQUIRED] (text) Base32 encoded secret for the service.
-    secret: abc
-    # [OPTIONAL] (number) [default 0] it also defaults to 0 if < 0 or > 9
-    group: 0
-```
-
-For example:
+Services are registered in a file called `services.yml` that must be located in the root of an SD card. For example:
 
 ```yml
 services:
@@ -242,19 +229,19 @@ services:
 ```
 
 > [!IMPORTANT]
-> At present, you can create up to 10 groups, with each group containing up to 10 services.
+> At present, you can register up to 100 services divided across 10 groups.
 
 > [!IMPORTANT]
 > The service name must not exceed 60 characters.
 
 > [!IMPORTANT]
+> The service group must be between 0 and 255. If you don't set a value, it will default to 0.
+
+> [!IMPORTANT]
 > Secrets must be stored unencrypted and encoded using Base32. All MFA services I tried already provide secrets in Base32 encoding. If you find one that does not, ensure the secret is Base32 encoded before adding it to the file.
 
 > [!IMPORTANT]
-> If you don't set the "group" property for a service, it will default to 0. Additionally, if the "group" property is less than 0 or greater than 9, it will also default to 0.
-
-> [!IMPORTANT]
-> The service name acts as a unique key within a group. If two services share the same key within the same group, the last one listed in the file will be the one used.
+> The service name acts as a unique key within a group. If two services share the same key within the same group, the last one listed in the file will be the one used because it was the last service to be added in the db.
 
 ### 📚 How to verify if TOTP codes are correct
 

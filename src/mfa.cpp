@@ -6,19 +6,25 @@ void update_totps()
 {
   ESP_LOGI(TAG, "updating totps for the active services group");
   unsigned long elapsed_number_of_time_steps = get_elapsed_number_of_time_steps();
-  for (int i = 0; i < get_active_services_group_length(); i++)
+
+  Service *services = get_services();
+  uint8_t active_group = get_active_group();
+  for (int i = 0; i < MAX_NUMBER_OF_SERVICES; i++)
   {
-    Service service = get_active_services_group()[i];
-    TOTP totp(service.secret.value, service.secret.length);
-    char *new_totp = totp.getCodeFromSteps(elapsed_number_of_time_steps);
-    upsert_service_totp_in_active_services_group_by_name(service.name, new_totp);
+    Service *service = &services[i];
+    if (service->group == active_group)
+    {
+      TOTP totp(service->secret.value, service->secret.length);
+      char *new_totp = totp.getCodeFromSteps(elapsed_number_of_time_steps);
+      update_service_totp_in_active_services_group_by_name(service->name, new_totp);
+    }
   }
   ESP_LOGI(TAG, "all tots in the active services group were updated");
 }
 
 void load_services()
 {
-  clear_all_services_groups();
+  clear_all_services();
   ESP_LOGI(TAG, "loading services");
 
   if (!SD.exists(SERVICES_FILE_PATH))
@@ -75,11 +81,11 @@ void load_services()
       ESP_LOGD(TAG, "secret %s", secret);
       Secret new_secret = decode_encoded_base32_secret(secret);
 
-      int service_group = 0;
+      uint8_t service_group = 0;
       if (!service["group"].isNull())
       {
-        service_group = string_2_int(service.gettext("group"));
-        if (service_group < 0 || service_group > (MAX_NUMBER_OF_GROUPS - 1))
+        service_group = (uint8_t)string_2_int(service.gettext("group"));
+        if (service_group < 0)
         {
           ESP_LOGD(TAG, "service %s is not configured with group, so its going to be stored in group 0", name);
           service_group = 0;
@@ -87,15 +93,13 @@ void load_services()
       }
       ESP_LOGD(TAG, "group %d", service_group);
 
-      upsert_service_in_group_by_name(service_group, name, new_secret.length, new_secret.value);
+      upsert_service_by_name_and_group(name, service_group, new_secret.length, new_secret.value);
 
       ESP_LOGD(TAG, "service was loaded");
     }
   }
 
   file.close();
-  print_all_services_groups();
-
   ESP_LOGI(TAG, "all services were loaded");
 }
 
