@@ -22,25 +22,19 @@ extern "C"
             int length;
             uint8_t *value;
         } secret;
+        uint8_t group;
         char totp[MAX_TOTP_LENGTH];
     } Service;
 
-    int find_service_index_in_group_by_name(int group, const char *name);
-    bool upsert_service_in_group_by_name(int group, const char *name, int secret_length, uint8_t *secret_value);
-    bool upsert_service_totp_in_active_services_group_by_name(const char *name, char totp[]);
-    Service *get_service_in_group_by_index(int group, int index);
-    Service *get_active_services_group();
-    int get_services_group_length(int group);
-    int get_active_services_group_length();
-    void clear_all_services_groups();
-    void clear_all_services_in_group(int group);
-    void set_active_group(int group);
-    int get_active_group();
+    int find_service_index_by_name_and_group(const char *name, uint8_t group);
+    bool upsert_service_by_name_and_group(const char *name, uint8_t group, int secret_length, uint8_t *secret_value);
+    bool update_service_totp_in_active_services_group_by_name(const char *name, char totp[]);
+    void clear_all_services();
+    uint8_t get_active_group();
+    Service *get_services();
     bool change_active_group_left();
     bool change_active_group_right();
-    void print_service_group(int group);
-    void print_all_services_groups();
-    void print_active_services_group();
+    void print_all_services();
 
 #ifdef __cplusplus
 }

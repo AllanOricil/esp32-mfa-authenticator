@@ -8,11 +8,11 @@
 
 // NOTE: all totps must have a period of 30 seconds, for now
 #define TOTP_PERIOD 30
-// NOTE: this limitation is due to the YAML parser
 // NOTE: max number of groups of services.
 #define MAX_NUMBER_OF_GROUPS 10
 // NOTE: due to mem limits there has to exist a max number of services we can generate TOTPs for
-#define MAX_NUMBER_OF_SERVICES 10
+// NOTE: the YAML parser is limiting this number. It could be 150, but the parser can handle up to 113.
+#define MAX_NUMBER_OF_SERVICES 100
 // NOTE: 60 digits + 1 for the null-terminating character
 #define MAX_SERVICE_NAME_LENGTH 61
 

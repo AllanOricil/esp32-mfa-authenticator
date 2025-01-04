@@ -1,6 +1,8 @@
 #ifndef UI_H
 #define UI_H
 
+#include <esp_log.h>
+
 #ifdef __cplusplus
 extern "C"
 {

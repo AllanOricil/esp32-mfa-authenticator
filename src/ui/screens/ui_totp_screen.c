@@ -8,9 +8,12 @@
 lv_obj_t *create_totp_component(
     lv_obj_t *parent,
     const char *service,
-    const char *totp)
+    const char *totp,
+    const int index)
 {
     lv_obj_t *container = lv_obj_create(parent);
+    // NOTE: this is used to find which index of
+    container->user_data = index;
     lv_obj_set_width(container, 150);
     lv_obj_set_height(container, LV_SIZE_CONTENT);
     lv_obj_set_flex_flow(container, LV_FLEX_FLOW_COLUMN);
@@ -73,10 +76,15 @@ void ui_totp_screen_init(void)
 void ui_totp_screen_render_totp_components(void)
 {
     lv_obj_clean(ui_totp_screen);
-    for (int i = 0; i < get_active_services_group_length(); ++i)
+    Service *services = get_services();
+    uint8_t active_group = get_active_group();
+    for (int i = 0; i < MAX_NUMBER_OF_SERVICES; i++)
     {
-        Service service = get_active_services_group()[i];
-        create_totp_component(ui_totp_screen, service.name, service.totp);
+        Service *service = &services[i];
+        if (service->name[0] != '\0' && service->group == active_group)
+        {
+            create_totp_component(ui_totp_screen, service->name, service->totp, i);
+        }
     }
 }
 
@@ -121,11 +129,12 @@ void ui_totp_screen_update_totp_labels()
 {
     int index = 0;
     lv_obj_t *totp_component = lv_obj_get_child(ui_totp_screen, index);
+    Service *services = get_services();
     while (totp_component)
     {
-        Service service = get_active_services_group()[index];
+        Service *service = &services[(int)totp_component->user_data];
         lv_obj_t *totp_label = lv_obj_get_child(totp_component, 1);
-        lv_label_set_text(totp_label, service.totp);
+        lv_label_set_text(totp_label, service->totp);
         index++;
         totp_component = lv_obj_get_child(ui_totp_screen, index);
     }

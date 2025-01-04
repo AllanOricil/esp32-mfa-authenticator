@@ -122,25 +122,21 @@ void loop()
 
   case TOTPS_UPDATE:
     display_timeout_handler();
-
-    if (get_active_services_group_length())
+    unsigned long elapsed_number_of_time_steps = get_elapsed_number_of_time_steps();
+    static unsigned long last_step = 0;
+    if (elapsed_number_of_time_steps != last_step)
     {
-      unsigned long elapsed_number_of_time_steps = get_elapsed_number_of_time_steps();
-      static unsigned long last_step = 0;
-      if (elapsed_number_of_time_steps != last_step)
-      {
-        update_totps();
-        ui_totp_screen_update_totp_labels();
-        last_step = elapsed_number_of_time_steps;
-      }
+      update_totps();
+      ui_totp_screen_update_totp_labels();
+      last_step = elapsed_number_of_time_steps;
+    }
 
-      int current_second = get_second();
-      static unsigned long previous_second = 0;
-      if (current_second != previous_second)
-      {
-        ui_totp_screen_update_totp_countdowns();
-        previous_second = current_second;
-      }
+    int current_second = get_second();
+    static unsigned long previous_second = 0;
+    if (current_second != previous_second)
+    {
+      ui_totp_screen_update_totp_countdowns();
+      previous_second = current_second;
     }
     break;
   }
