@@ -38,8 +38,6 @@ You can flash your ESP32-CYD board with the latest build using this [site](https
 
 <https://github.com/AllanOricil/esp32-mfa-totp-generator/assets/55927613/b610d1de-1bf9-47fe-9148-8973cb30205d>
 
-<https://github.com/user-attachments/assets/d8a83c77-8a3f-4243-86a1-fa44efb72904>
-
 ## ⚙️ Parts
 
 - `ESP32-2432S028`
@@ -156,7 +154,7 @@ services:
   - name: abc
     # [REQUIRED] (text) Base32 encoded secret for the service.
     secret: abc
-    # [OPTIONAL] (number) [default 0] it must be an integer between 0 and 255. It is used to group services and determine their priority. Services with smaller group numbers are rendered first. For instance, services assigned to group 100 will be rendered before those in group 255. In a services file. you can have up to 150 services.
+    # [OPTIONAL] (number) [default 0] it must be an integer between 0 and 255. It is used to group services and determine their priority. Services with smaller group numbers are rendered first. For instance, services assigned to group 100 will be rendered before those in group 255. In a services file, you can have up to 100 services.
     group: 0
 ```
 
