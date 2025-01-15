@@ -142,6 +142,8 @@ export default class ESP32MFAAuthenticatorClient {
       baseURL || "/api/v1",
       {
         "Content-Type": "application/json",
+        // NOTE: this token is generated and replaced in the server
+        "x-csrf-token": "{{CSRF_TOKEN}}",
       },
       5000,
       5
