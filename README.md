@@ -362,17 +362,17 @@ manager:
 
 ## 🎯 Roadmap
 
-### ✅ Display multiple TOTP codes
+### ✅ Display multiple TOTPs
 
 ### ✅ Unlock with PIN Code
 
-### ✅ Manage board settings using a browser
+### ✅ Manage the board settings via Web App
 
 ### ✅ Organize Services into Groups
 
-### ✅ Lock board on iddle
+### ✅ Lock the board after N seconds of inactivity
 
-### ✅ Lock board after N wrong unlock attempts
+### ✅ Lock the board after N failed unlock attempts
 
 ### 🔜 Encryption
 
