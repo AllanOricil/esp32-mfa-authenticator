@@ -364,34 +364,19 @@ manager:
 
 ### ✅ Display multiple TOTP codes
 
-People often use multiple services that require MFA TOTP codes with high frequency because of their short living sessions.
-
 ### ✅ Unlock with PIN Code
-
-It is not secure to have unencrypted secrets stored without protection
 
 ### ✅ Manage board settings using a browser
 
-Users can manage their board settings using a browser. Once the board is connected to the local network, open a browser and type `{IP_ADDRESS}/esp32/settings`.
-
-> [!IMPORTANT]
-> At the moment, secrets must be re-entered before submiting the form. If you don't re-type the secrets, they will be stored as `*******` in the SD card, and this will break the boot.
-
-### ✅ Display turns off automatically after N seconds without user interaction
-
-After booting, the display turns off automatically if it doesn't receive touch events after N seconds. N is a configurable in the `config.yml`.
-
 ### ✅ Organize Services into Groups
 
-Services can be organized into groups.
+### ✅ Lock board on iddle
 
 ### ✅ Lock board after N wrong unlock attempts
 
-Improve the validation function to block access to the board after few wrong attempts happened. With this enhancement, brute forcing all possible combinations won't be possible.
+### 🔜 Encryption
 
 ### 🔜 Unlock with fingerprint
-
-Instead of typing a pin code, it will be possible to unlock the board using a fingerprint. The goal is to ease the access to the TOTP codes, while maintaining them secure. It will also work globally or by group.
 
 ## 💖 Become a Sponsor
 
