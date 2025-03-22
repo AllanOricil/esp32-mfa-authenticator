@@ -282,38 +282,15 @@ When the board is connected to your local network, a settings page, similarly to
 
 ### 📚 How to setup PIN number
 
-#### Option 1
+1. Open a terminal and run the following command to create a strong secret that is exactly 32 characters long
 
-1. Use this [website](https://acte.ltd/utils/randomkeygen) to create a strong secret that is exactly 32 characters long. Copy the value from `Encryption key 256`, which has exactly 32 characters
-
-<img width="500" alt="image" src="https://github.com/user-attachments/assets/571bc5f9-1c80-49a1-b1c7-61cb7974d8b2">
-
-2. Open this [website](https://www.devglan.com/online-tools/hmac-sha256-online) to hash your pin number. Add you pin number as plain text, in the first input. You must use numbers only because the UI doesn't support letters or symbols, and it must contain at least 6 digits and no more than 20 digits.
-
-3. Copy the generated hash. It must be 64 characters long.
-
-<img width="500" alt="image" src="https://github.com/user-attachments/assets/a0954dcf-25a1-46f5-84de-42de212d5970">
-
-4. In your config.yml
-
-- set `hash` with the generated hash you got in step 3
-- set `key` with the secret you got in step 1
-
-```yml
-authentication:
-  pin:
-    hash: 7dbd45736c57090dd62a7e1c8db1a08c353b4a836f2c6b43fd1dd3f1e747ea59
-    key: TUwNzIxF5lJncAJVMkmb4EiSP9vm0OyF
-  unlock_attempts: 3
+```bash
+openssl rand -base64 24 | head -c 32; echo
 ```
+<img width="500" alt="image" src="https://github.com/user-attachments/assets/5f653506-aaa3-452b-bd1e-c7acc95f8bb4">
 
-#### Option 2
 
-1. Use this [website](https://acte.ltd/utils/randomkeygen) to create a strong secret that is exactly 32 characters long. Copy the value from `Encryption key 256`, which has exactly 32 characters
-
-<img width="500" alt="image" src="https://github.com/user-attachments/assets/571bc5f9-1c80-49a1-b1c7-61cb7974d8b2">
-
-2. Open a terminal and run the following comand to hash your pin number. Don't forget to substitute `"YOUR_PIN_NUMBER"` and `"YOUR_32_CHARACTERS_LONG_SECRET"`. The PIN must consist only of digits and must be between 6 and 20 digits in length.
+2. Then run the following comand to hash your pin number. Don't forget to substitute `"YOUR_PIN_NUMBER"` and `"YOUR_32_CHARACTERS_LONG_SECRET"`. The PIN must consist only of digits and must be between 6 and 20 digits in length.
 
 ```bash
 echo -n "YOUR_PIN_NUMBER" | openssl dgst -sha256 -hmac "YOUR_32_CHARACTERS_LONG_SECRET" | awk '{print $2}'
