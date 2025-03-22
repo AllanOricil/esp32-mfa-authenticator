@@ -6,18 +6,6 @@
 
 This is a personal project that I created to help me to get MFA TOTPs without using my phone.
 
-Other motives:
-
-- it is not safe to store both the password and the MFA secret in the same place, like in a password manager. It creates a single point of failure.
-- it is not safe to store secrets on a device that you use when going out.
-- it is not safe to store MFA secrets for my personal and professional life in the same place.
-- if my phone is stolen or lost, I would have to re-register MFA for all services.
-- secrets are decoupled from the device, and this allows me to easily switch to another one when necessary. I just need to insert the SD card containing my services onto another device flashed with the same code.
-- not all services that I use support fido keys or passkeys.
-- yubikey is expensive where I live, and I would need a lot.
-- I wanted to learn how MFA works.
-- I wanted to learn how ESP32 works.
-
 ## 🌐 Install
 
 You can flash your ESP32-CYD board with the latest build using this [site](https://allanoricil.github.io/esp32-mfa-authenticator).
