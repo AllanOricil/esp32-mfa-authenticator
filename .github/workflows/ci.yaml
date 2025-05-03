@@ -45,7 +45,6 @@ jobs:
         run: |
           env
           prefix=${{ env.NUXT_APP_BASE_URL }}
-          prefix="${prefix%/}"
           jq --arg prefix "$prefix" '. | map({image: ($prefix + .image), description: .description})' assets/tutorial.json > tmp.$$.json && mv tmp.$$.json assets/tutorial.json
           cat assets/tutorial.json
 
@@ -158,6 +157,8 @@ jobs:
           ' "$manifest_file_path" > tmp.$$.json && mv tmp.$$.json "$manifest_file_path"
 
           cat $manifest_file_path
+          cp $manifest_file_path ./_site/install/manifest.json
+          cat ./_site/install/manifest.json
 
       - name: Upload Site Assets Github Pages
         uses: actions/upload-pages-artifact@v3.0.1
