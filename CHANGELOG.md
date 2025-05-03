@@ -1,3 +1,10 @@
+## [0.19.1](https://github.com/AllanOricil/esp32-mfa-authenticator/compare/v0.19.0...v0.19.1) (2025-05-03)
+
+
+### Bug Fixes
+
+* **ci:** fix manifest.json path ([7c930d3](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/7c930d3bb85d788a23e39c48621c9e531c5f030c))
+
 # [0.19.0](https://github.com/AllanOricil/esp32-mfa-authenticator/compare/v0.18.0...v0.19.0) (2025-01-04)
 
 
