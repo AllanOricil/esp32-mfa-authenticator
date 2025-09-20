@@ -343,6 +343,8 @@ manager:
 
 ### 🔜 Unlock with fingerprint
 
+### 🔜 Anti-phishing solution (requires new architecture and user flows)
+
 ## 💖 Become a Sponsor
 
 If this device has made your life easier, consider supporting its development by clicking the button below.
