@@ -334,6 +334,10 @@ manager:
 
 ## 🧑‍💻 User Flows
 
+> [!IMPORTANT]
+> This section outlines planned user flows that will be implemented in future updates—once I find the motivation to tackle them.
+If you spot potential issues or security threats, feel free to contribute improvements.
+
 ### TOTP Retrieval Flow
 
 ````mermaid
