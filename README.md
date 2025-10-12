@@ -325,6 +325,49 @@ manager:
     key: TUwNzIxF5lJncAJVMkmb4EiSP9vm0OyF
 ```
 
+
+## User Flows
+
+### TOTP Retrieval Flow
+
+````mermaid
+sequenceDiagram
+    title TOTP Retrieval Flow
+    participant User
+    participant R503 as Fingerprint (R503)
+    participant MCU as MCU (ESP32)
+    participant ATECC as Key Vault (ATECC608A)
+    participant SD
+
+    %% Fingerprint authentication
+    User->>R503: Touch fingerprint
+    R503-->>MCU: Fingerprint matches (template_id)
+
+    MCU->>User: Prompt for PIN
+    User-->>MCU: Enter PIN
+
+    %% Read header first (nonce, salt, IV, template_index)
+    MCU->>SD: Read file header
+    SD-->>MCU: Return header
+
+    %% Derive DEK
+    MCU->>ATECC: Request HMAC with HMAC_RK(PIN || template_id || nonce || salt)
+    ATECC-->>MCU: Return HMAC
+    MCU->>MCU: Compute DEK with HKDF_expand(HMAC, "DEK", 32)
+
+    %% Fetch and decrypt secrets
+    MCU->>SD: Read encrypted secret
+    SD-->>MCU: Return encrypted secret
+    MCU->>MCU: decrypt secret with AES-GCM-decrypt(ciphertext, iv, DEK)
+
+    %% Compute TOTP
+    MCU->>MCU: Compute TOTP
+    MCU->>User: Return computed TOTP
+
+    %% Secure cleanup
+    MCU->>MCU: Securely wipe DEK and decrypted_secrets
+````
+
 ## 🎯 Roadmap
 
 ### ✅ Display multiple TOTPs
