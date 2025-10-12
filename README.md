@@ -73,7 +73,7 @@ You can flash your ESP32-CYD board with the latest build using this [site](https
 > Node and npm, its package manager, are required because several development tools are used in this project. Among these tools are those that enforce the "conventional commits" standard. This standard is a lightweight convention on top of commit messages, offering an easy set of rules for creating an explicit commit history.
 
 > [!TIP]
-> If platform.io extension does not recognize your board after clicking on `Upload`, `Upload and Monitor` or `Monitor` buttons, it means the driver was not properly setup. In MacOS, after installing the driver from Sillicon Labs, I had to restart the system before mac could identify the board.
+> If the PlatformIO extension for VS Code doesn’t detect your board when you click Upload, Upload and Monitor, or Monitor, the issue is likely related to the USB driver. On macOS, after installing the Silicon Labs driver, a system restart may be required before the board is properly recognized.
 
 ## 🔌 Boot and Reset Requirements
 
@@ -278,7 +278,14 @@ When the board is connected to your local network, a settings page, similarly to
 > At the moment, all secrets in this form must be set before submiting it. If you fail to do it, all secrets in your `config.yml` will be overwritten by `*****`.
 
 > [!IMPORTANT]
-> For security purposes, none of the secrets are exposed by the board's webserver. If you inspect the page using your browser dev tools, you will noticed that all secrets are fetched as `*****`. In the future, after implementing HTTPS, you will be to manage those secrets from the browser, but only after providing a PIN number of using your fingerprint.
+> For security purposes, none of the secrets are exposed by the board's webserver. If you inspect the page using your browser dev tools, you will noticed that all secrets are fetched as `*****`.
+
+> [!IMPORTANT]
+> Currently, the only available actions are starting a session and updating runtime settings.
+Keep in mind that the SD card must be inserted in the board when saving changes, and all configurations must be re-entered manually, as patch updates are not yet supported.
+
+> [!IMPORTANT]
+> In the future, this app is expected to evolve into a browser extension capable of pairing with your board via Bluetooth.
 
 ### 📚 How to setup PIN number
 
@@ -325,8 +332,7 @@ manager:
     key: TUwNzIxF5lJncAJVMkmb4EiSP9vm0OyF
 ```
 
-
-## User Flows
+## 🧑‍💻 User Flows
 
 ### TOTP Retrieval Flow
 
