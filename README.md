@@ -65,6 +65,8 @@ You can flash your ESP32-CYD board with the latest build using this [site](https
 | vscode                           | >= v1.87  |
 | platform.io ide vscode extension | >= v3.3   |
 | docker                           | >= v25.0  |
+| yq                               | >= 4.45.1 |
+| openssl                          | >= 3.4.0  |
 
 > [!IMPORTANT]
 > Don't forget to install a [driver to allow your OS to recognize esp32](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers)
@@ -89,6 +91,11 @@ wifi:
   password: test
   # [REQUIRED] (text) wifi id
   ssid: test
+
+# [REQUIRED] used while generating a strong encryption key which will be used to encrypt the secrets of all added services
+encryption:
+  # [REQUIRED] (text) the salt is a Base32 encoded string and it is created automatically while creating the encryption key. When transferring your services to another board, you can recover the encryption key by entering the same password during the setup phase, provided the salt in your config.yml file remains unchanged. Note that the password will never be stored on the board for security purposes
+  salt: JBSWY3DPFQQEEYLTMUZTEII=
 
 # [REQUIRED] configure authentication for the board
 authentication:
@@ -228,6 +235,22 @@ services:
 
 > [!IMPORTANT]
 > The service name acts as a unique key within a group. If two services share the same key within the same group, the last one listed in the file will be the one used because it was the last service to be added in the db.
+
+### 📚 How to encrypt/decrypt services secrets
+
+```bash
+./scripts/encrypt-services.sh --file services.yml --password $PASSWORD --salt $SALT
+./scripts/decrypt-services.sh --file services.yml --password $PASSWORD --salt $SALT
+```
+
+> [!IMPORTANT]
+> Before running any of the scripts, you must have `openssl` and `yq` installed.
+
+> [!IMPORTANT]
+> The password used is the same as the one provided during the initial setup, when the board is first booted. It must not be stored in the sd card.
+
+> [!IMPORTANT]
+> The salt is stored in the config.yml file and is generated during the initial setup, when the board is first booted.
 
 ### 📚 How to verify if TOTP codes are correct
 
