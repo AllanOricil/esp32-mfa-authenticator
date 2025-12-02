@@ -1,3 +1,11 @@
+## [0.19.2](https://github.com/AllanOricil/esp32-mfa-authenticator/compare/v0.19.1...v0.19.2) (2025-12-02)
+
+
+### Bug Fixes
+
+* map(): Invalid input range, min == max ([d811296](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/d811296bb3d6521ce9fa9b1109746f0c1c13fa64)), closes [#56](https://github.com/AllanOricil/esp32-mfa-authenticator/issues/56)
+* stabilize wifi connection after boot ([bc1be17](https://github.com/AllanOricil/esp32-mfa-authenticator/commit/bc1be1732fff19f61bdc1318d9095fd5f2cc43f0)), closes [#46](https://github.com/AllanOricil/esp32-mfa-authenticator/issues/46)
+
 ## [0.19.1](https://github.com/AllanOricil/esp32-mfa-authenticator/compare/v0.19.0...v0.19.1) (2025-05-03)
 
 
