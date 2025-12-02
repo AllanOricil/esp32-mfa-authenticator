@@ -30,27 +30,25 @@ void ui_touch_calibration_screen_init(void)
     lv_obj_add_flag(ui_touch_calibration_screen_dot_bottom_right, LV_OBJ_FLAG_HIDDEN);
 }
 
+void ui_touch_calibration_screen_step_1()
+{
+    lv_label_set_text(ui_touch_calibration_screen_label, "Touch and hold\nthe top-left corner\nuntil the next instruction appears.");
+    lv_obj_clear_flag(ui_touch_calibration_screen_dot_top_left, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(ui_touch_calibration_screen_dot_bottom_right, LV_OBJ_FLAG_HIDDEN);
+}
+
 void ui_touch_calibration_screen_step_2()
 {
-    if (ui_touch_calibration_screen_dot_top_left != NULL)
-    {
-        lv_obj_del(ui_touch_calibration_screen_dot_top_left);
-        ui_touch_calibration_screen_dot_top_left = NULL;
-    }
-
     lv_label_set_text(ui_touch_calibration_screen_label, "Touch and hold\nthe bottom-right corner\nuntil the next instruction appears.");
     lv_obj_clear_flag(ui_touch_calibration_screen_dot_bottom_right, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(ui_touch_calibration_screen_dot_top_left, LV_OBJ_FLAG_HIDDEN);
 }
 
 void ui_touch_calibration_screen_step_3()
 {
-    if (ui_touch_calibration_screen_dot_bottom_right != NULL)
-    {
-        lv_obj_del(ui_touch_calibration_screen_dot_bottom_right);
-        ui_touch_calibration_screen_dot_bottom_right = NULL;
-    }
-
     lv_label_set_text(ui_touch_calibration_screen_label, "Touch calibration complete!");
+    lv_obj_add_flag(ui_touch_calibration_screen_dot_top_left, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(ui_touch_calibration_screen_dot_bottom_right, LV_OBJ_FLAG_HIDDEN);
 }
 
 void ui_touch_calibration_screen_destroy()

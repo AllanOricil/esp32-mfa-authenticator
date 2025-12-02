@@ -30,11 +30,8 @@ struct Calibration
 extern struct Calibration cal;
 
 bool touch_is_calibrated();
-void touch_set_calibrated();
-void touch_calibrate_min();
-void touch_calibrate_max();
-void touch_calibrate();
-bool touch_load_calibration();
+void touch_set_calibration_min();
+void touch_set_calibration_max();
 void touch_save_calibration();
 struct Point touch_get_touch();
 void touch_register();

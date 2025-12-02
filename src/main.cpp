@@ -83,33 +83,41 @@ void loop()
     break;
 
   case TOUCH_CALIBRATION_MIN:
+    ui_touch_calibration_screen_step_1();
     if (millis() - state_change_time > TOUCH_TIME_TO_CALIBRATE_EACH_POINT)
     {
-      touch_calibrate_min();
-      ui_touch_calibration_screen_step_2();
+      touch_set_calibration_min();
       application_state = TOUCH_CALIBRATION_MAX;
       state_change_time = millis();
     }
     break;
 
   case TOUCH_CALIBRATION_MAX:
+    ui_touch_calibration_screen_step_2();
     if (millis() - state_change_time > TOUCH_TIME_TO_CALIBRATE_EACH_POINT)
     {
-      touch_calibrate_max();
+      touch_set_calibration_max();
       application_state = TOUCH_CALIBRATION_UPDATE;
     }
     break;
 
   case TOUCH_CALIBRATION_UPDATE:
     touch_save_calibration();
-    touch_register();
-    touch_set_calibrated();
-    ui_touch_calibration_screen_step_3();
-    application_state = TOUCH_CALIBRATION_COMPLETE;
-    state_change_time = millis();
+    // NOTE: if touch is not calibrated, then restart the calibration
+    if (!touch_is_calibrated())
+    {
+      application_state = TOUCH_CALIBRATION_START;
+    }
+    else
+    {
+      touch_register();
+      application_state = TOUCH_CALIBRATION_COMPLETE;
+      state_change_time = millis();
+    }
     break;
 
   case TOUCH_CALIBRATION_COMPLETE:
+    ui_touch_calibration_screen_step_3();
     if (millis() - state_change_time > TOUCH_TIME_DISPLAYING_SUCCESS_CALIBRATION_MESSAGE)
     {
       lv_obj_clean(lv_scr_act());
