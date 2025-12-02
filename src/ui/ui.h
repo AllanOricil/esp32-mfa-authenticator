@@ -38,6 +38,7 @@ extern "C"
 	void ui_totp_screen_update_totp_countdowns();
 	void ui_totp_screen_render_totp_components();
 	void ui_totp_screen_render_active_group_index();
+	void ui_touch_calibration_screen_step_1();
 	void ui_touch_calibration_screen_step_2();
 	void ui_touch_calibration_screen_step_3();
 	void ui_touch_calibration_screen_destroy();

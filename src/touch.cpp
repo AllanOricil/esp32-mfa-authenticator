@@ -5,7 +5,6 @@ static const char *TAG = "touch";
 static lv_indev_drv_t touch_driver;
 TouchCallback _single_touch_handler;
 TouchCallback _double_touch_handler;
-static bool is_calibrated = false;
 static bool count_touch_releases = false;
 static int number_touch_releases = 0;
 static uint32_t first_touch_release_time = 0;
@@ -32,29 +31,17 @@ void init_touch(
     digitalWrite(TOUCH_CS, HIGH);
     digitalWrite(TOUCH_CLK, LOW);
 
-    if ((!SPIFFS.begin(true)) || (!touch_load_calibration() || (calibrate)))
+    if ((!SPIFFS.begin(true)) || (!touch_is_calibrated() || (calibrate)))
     {
         ESP_LOGI(TAG, "touch must be calibrated");
-        is_calibrated = false;
     }
     else
     {
         ESP_LOGI(TAG, "touch is calibrated");
         touch_register();
-        is_calibrated = true;
     }
 
     ESP_LOGI(TAG, "touch initialized");
-}
-
-bool touch_is_calibrated()
-{
-    return is_calibrated;
-}
-
-void touch_set_calibrated()
-{
-    is_calibrated = true;
 }
 
 int read_SPI(uint8_t command)
@@ -82,7 +69,7 @@ int read_SPI(uint8_t command)
     return result;
 }
 
-void touch_calibrate_min()
+void touch_set_calibration_min()
 {
     ESP_LOGI(TAG, "reading first calibration point");
     digitalWrite(TOUCH_CS, LOW);
@@ -92,7 +79,7 @@ void touch_calibrate_min()
     ESP_LOGI(TAG, "first calibration point read");
 }
 
-void touch_calibrate_max()
+void touch_set_calibration_max()
 {
     ESP_LOGI(TAG, "reading second calibration point");
     digitalWrite(TOUCH_CS, LOW);
@@ -102,7 +89,7 @@ void touch_calibrate_max()
     ESP_LOGI(TAG, "second calibration point read");
 }
 
-bool touch_load_calibration()
+bool touch_is_calibrated()
 {
     ESP_LOGD(TAG, "loading calibration data");
     if (!SPIFFS.exists(TOUCH_CALIBRATION_SPIFFS_FILE_PATH))
@@ -113,7 +100,7 @@ bool touch_load_calibration()
     File file = SPIFFS.open(TOUCH_CALIBRATION_SPIFFS_FILE_PATH, FILE_READ);
     if (!file || file.size() == 0)
     {
-        ESP_LOGE(TAG, "calibration file %s is empty of failed to open", TOUCH_CALIBRATION_SPIFFS_FILE_PATH);
+        ESP_LOGE(TAG, "calibration file %s is empty or could not be opened", TOUCH_CALIBRATION_SPIFFS_FILE_PATH);
         return false;
     }
     cal.x_min = file.parseInt();
@@ -125,6 +112,19 @@ bool touch_load_calibration()
     ESP_LOGV(TAG, "y_min %d", cal.y_min);
     ESP_LOGV(TAG, "x_max %d", cal.x_max);
     ESP_LOGV(TAG, "y_max %d", cal.y_max);
+
+    if (cal.x_min == cal.x_max)
+    {
+        ESP_LOGE(TAG, "x_min and x_max must not be the same: [min %d] [max %d]", cal.x_min, cal.x_max);
+        return false;
+    }
+
+    if (cal.y_min == cal.y_max)
+    {
+        ESP_LOGE(TAG, "y_min and y_max must not be the same: [min %d] [max %d]", cal.y_min, cal.y_max);
+        return false;
+    }
+
     file.close();
     ESP_LOGD(TAG, "calibration data loaded");
     return true;
